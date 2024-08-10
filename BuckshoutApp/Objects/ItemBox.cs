@@ -10,10 +10,10 @@ namespace BuckshoutApp.Objects
     public class ItemBox
     {
 
-        private List<IItem> Items { get; set; }
-        public IItem Take()
+        private List<Item> Items { get; set; }
+        public Item Take()
         {
-            IItem item = Items.Last();
+            Item item = Items.Last();
             Items.Remove(item);
             return item;
         }

@@ -9,7 +9,15 @@ namespace Buckshout.Hubs
     {
         public Task ReceiveMessage (string userName, object data);
         public Task ExceptionMessage (string data);
-        public Task RoomCreated ( string data);
+
+        public Task RoomCreated (object data);
+        public Task GameStarted(object data);
+
+        public Task Damage(object data);
+        public Task Health(object data);
+
+        public Task Shoot(object data);
+        public Task MovePass(object data);
     }
     public class BaseHub :Hub <IClient>
     {

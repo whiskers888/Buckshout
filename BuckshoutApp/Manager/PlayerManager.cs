@@ -12,24 +12,28 @@ namespace BuckshoutApp.Manager
     {
         private GameContext Context;
 
-        private List<Player> players { get; set; } = new List<Player>();
+        public PlayerManager(GameContext context)
+        {
+            Context = context;
+        }
 
-        public Player[] Players => players.ToArray();
+        public List<Player> Players { get; set; } = new List<Player>();
+
 
         public void AddPlayer(int id, string name)
         {
-            players.Add(new Player(Context, id, name));
+            Players.Add(new Player(Context, id, name));
         }
         public void DeletePlayer(int id)
         {
-            players.Remove(players.FirstOrDefault(it => it.UUID == id));
+            Players.Remove(Players.First(it => it.UUID == id));
         }
-        public void SetHealth(DirectionHealth direction, int count, int userId)
+        public void SetHealth(DirectionHealth direction, int count,Player player)
         {
             if (direction == DirectionHealth.Up)
-                players.FirstOrDefault(it => it.UUID == userId).Health += count;
+                player.Health += count;
             else if (direction == DirectionHealth.Down)
-                players.FirstOrDefault(it => it.UUID == userId).Health -= count;
+                player.Health -= count;
         }
     }
 
@@ -42,7 +46,7 @@ namespace BuckshoutApp.Manager
 
             UUID = uuid;
             Name = name;
-            Inventory = new List<IItem>();
+            Inventory = new List<Item>();
             if (Context.Mode == Mode.Default)
                 Health = 4;
             else if (Context.Mode == Mode.Pro)
@@ -52,7 +56,7 @@ namespace BuckshoutApp.Manager
         }
         public int UUID { get; set; }
         public string? Name { get; set; }
-        public List<IItem>? Inventory { get; set; }
+        public List<Item>? Inventory { get; set; }
         public int Health { get; set; }
 
     }

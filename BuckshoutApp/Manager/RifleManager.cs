@@ -23,7 +23,8 @@ namespace BuckshoutApp.Manager
             patrons = new List<Patron>();
         }
         private List<Patron> patrons { get; set; }
-        public Patron[] Patrons => patrons.ToArray(); 
+        public Patron[] Patrons => patrons.ToArray();
+        public int Damage = 1;
 
         public Patron[] CreatePatron()
         {
@@ -34,10 +35,10 @@ namespace BuckshoutApp.Manager
                 createdPatrons.Add(new Patron());
             }
             patrons.AddRange(createdPatrons);
-            Shuffle();
+            patrons.Shuffle();
             return createdPatrons.ToArray();
         }
-        private void Shuffle()
+/*        private void Shuffle()
         {
             for (int i = patrons.Count - 1; i > 0; i--)
             {
@@ -47,7 +48,7 @@ namespace BuckshoutApp.Manager
                 patrons[i] = patrons[j];
                 patrons[j] = temp;
             }
-        }
+        }*/
 
         public bool NextPatron()
         {
@@ -58,5 +59,19 @@ namespace BuckshoutApp.Manager
 
         }
 
+        public bool Shoot(int targetId, int currentId)
+        {
+            Player targetPlayer = Context.PlayerManager.Players.FirstOrDefault(it => it.UUID == targetId);
+            Player currentPlayer = Context.PlayerManager.Players.FirstOrDefault(it => it.UUID == currentId);
+            bool IsCharged = NextPatron();
+            if (IsCharged && targetId == currentId)
+                Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, currentPlayer);
+            else if (IsCharged && targetId != currentId)
+                Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, targetPlayer);
+            else
+                Console.Write("1");
+            return IsCharged;
+
+        }
     }
 }

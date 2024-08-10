@@ -18,31 +18,37 @@ namespace BuckshoutApp
     {
         public GameContext()
         {
-            ID = Random.Next(10000000, 99999999);
-            RifleManager = new RifleManager(this);
+            UUID = Guid.NewGuid().ToString();
 
             ItemBox = new ItemBox();
 
         }
         public Random Random => new Random();
-        public int ID;
+        public string UUID;
         public int Round { get; set; }
-        public PlayerManager PlayerManager { get; set; }
 
+        public PlayerManager PlayerManager { get; set; }
+        public QueueManager QueueManager { get; set; }
         public RifleManager RifleManager { get; set; }
+        public EventManager EventManager { get; set; }
+
         public ItemBox ItemBox { get; set; } // Здесь будет одна коробка на всех, достают по очереди
         public Mode Mode { get; set; }
-        public int Queue { get; set; }
 
         public void StartGame(Player[] playersId, int mode)
         {
+            QueueManager = new QueueManager(this);
+            EventManager = new EventManager(this);
+            PlayerManager = new PlayerManager(this);
+            RifleManager = new RifleManager(this);
+
             Round += 1;
             foreach (var player in playersId)
             {
                 PlayerManager.AddPlayer(player.UUID, player.Name);
             }
             // Выбираем случайного игрока для очереди
-            Queue = PlayerManager.Players[Random.Next(0, PlayerManager.Players.Length)].UUID;
+            QueueManager.Queue.Shuffle();
 
             Mode = (Mode)mode;
         }
@@ -50,7 +56,8 @@ namespace BuckshoutApp
         {
             Round += 1;
             Patron[] Patrons = RifleManager.CreatePatron();
-
+            
         }
+
     }
 }

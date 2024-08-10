@@ -2,6 +2,7 @@
 using Buckshout.Hubs;
 using Buckshout.Managers;
 using Buckshout.Models;
+using BuckshoutApp;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
@@ -12,11 +13,12 @@ namespace Buckshout.Controllers
     public class RoomHub : BaseHub
     {
         private readonly IDistributedCache _cache;
-        private readonly IDistributedCache _game;
+        private GameContext _game;
 
         public RoomHub(IDistributedCache cache)
         {
             _cache = cache;
+            _game = new GameContext();
         }
 
         public async Task JoinRoom(UserConnection connection)
@@ -54,9 +56,12 @@ namespace Buckshout.Controllers
             await Clients.Groups(connection.roomName).RoomCreated($"Игра началась");
         }
 
-        public async Task Shoot(int targetUser, int userMake)
+        public async Task Shoot(int targetUser, int currentUser)
         {
+            var stringConnection = await _cache.GetAsync(Context.ConnectionId);
+            var connection = JsonSerializer.Deserialize<UserConnection>(stringConnection);
 
+            await Clients.Groups(connection.roomName).Shoot();
         }
 
         public async Task Use(int objectId)
@@ -78,7 +83,7 @@ namespace Buckshout.Controllers
                     .Group(connection.roomName??"")
                     .ReceiveMessage("WALL-E", $"{connection.userName} покинул чат");
             }
-
+            Console.WriteLine($"{connection.roomName}:{connection.userName} exited");
             await base.OnDisconnectedAsync(exception);
         }
     }
