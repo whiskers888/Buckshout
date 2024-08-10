@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buckshout", "Buckshout.csproj", "{0DB60325-A3A2-4553-8765-3B2921EB58AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuckshoutApp", "..\BuckshoutApp\BuckshoutApp.csproj", "{893665D2-6E2D-41BC-93BC-46F4BD82BDE2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0DB60325-A3A2-4553-8765-3B2921EB58AF} = {0DB60325-A3A2-4553-8765-3B2921EB58AF}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{7B7540D7-178F-4DC1-B5BF-BFD3720A84F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DB60325-A3A2-4553-8765-3B2921EB58AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DB60325-A3A2-4553-8765-3B2921EB58AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DB60325-A3A2-4553-8765-3B2921EB58AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DB60325-A3A2-4553-8765-3B2921EB58AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{893665D2-6E2D-41BC-93BC-46F4BD82BDE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{893665D2-6E2D-41BC-93BC-46F4BD82BDE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{893665D2-6E2D-41BC-93BC-46F4BD82BDE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{893665D2-6E2D-41BC-93BC-46F4BD82BDE2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A3148E22-3442-4DCB-BE5F-04822DCA149D}
+	EndGlobalSection
+EndGlobal
