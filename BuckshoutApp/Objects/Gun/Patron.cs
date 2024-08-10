@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace BuckshoutApp.Objects.rifle
 {
-    public class Patron
-    {
-        bool IsCharged { get; set; }
-    }
+
 }
+

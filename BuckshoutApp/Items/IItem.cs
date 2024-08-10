@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuckshoutApp.Objects
+namespace BuckshoutApp.Items
 {
-    public interface Item
+    public interface IItem
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Action Action { get; set; }
+        public System.Action Action { get; set; }
 
         public void Use() { }
 
