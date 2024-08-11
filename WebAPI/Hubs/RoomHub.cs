@@ -1,13 +1,8 @@
-﻿
-using Buckshout.Hubs;
+﻿using Buckshout.Hubs;
 using Buckshout.Managers;
 using Buckshout.Models;
 using BuckshoutApp.Context;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
-using System;
-using System.Text.Json;
 
 namespace Buckshout.Controllers
 {
@@ -95,7 +90,7 @@ namespace Buckshout.Controllers
             {
                 RemoveCache(connection.roomName);
 
-                await SendFromSystem(connection.roomName, $"{connection.userName} покинул чат")
+                await SendFromSystem(connection.roomName, $"{connection.userName} покинул чат");
             };
             Console.WriteLine($"{connection.roomName}:{connection.userName} exited");
             await base.OnDisconnectedAsync(exception);
