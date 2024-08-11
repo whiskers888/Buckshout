@@ -1,23 +1,21 @@
-﻿namespace BuckshoutApp.Items
+﻿
+using BuckshoutApp.Context;
+
+namespace BuckshoutApp.Items
 {
     public class Handcuffs : Item
     {
-        public GameContext Context { get; }
-        
-        public Handcuffs(GameContext context)
-        {
-            Context = context;
-        }
+        public Handcuffs(GameContext context) : base(context) { }
 
-        public string Id => Guid.NewGuid().ToString();
-        public string Name => "Наручники";
-        public string Description => "Противник пропускает свой следующий ход";
-        public Action Action => Action.HandCuffs;
-        public TargetType TargetType => TargetType.Other;
-        public TargetTeam TargetTeam => TargetTeam.Enemy;
-        public bool IsStealable => true;
+        public override string Name => "Наручники";
+        public override string Description => "Противник пропускает свой следующий ход";
+        public override TargetType TargetType => TargetType.Other;
+        public override TargetTeam TargetTeam => TargetTeam.Enemy;
+        public override bool IsStealable => true;
+
         public override void Effect(UseItemModel args)
         {
+            Console.WriteLine($"{args.current.Name} применил {Name} на {args.target.Name}  ");
             Context.QueueManager.SkipPlayer(args.target);
             
         }

@@ -1,4 +1,5 @@
 using Buckshout.Controllers;
+using BuckshoutApp.Context;
 
 namespace Buckshout
 {
@@ -26,7 +27,7 @@ namespace Buckshout
             });
 
             builder.Services.AddSignalR();
-
+            builder.Services.AddSingleton<ApplicationContext>();
             var app = builder.Build();
 
             app.MapHub<RoomHub>("/room");

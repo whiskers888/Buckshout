@@ -2,9 +2,10 @@
 using Buckshout.Hubs;
 using Buckshout.Managers;
 using Buckshout.Models;
-using BuckshoutApp;
+using BuckshoutApp.Context;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
+using System;
 using System.Text.Json;
 
 namespace Buckshout.Controllers
@@ -12,13 +13,12 @@ namespace Buckshout.Controllers
 
     public class RoomHub : BaseHub
     {
-        private readonly IDistributedCache _cache;
-        private GameContext _game;
 
-        public RoomHub(IDistributedCache cache)
+        private readonly IDistributedCache _cache;
+
+        public RoomHub(IDistributedCache cache, ApplicationContext _appContext) : base(_appContext)
         {
             _cache = cache;
-            _game = new GameContext();
         }
 
         public async Task JoinRoom(UserConnection connection)
@@ -36,12 +36,14 @@ namespace Buckshout.Controllers
             else
             {
                 roomName = connection.userName;
-                RoomManager.AddToRoom(connection.userName, Context.ConnectionId);
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-                await Clients.Groups(roomName).RoomCreated($"Комната {connection.roomName} создана ");
+                await Clients.Groups(roomName).RoomCreated($"Комната {roomName} создана ");
             }
 
-            var stringConnection = JsonSerializer.Serialize(connection);
+            RoomManager.AddToRoom(roomName, new Player(connection.userName, Context.ConnectionId));
+
+
+            var stringConnection = JsonSerializer.Serialize(new UserConnection(connection.userName, roomName));
 
             await _cache.SetStringAsync(Context.ConnectionId, stringConnection);
 
@@ -52,16 +54,26 @@ namespace Buckshout.Controllers
         {
             var stringConnection = await _cache.GetAsync(Context.ConnectionId);
             var connection = JsonSerializer.Deserialize<UserConnection>(stringConnection);
-            // new Game()
-            await Clients.Groups(connection.roomName).RoomCreated($"Игра началась");
+
+            var gameContext = GetGameContext(connection.roomName);
+
+            gameContext.StartGame(Mode.Default);
+            await Clients.Groups(connection.roomName).GameStarted("WALL-E","Игра началась");
+
+            gameContext.StartRound();
+            await Clients.Groups(connection.roomName).RoundStarted("Старт раунда");
         }
 
-        public async Task Shoot(int targetUser, int currentUser)
+        public async Task Shoot(int targetUser)
         {
             var stringConnection = await _cache.GetAsync(Context.ConnectionId);
             var connection = JsonSerializer.Deserialize<UserConnection>(stringConnection);
 
-            await Clients.Groups(connection.roomName).Shoot();
+            var gameContext = GetGameContext(connection.roomName);
+            var targetPlayer = gameContext.PlayerManager.Get(Context.ConnectionId);
+
+            gameContext.RifleManager.Shoot(targetPlayer);
+            await Clients.Groups(connection.roomName).Shoot("shootw");
         }
 
         public async Task Use(int objectId)

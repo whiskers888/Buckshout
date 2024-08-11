@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using BuckshoutApp.Context;
 
 namespace BuckshoutApp.Manager
 {
@@ -13,24 +10,37 @@ namespace BuckshoutApp.Manager
         {
             Context = context;
             Queue = Context.PlayerManager.Players;
-            Current = Queue.First();
+            Queue.Shuffle();
+            Current = Context.PlayerManager.Players.First();
             SkipPlayers = new List<Player>();
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
         public List<Player> SkipPlayers { get; set; }
+
         public void Next(Player player)
         {
             if (SkipPlayers.Contains(player))
             {
                 SkipPlayers.Remove(player);
-                int index = Queue.IndexOf(Current);
-                Player? nextPlayer = Queue.FirstOrDefault(it => it != Current && it != player);
-                if(nextPlayer != null)
+                int currentPlayerIndex = Queue.IndexOf(Current);
+                Player? nextPlayer = Queue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player);
+                if (nextPlayer != null)
                     Next(nextPlayer);
+                else
+                    Next(Queue[0]);
             }
             else
                 Current = player;
+        }
+        public void Next()
+        {
+            int nextPlayerIndex = Queue.IndexOf(Current)+1;
+            if (nextPlayerIndex > Queue.Count - 1)
+                nextPlayerIndex = 0;
+            Player nextPlayer = Queue[nextPlayerIndex];
+            if (nextPlayer != null)
+                Next(nextPlayer);
         }
         public void SkipPlayer(Player player)
         {

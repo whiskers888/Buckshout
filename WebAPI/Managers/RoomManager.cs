@@ -1,37 +1,66 @@
-﻿namespace Buckshout.Managers
+﻿using BuckshoutApp.Context;
+using BuckshoutApp.Manager;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Buckshout.Managers
 {
-    //TODO:  Здесь должна быть логика комнат для выбора их из списка на фронте, но это не сработает в данный момент, потому что класс не реализован для редиса.
+    public class Player
+    { 
+        public Player(string name, string connectionId)
+        {
+            Name = name;
+            ConnectionId = connectionId;
+        }
+        public string Name { get; set; }
+        public string ConnectionId { get; set; }
+    }
+
+    public class Room
+    {
+        public Room(string roomName, GameContext gameContext) 
+        {
+            RoomName = roomName;
+            GameContext = gameContext;
+            Players = new List<Player>();
+        }
+        public string RoomName { get; set; }
+        public List<Player> Players { get; set; }
+        public GameContext GameContext { get; set; }
+    }
+    
+
     public class RoomManager
     {
-        private static readonly Dictionary<string, List<string>> room = new Dictionary<string, List<string>>();
+        private static readonly Dictionary<string, Room> rooms = new Dictionary<string, Room>();
 
-        public static void AddToRoom(string roomName, string connectionId)
+        public static void AddToRoom(string roomName, Player player)
         {
-            if (!room.ContainsKey(roomName))
+            if (!rooms.ContainsKey(roomName))
             {
-                room[roomName] = new List<string>();
+                rooms[roomName] = new Room(roomName, new GameContext());
             }
-            room[roomName].Add(connectionId);
+            rooms[roomName].GameContext.PlayerManager.AddPlayer(player.ConnectionId, player.Name);
+            rooms[roomName].Players.Add(player);
         }
 
         public static void RemoveFromRoom(string roomName, string connectionId)
         {
-            if (room.ContainsKey(roomName))
+            if (rooms.ContainsKey(roomName))
             {
-                room[roomName].Remove(connectionId);
-                if (room[roomName].Count == 0)
+                rooms[roomName].Players.Remove(rooms[roomName].Players.FirstOrDefault(it => it.ConnectionId == connectionId));
+                if (rooms[roomName].Players.Count == 0)
                 {
-                    room.Remove(roomName);
+                    rooms.Remove(roomName);
                 }
             }
         }
-        public static string GetRoom(string roomName)
+        public static Room GetRoom(string roomName)
         {
-            return room.FirstOrDefault(it => it.Key == roomName).Key;
+            return rooms.FirstOrDefault(it => it.Key == roomName).Value;
         }
         public static List<string> GetAllRooms()
         {
-            return room.Keys.ToList();
+            return rooms.Keys.ToList();
         }
     }
 }

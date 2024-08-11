@@ -1,4 +1,5 @@
 ﻿
+using BuckshoutApp.Context;
 using BuckshoutApp.Manager;
 
 namespace BuckshoutApp.Items
@@ -21,35 +22,42 @@ namespace BuckshoutApp.Items
         public int itemId { get; set; }
         public Player? current { get; set; }
         public Player? target { get; set; }
-        public object[]? specialArgs { get; set; }
+        public Dictionary<string,object>? specialArgs { get; set; } = new Dictionary<string,object>();
     }
     public abstract class Item
     {
+
+        public Item(GameContext context) 
+        {
+            Context = context;
+        }
         public GameContext Context { get; }
         public string Id => Guid.NewGuid().ToString();
-        public string Name { get; }
-        public string Description { get; }
-        public bool IsStealable { get; }
-        public TargetType TargetType { get; }
-        public TargetTeam TargetTeam { get; }
-        public Action Action { get;}
+        public abstract string Name { get; }
+        public abstract string Description { get; }
+        public abstract bool IsStealable { get; }
+        public abstract TargetType TargetType { get; }
+        public abstract TargetTeam TargetTeam { get; }
 
         public abstract void Effect(UseItemModel args);
-        public void Use(UseItemModel args) 
-        {
-            Console.WriteLine("Начало выполнения программы");
 
-            Timer timer = new Timer(async state =>
+        public virtual void Use(UseItemModel args) 
+        {
+
+            Console.WriteLine($"{args.current.Name} пытается применить {Name} на {args.target.Name}  ");
+
+            var timer = Timer.SetTimeout(() =>
             {
                 Console.WriteLine("Таймер сработал!");
                 Effect(args);
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(6));
+            }, 10000);
 
-           // тут должен быть eventmanager который будет смотреть отменили ли карту и применять строчку timer.Change
-            // Остановка таймера
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
+            Context.EventManager.Subcribe(new EventModel(Event.OnCancelItem,Context.EventManager.CancelId), () =>
+            {
 
-            Console.WriteLine("Конец выполнения программы");
+                Console.WriteLine($"{args.current.Name} отменил {Name} на {args.target.Name}  ");
+                timer.Dispose();
+            });
         }
 
 

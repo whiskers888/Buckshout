@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BuckshoutApp.Context;
 using BuckshoutApp.Objects.rifle;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -52,24 +53,31 @@ namespace BuckshoutApp.Manager
 
         public bool NextPatron()
         {
-            Patron patron = patrons[patrons.Capacity - 1];
+            Patron patron = patrons[patrons.Count - 1];
             bool shoot = patron.IsCharged;
             patrons.Remove(patron);
             return shoot;
 
         }
 
-        public bool Shoot(int targetId, int currentId)
+        public bool Shoot(Player target)
         {
-            Player targetPlayer = Context.PlayerManager.Players.FirstOrDefault(it => it.UUID == targetId);
-            Player currentPlayer = Context.PlayerManager.Players.FirstOrDefault(it => it.UUID == currentId);
+            Player currentPlayer = Context.QueueManager.Current;
             bool IsCharged = NextPatron();
-            if (IsCharged && targetId == currentId)
+            if (IsCharged && target == currentPlayer)
+            {
                 Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, currentPlayer);
-            else if (IsCharged && targetId != currentId)
-                Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, targetPlayer);
-            else
-                Console.Write("1");
+                Context.QueueManager.Next();
+            }
+            else if (IsCharged && target != currentPlayer)
+            {
+                Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, target);
+                Context.QueueManager.Next(target);
+            }
+            else if (!IsCharged && target == currentPlayer)
+                Context.QueueManager.Next(currentPlayer);
+            else if (!IsCharged && target != currentPlayer)
+                Context.QueueManager.Next(target);
             return IsCharged;
 
         }

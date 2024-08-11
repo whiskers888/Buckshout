@@ -11,7 +11,7 @@ namespace BuckshoutApp.Objects
     {
 
         private List<Item> Items { get; set; }
-        public Item Take()
+        public Item Get()
         {
             Item item = Items.Last();
             Items.Remove(item);
