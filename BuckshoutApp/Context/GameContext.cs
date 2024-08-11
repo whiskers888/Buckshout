@@ -45,17 +45,14 @@ namespace BuckshoutApp.Context
         {
 
             QueueManager = new QueueManager(this);
-
-            Round += 1;
             QueueManager.Queue.Shuffle();
-
             Mode = mode;
         }
         public void StartRound()
         {
             Round += 1;
-            Patron[] Patrons = RifleManager.CreatePatron();
-            Player zelya = PlayerManager.Players.FirstOrDefault(it => it != QueueManager.Current);
+
+            /*Player zelya = PlayerManager.Players.FirstOrDefault(it => it != QueueManager.Current);
             Console.WriteLine($"{zelya.Name} на самом деле зеля  ");
 
             Player shabloebla = PlayerManager.Players.FirstOrDefault(it => it != zelya);
@@ -73,7 +70,7 @@ namespace BuckshoutApp.Context
 
             Item item2 = zelya.Inventory.FirstOrDefault(it => it.Name == "Печать \"Переделать\"");
             var a2 = new UseItemModel() { target = shabloebla, current = zelya };
-            item2.Use(a2);
+            item2.Use(a2);*/
         }
 
 

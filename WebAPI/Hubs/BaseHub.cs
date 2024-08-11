@@ -1,12 +1,15 @@
 ﻿using Buckshout.Managers;
+using Buckshout.Models;
 using BuckshoutApp.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Dynamic;
+using System.Text.Json;
 
 namespace Buckshout.Hubs
 {
-
+    
     public interface IClient
     {
         public Task ReceiveMessage (string userName, object data);
@@ -22,25 +25,68 @@ namespace Buckshout.Hubs
         public Task Shoot(object data);
         public Task MovePass(object data);
     }
-    public class BaseHub :Hub <IClient>
+    public class BaseHub :Hub
     {
-        public BaseHub(ApplicationContext applicationContext)
-        {
-            ApplicationContext = applicationContext;
-        }
 
+
+        private readonly IDistributedCache _cache;
         public ApplicationContext ApplicationContext { get; set; }
         public RoomManager RoomManager => ApplicationContext.RoomManager;
-        internal dynamic GetCommon() => new ExpandoObject();
-        internal async Task Send(string roomName, object? data = null, string taskName = "WALL-E")
+
+        public BaseHub(ApplicationContext applicationContext, IDistributedCache cache)
         {
-            await Clients.Groups(roomName)
-                .ReceiveMessage(taskName, new JsonResult(new
+            ApplicationContext = applicationContext;
+            _cache = cache;
+        }
+        internal async void SetCache(string userName, string roomName)
+        {
+            var stringConnection = JsonSerializer.Serialize(new UserConnection(userName, roomName));
+            await _cache.SetStringAsync(Context.ConnectionId, stringConnection);
+        }
+
+        internal async Task<UserConnection> GetCache()
+        {
+            var stringConnection = await _cache.GetAsync(Context.ConnectionId);
+            UserConnection connection = JsonSerializer.Deserialize<UserConnection>(stringConnection);
+            return connection;
+        }
+
+        internal async void RemoveCache(string roomName)
+        {
+            await _cache.RemoveAsync(Context.ConnectionId);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+        }
+
+        internal dynamic GetCommon() => new ExpandoObject();
+        internal async Task Send(string roomName, MessageType methodName, object? data = null)
+        {
+            await Clients.Group(roomName).SendAsync(methodName.ToStr(), new JsonResult(new
+            {
+                data,
+                datetime = DateTime.Now.ToString()
+            }));
+        }
+
+        internal async Task SendCaller(MessageType methodName, object? data = null)
+        {
+            await Clients.Caller.SendAsync(methodName.ToStr(), new JsonResult(new
+            {
+                data,
+                datetime = DateTime.Now.ToString()
+            }));
+        }
+
+        internal async Task SendFromSystem(string roomName, object message )
+        {
+            await Clients.Group(roomName).SendAsync(MessageType.ReceiveMessage.ToStr(), new JsonResult(new
+            {
+                data = new
                 {
-                    data,
-                    datetime = DateTime.Now.ToString()
-                })
-            );
+                    sender ="WALL-E",
+                    message = message
+                },
+                datetime = DateTime.Now.ToString()
+            }));
         }
 
         internal GameContext GetGameContext(string roomName)
