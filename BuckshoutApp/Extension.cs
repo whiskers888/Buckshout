@@ -23,9 +23,12 @@ namespace BuckshoutApp
             }
         }
     }
-    public static class Timer
+    public static class TimerExtension
     {
-        public static IDisposable SetInterval(Action method, int delayInMilliseconds)
+
+        private static Dictionary<int, System.Timers.Timer> _timers = new Dictionary<int, System.Timers.Timer>();
+        private static int _nextTimerId = 1;
+        public static int SetInterval(Action method, int delayInMilliseconds)
         {
             System.Timers.Timer timer = new System.Timers.Timer(delayInMilliseconds);
             timer.Elapsed += (source, e) =>
@@ -36,9 +39,10 @@ namespace BuckshoutApp
             timer.Enabled = true;
             timer.Start();
 
-            // Returns a stop handle which can be used for stopping
-            // the timer, if required
-            return timer as IDisposable;
+            int timerId = _nextTimerId++;
+            _timers[timerId] = timer;
+
+            return timerId;
         }
 
         public static IDisposable SetTimeout(Action method, int delayInMilliseconds)
@@ -53,9 +57,16 @@ namespace BuckshoutApp
             timer.Enabled = true;
             timer.Start();
 
-            // Returns a stop handle which can be used for stopping
-            // the timer, if required
             return timer as IDisposable;
+        }
+        public static void ClearInterval(int timerId)
+        {
+            if (_timers.TryGetValue(timerId, out var timer))
+            {
+                timer.Stop();
+                timer.Dispose();
+                _timers.Remove(timerId);
+            }
         }
     }
 }
