@@ -1,11 +1,6 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BuckshoutApp.Items
 {

@@ -1,5 +1,4 @@
-﻿
-namespace BuckshoutApp.Manager.Events
+﻿namespace BuckshoutApp.Manager.Events
 {
     public enum Event
     {

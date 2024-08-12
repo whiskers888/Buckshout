@@ -1,5 +1,4 @@
 ﻿using BuckshoutApp.Context;
-using BuckshoutApp.Manager.Events;
 
 namespace BuckshoutApp.Items
 {

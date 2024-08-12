@@ -1,6 +1,4 @@
-﻿
-
-using Buckshout.Managers;
+﻿using Buckshout.Managers;
 
 namespace BuckshoutApp.Context
 {

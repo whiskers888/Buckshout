@@ -1,5 +1,4 @@
-﻿
-using BuckshoutApp.Context;
+﻿using BuckshoutApp.Context;
 using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 

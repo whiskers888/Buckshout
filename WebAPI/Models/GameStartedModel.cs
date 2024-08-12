@@ -1,6 +1,4 @@
-﻿using BuckshoutApp.Manager;
-
-namespace Buckshout.Models
+﻿namespace Buckshout.Models
 {
     public class GameStartedModel
     {

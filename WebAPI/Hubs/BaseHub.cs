@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Dynamic;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
 namespace Buckshout.Hubs

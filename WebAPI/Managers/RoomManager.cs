@@ -1,6 +1,4 @@
 ﻿using BuckshoutApp.Context;
-using BuckshoutApp.Manager;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Buckshout.Managers
 {

@@ -1,5 +1,4 @@
-﻿using BuckshoutApp.Items;
-using BuckshoutApp.Manager;
+﻿using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 
 namespace BuckshoutApp.Context
