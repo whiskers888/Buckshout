@@ -11,9 +11,13 @@ namespace BuckshoutApp.Items
         public Player? target { get; set; }
         public Dictionary<string,object> special { get; set; } = new Dictionary<string,object>();
     }
-    public class Item(GameContext context)
+    public class Item
     {
-        public GameContext Context { get; } = context;
+        public Item (GameContext context)
+        {
+            Context = context;
+        }
+        public GameContext Context { get; }
         public string UUID => Guid.NewGuid().ToString();
         public virtual string Name { get; } = "Default item name";
         public virtual string Description { get; } = "Default item description";

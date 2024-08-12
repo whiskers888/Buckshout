@@ -5,9 +5,7 @@ namespace BuckshoutApp.Items
 {
     public class Hacksaw:Item
     {
-        public Hacksaw(GameContext context) : base(context)
-        {
-        }
+        public Hacksaw(GameContext context) : base(context) { }
 
         public override string Name => "Ножовка";
         public override string Description => "Увеличивает урон дробовика";

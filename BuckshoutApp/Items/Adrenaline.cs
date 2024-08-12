@@ -6,9 +6,7 @@ namespace BuckshoutApp.Items
 {
     public class Adrenaline : Item
     {
-        public Adrenaline(GameContext context) : base(context)
-        {
-        }
+        public Adrenaline(GameContext context) : base(context) { }
 
         public override string Name => "Адреналин";
         public override string Description => "Крадет предмет на выбор.\n" +

@@ -21,6 +21,7 @@ namespace BuckshoutApp.Manager.Events {
             Context = context;
             UnlimitedEvents = new Dictionary<Event, List<Action<EventData> >>();
             OnEventActions = new List<Action<Event, EventData>>();
+            DisposableEvents = new Dictionary<Event, List<Action<EventData>>>();
         }
         public Dictionary<Event, List<Action<EventData>>> UnlimitedEvents { get; set; }
 

@@ -35,7 +35,7 @@ namespace BuckshoutApp.Manager
                 for (var i = 0; i < Context.PlayerManager.Players.Count * Context.Settings.ITEMS_PER_PLAYER_COEF; i++)
                 {
                     // TODO: ТУТ МОЖЕТ БЫТЬ ПИЗДА
-                    Items.Add((Item)Activator.CreateInstance(item));
+                    Items.Add((Item)Activator.CreateInstance(item, new object[] { Context }));
                 }
             });
             Items.Shuffle();

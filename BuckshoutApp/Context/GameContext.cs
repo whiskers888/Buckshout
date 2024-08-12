@@ -46,15 +46,15 @@ namespace BuckshoutApp.Context
         {
             Round += 1;
             RifleManager.CreatePatrons();
-            /*Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
+            Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
             Console.WriteLine($"{zelya.Name} на самом деле зеля  ");
 
             Player shabloebla = PlayerManager.Players.First(it => it != zelya);
-            Console.WriteLine($"{shabloebla.Name} на самом деле саня  ");
-
+            Console.WriteLine($"{shabloebla.Name} на самом деле саня");
+            ItemManager.FillBox();
             RifleManager.Shoot(zelya);
 
-            Item item = zelya.Inventory.First(it => it.Name == "Наручники");
+            /*Item item = zelya.Inventory.First(it => it.Name == "Наручники");
             var a = new EventData() { target = shabloebla, initiator = zelya };
             item.Use(a);
 
