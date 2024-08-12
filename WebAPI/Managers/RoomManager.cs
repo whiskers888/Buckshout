@@ -47,7 +47,7 @@ namespace Buckshout.Managers
         {
             if (rooms.ContainsKey(roomName))
             {
-                rooms[roomName].Players.Remove(rooms[roomName].Players.FirstOrDefault(it => it.ConnectionId == connectionId));
+                rooms[roomName].Players.Remove(rooms[roomName].Players.First(it => it.ConnectionId == connectionId));
                 if (rooms[roomName].Players.Count == 0)
                 {
                     rooms.Remove(roomName);
