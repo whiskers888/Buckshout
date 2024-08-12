@@ -51,7 +51,10 @@ namespace Buckshout.Controllers
 
             gameContext.EventManager.OnEvent(async (e, data) =>
             {
-                await Send(connection.roomName, e, data);
+                if (e == Event.MESSAGE_INITIATOR_RECEIVED)
+                    SendPlayer(data.initiator.UUID, e, data);
+                else
+                    await Send(connection.roomName, e, data);
             });
             
             gameContext.StartGame(Mode.Default);

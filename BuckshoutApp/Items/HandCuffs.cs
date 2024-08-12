@@ -15,10 +15,10 @@ namespace BuckshoutApp.Items
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;
         public override ItemBehavior[] Behavior { get; } = { ItemBehavior.UNIT_TARGET };
 
-        public override void Effect(EventData args)
+        public override void Effect(EventData e)
         {
-            Console.WriteLine($"{args.initiator?.Name} применил {Name} на {args.target?.Name}  ");
-            Context.QueueManager.SkipPlayer(args.target);
+            Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
+            Context.QueueManager.SkipPlayer(e.target);
         }
     }
 }

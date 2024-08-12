@@ -27,21 +27,21 @@ namespace BuckshoutApp.Items
         public ItemState ItemState { get; set; } = ItemState.IN_BOX;
 
 
-        public virtual void Effect(EventData args) { }
-        internal virtual void BeforeUse(EventData args) { }
+        public virtual void Effect(EventData e) { }
+        internal virtual void BeforeUse(EventData e) { }
         internal virtual void BeforeCancel() { }
-        public void Use(EventData args) 
+        public void Use(EventData e) 
         {
             ItemState = ItemState.USING;
-            args.special.Add("ITEM", this);
-            BeforeUse(args);
-            Console.WriteLine($"{args.initiator?.Name} применяет {Name} на {args.target?.Name}");
+            e.special.Add("ITEM", this);
+            BeforeUse(e);
+            Console.WriteLine($"{e.initiator?.Name} применяет {Name} на {e.target?.Name}");
             if (ItemState == ItemState.NOT_ALLOWED)
             {
                 ItemState = ItemState.IN_HAND;
                 return;
             }
-            Context.EventManager.Trigger(Event.ITEM_USED, args);
+            Context.EventManager.Trigger(Event.ITEM_USED, e);
             int timer= 0;
             int progress = 0;
 
@@ -54,8 +54,8 @@ namespace BuckshoutApp.Items
                 {
                     if (ItemState == ItemState.USING)
                     {
-                        Context.EventManager.Trigger(Event.ITEM_EFFECTED, args);
-                        Effect(args);
+                        Context.EventManager.Trigger(Event.ITEM_EFFECTED, e);
+                        Effect(e);
                     }
                     ItemState = ItemState.REMOVED;
                     TimerExtension.ClearInterval(timer);

@@ -54,6 +54,14 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
+        internal async Task SendPlayer(string connectionID, Event eventName, object? data = null)
+        {
+            await Clients.Client(connectionID).SendAsync(eventName.ToString(), new JsonResult(new
+            {
+                data,
+                datetime = DateTime.Now.ToString()
+            }));
+        }
 
         internal async Task SendCaller(Event methodName, object? data = null)
         {

@@ -10,6 +10,7 @@ namespace BuckshoutApp.Manager.Events
         GAME_FINISHED,
 
         MESSAGE_RECEIVED,
+        MESSAGE_INITIATOR_RECEIVED,
 
         PLAYER_CONNECTED,
         PLAYER_DISCONNECTED ,

@@ -24,27 +24,27 @@ namespace BuckshoutApp.Items
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;
 
 
-        internal override void BeforeUse(EventData args) 
+        internal override void BeforeUse(EventData e) 
         {
-            Player target = args.target;
-            Item item = (Item)args.special["ITEM"];
+            Player target = e.target;
+            Item item = (Item)e.special["ITEM"];
             if (!target.Inventory.Contains(item))
                 ItemState = ItemState.NOT_ALLOWED;
             if (!item.ItemModifier.Contains(Items.ItemModifier.CANNOT_BE_STOLEN))
-                Context.EventManager.Trigger(Event.MESSAGE_RECEIVED, new EventData()
-                {
-                    special = { { "MESSAGE", $"{Name} нельзя применить на {item.Name}" } }
-                });
+            {
+                e.special.Add("MESSAGE", $"{Name} нельзя применить на {item.Name}");
+                Context.EventManager.Trigger(Event.MESSAGE_RECEIVED, e);
+            }
             ItemState = ItemState.NOT_ALLOWED;
         }
-        public override void Effect(EventData args)
+        public override void Effect(EventData e)
         {
-            Item item = (Item)args.special["ITEM"];
-            args.target.Inventory.Remove(item);
-            args.initiator.Inventory.Add(item);
+            Item item = (Item)e.special["ITEM"];
+            e.target.Inventory.Remove(item);
+            e.initiator.Inventory.Add(item);
             Context.EventManager.Once(Event.TURN_CHANGED, (e) =>
             {
-                args.initiator.Inventory.Remove(item);
+                e.initiator.Inventory.Remove(item);
             });
 
         }
