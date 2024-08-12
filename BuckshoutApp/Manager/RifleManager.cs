@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using BuckshoutApp.Context;
-using BuckshoutApp.Objects.rifle;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using BuckshoutApp.Context;
 
 namespace BuckshoutApp.Manager
 {
@@ -51,25 +43,31 @@ namespace BuckshoutApp.Manager
 
         }
 
-        public bool Shoot(Player target)
+        public bool Shoot(Player targetPlayer)
         {
             Player currentPlayer = Context.QueueManager.Current;
             bool IsCharged = NextPatron();
-            if (IsCharged && target == currentPlayer)
+            if (IsCharged && targetPlayer == currentPlayer)
             {
                 Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, currentPlayer);
                 Context.QueueManager.Next();
             }
-            else if (IsCharged && target != currentPlayer)
+            else if (IsCharged && targetPlayer != currentPlayer)
             {
-                Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, target);
-                Context.QueueManager.Next(target);
+                Context.PlayerManager.SetHealth(DirectionHealth.Down, Damage, targetPlayer);
+                Context.QueueManager.Next(targetPlayer);
             }
-            else if (!IsCharged && target == currentPlayer)
+            else if (!IsCharged && targetPlayer == currentPlayer)
                 Context.QueueManager.Next(currentPlayer);
-            else if (!IsCharged && target != currentPlayer)
-                Context.QueueManager.Next(target);
+            else if (!IsCharged && targetPlayer != currentPlayer)
+                Context.QueueManager.Next(targetPlayer);
+
+            Context.EventManager.Trigger(Events.Event.RIFLE_SHOT, new Items.EventData() { 
+                                                        initiator = currentPlayer, 
+                                                        target = targetPlayer, 
+                                                        special = new Dictionary<string, object>() { { "IS_CHARGED", IsCharged } } });
             return IsCharged;
+
 
         }
     }

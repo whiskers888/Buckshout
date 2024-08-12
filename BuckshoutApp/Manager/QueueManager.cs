@@ -17,14 +17,20 @@ namespace BuckshoutApp.Manager
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
         public List<Player> SkipPlayers { get; set; }
-
+        public IDisposable timer { get; set; } 
         public void Next(Player player)
         {
+            if (timer is not null)
+                timer.Dispose();
             if (SkipPlayers.Contains(player))
             {
+                Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
+                {
+                    target = player,
+                });
                 SkipPlayers.Remove(player);
                 int currentPlayerIndex = Queue.IndexOf(Current);
-                Player? nextPlayer = Queue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player);
+                Player? nextPlayer = Queue.Skip(currentPlayerIndex).First(it => it != Current && it != player);
                 if (nextPlayer != null)
                     Next(nextPlayer);
                 else
@@ -32,6 +38,16 @@ namespace BuckshoutApp.Manager
             }
             else
                 Current = player;
+            Context.EventManager.Trigger(Events.Event.TURN_CHANGED, new Items.EventData()
+            {
+                target = Context.QueueManager.Current,
+            });
+            timer = TimerExtension.SetTimeout(() =>
+            {
+                Context.EventManager.Trigger(Events.Event.TURN_EXPIRED, new Items.EventData());
+                Next();
+            }, Context.Settings.MAX_TURN_DURATION);
+
         }
         public void Next()
         {
