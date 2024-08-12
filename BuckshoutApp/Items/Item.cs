@@ -2,7 +2,6 @@
 using BuckshoutApp.Context;
 using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
-using System.Numerics;
 
 namespace BuckshoutApp.Items
 {
