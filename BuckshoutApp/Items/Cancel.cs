@@ -1,5 +1,5 @@
 ﻿using BuckshoutApp.Context;
-using BuckshoutApp.Manager;
+using BuckshoutApp.Manager.Events;
 
 namespace BuckshoutApp.Items
 {
@@ -11,34 +11,24 @@ namespace BuckshoutApp.Items
 
         public override string Description => "Все фигня, переделывай";
 
-        public override bool IsStealable => false;
-
-        public override TargetType TargetType => TargetType.Self;
-
-        public override TargetTeam TargetTeam => TargetTeam.All;
-
-        public override void Effect(UseItemModel args)
+        internal override void BeforeUse(EventData args)
         {
-            Console.WriteLine($"{args.current.Name} применил {Name} на {args.target.Name}  ");
-            Context.EventManager.Trigger(new EventModel(Event.OnCancelItem, (string)args.specialArgs["cancel"]));
-            Context.EventManager.ChangeCancelId();
+            Item target = Context.ItemManager.GetLastAfter(this);
+            if (target is not null) target.ItemState = ItemState.DELAYED;
         }
 
-        public override void Use(UseItemModel args)
+        public override void Effect(EventData args)
         {
-            Console.WriteLine($"{args.current.Name} пытается применить {Name} на {args.target.Name}  ");
-            args.specialArgs.Add("cancel", Context.EventManager.CancelId);
-            var timer = Timer.SetTimeout(() =>
-            {
-                Effect(args);
-            }, 6000);
-
-            Context.EventManager.Subcribe(new EventModel(Event.OnCancelItem, Context.EventManager.CancelId), () =>
-            {
-
-                Console.WriteLine($"{args.current.Name} отменил {Name} на {args.target.Name}  ");
-                timer.Dispose();
-            });
+            Console.WriteLine($"{args.initiator?.Name} применил {Name} на {args.target?.Name}  ");
+            Item target = Context.ItemManager.GetLastAfter(this);
+            if (target is not null) target.Cancel();
         }
+
+        internal override void BeforeCancel()
+        {
+            Item target = Context.ItemManager.GetLastAfter(this);
+            if (target is not null) target.ItemState = ItemState.USING;
+        }
+
     }
 }
