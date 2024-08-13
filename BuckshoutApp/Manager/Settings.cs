@@ -22,8 +22,13 @@ namespace BuckshoutApp.Manager
         public int ITEM_CHANNELING_TIME = 3000;
         public int ITEM_CHANNELING_CHECK_INTERVAL = 100;
         public int MAX_TURN_DURATION = 100;
+
+
         public int ITEMS_PER_PLAYER_COEF = 10;
+
+        public int ROUND_CHANGE_COUNT_ITEMS = 3;
         public int ROUND_INVENTORIES_CLEAR = 6;
+        public int COUNT_ITEMS_GIVE { get; set; } = 2;
 
 
         public List<Type> RefAvaliableItems { get; set; }

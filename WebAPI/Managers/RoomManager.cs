@@ -1,18 +1,20 @@
-﻿using BuckshoutApp.Context;
+﻿using Buckshout.Models;
+using BuckshoutApp.Context;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Buckshout.Managers
 {
-    public class Player(string name, string connectionId)
+    public class UserModel(string name, string connectionId)
     {
         public string Name { get; set; } = name;
         public string ConnectionId { get; set; } = connectionId;
+        public bool CreatedRoom { get; set; } = false;
     }
 
     public class Room(string roomName, GameContext gameContext, IClientProxy group)
     {
         public string RoomName { get; set; } = roomName;
-        public List<Player> Players { get; set; } = [];
+        public List<UserModel> Players { get; set; } = [];
         public IClientProxy Group { get; set; } = group;
         public GameContext GameContext { get; set; } = gameContext;
     }
@@ -22,12 +24,21 @@ namespace Buckshout.Managers
     {
         private readonly Dictionary<string, Room> rooms = [];
 
-        public void AddToRoom(string roomName, Player player, IClientProxy group)
+        public void CreateRoom(string roomName, IClientProxy group)
         {
             if (!rooms.ContainsKey(roomName))
             {
                 rooms[roomName] = new Room(roomName, new GameContext(), group);
             }
+        }
+        public void AddToRoom(string roomName, UserModel player, IClientProxy group)
+        {
+            if (!rooms.ContainsKey(roomName))
+            {
+                rooms[roomName] = new Room(roomName, new GameContext(), group);
+            }
+            if (rooms[roomName].Players.Count == 1)
+                player.CreatedRoom = true;
             rooms[roomName].GameContext.PlayerManager.AddPlayer(player.ConnectionId, player.Name);
             rooms[roomName].Players.Add(player);
         }
@@ -47,9 +58,9 @@ namespace Buckshout.Managers
         {
             return rooms.FirstOrDefault(it => it.Key == roomName).Value;
         }
-        public List<string> GetAllRooms()
+        public Dictionary<string, RoomModel> GetAllRooms()
         {
-            return [.. rooms.Keys];
+            return rooms.ToDictionary(room => room.Key, room => new RoomModel(room.Value.Players));
         }
     }
 }

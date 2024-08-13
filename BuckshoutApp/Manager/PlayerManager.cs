@@ -17,11 +17,15 @@ namespace BuckshoutApp.Manager
         public Player Get(string id) => Players.First(it => it.UUID == id);
         public void AddPlayer(string id, string name)
         {
-            Players.Add(new Player(Context, id, name));
+            Player player = new Player(Context, id, name);
+            Context.EventManager.Trigger(Events.Event.PLAYER_CONNECTED, new EventData() { target = player, initiator = player });
+            Players.Add(player);
         }
         public void DeletePlayer(string id)
         {
-            Players.Remove(Players.First(it => it.UUID == id));
+            Player player = Players.First(it => it.UUID == id);
+            Context.EventManager.Trigger(Events.Event.PLAYER_DISCONNECTED, new EventData() { target = player, initiator = player });
+            Players.Remove(player);
         }
 
     }

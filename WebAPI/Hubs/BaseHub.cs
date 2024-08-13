@@ -17,9 +17,9 @@ namespace Buckshout.Hubs
         internal ApplicationContext ApplicationContext { get; set; } = applicationContext;
         internal RoomManager RoomManager => ApplicationContext.RoomManager;
 
-        internal async void SetCache(string userName, string roomName)
+        internal async void SetCache(string sessionId, string roomName)
         {
-            var stringConnection = JsonSerializer.Serialize(new UserConnection(userName, roomName));
+            var stringConnection = JsonSerializer.Serialize(new UserConnection(sessionId, roomName));
             await _cache.SetStringAsync(Context.ConnectionId, stringConnection);
         }
 
@@ -33,6 +33,12 @@ namespace Buckshout.Hubs
                 throw new Exception("Невозможно достать из кэша подключение пользователя");
         }
 
+        /*        internal async Task<UserConnection> UpdateCache(UserConnection conn)
+                {
+                    var cache = GetCache();
+
+                }*/
+
         internal async void RemoveCache(string roomName)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
@@ -42,6 +48,15 @@ namespace Buckshout.Hubs
         internal dynamic GetCommon() => new ExpandoObject();
         internal async Task Send(string roomName, Event eventName, object? data = null)
         {
+            await ApplicationContext.RoomManager.GetRoom(roomName).Group.SendAsync(eventName.ToString(), new JsonResult(new
+            {
+                data,
+                datetime = DateTime.Now.ToString()
+            }));
+        }
+        internal async Task Send(string roomName, string eventName, object? data = null)
+        {
+
             await ApplicationContext.RoomManager.GetRoom(roomName).Group.SendAsync(eventName.ToString(), new JsonResult(new
             {
                 data,
@@ -65,16 +80,19 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
-
-        internal async Task SendFromSystem(string roomName, object message)
+        internal async Task SendCaller(string methodName, object? data = null)
         {
-            await Clients.Group(roomName).SendAsync(Event.MESSAGE_RECEIVED.ToString(), new JsonResult(new
+            await Clients.Caller.SendAsync(methodName.ToString(), new JsonResult(new
             {
-                data = new
-                {
-                    sender = "WALL-E",
-                    message
-                },
+                data,
+                datetime = DateTime.Now.ToString()
+            }));
+        }
+        internal async Task SendAll(string eventName, object? data = null)
+        {
+            await Clients.All.SendAsync(eventName, new JsonResult(new
+            {
+                data,
                 datetime = DateTime.Now.ToString()
             }));
         }

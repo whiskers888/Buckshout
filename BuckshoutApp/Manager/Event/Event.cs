@@ -2,7 +2,11 @@
 {
     public enum Event
     {
-        GAME_CREATED,
+        /*ROOM_CREATED,
+        ROOM_ADMIN_CHANGED,
+        ROOM_UPDATED,
+        ROOM_REMOVED,*/
+
         GAME_STARTED,
         GAME_PAUSED,
         GAME_RESUMED,
@@ -12,7 +16,7 @@
         MESSAGE_INITIATOR_RECEIVED,
 
         PLAYER_CONNECTED,
-        PLAYER_DISCONNECTED ,
+        PLAYER_DISCONNECTED,
         PLAYER_LOST,
         PLAYER_WON,
 

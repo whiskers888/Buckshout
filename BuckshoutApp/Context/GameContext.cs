@@ -48,7 +48,11 @@ namespace BuckshoutApp.Context
             Round += 1;
             Rifle.LoadRifle();
             ItemManager.FillBox();
-            ItemManager.GiveItems(2);
+
+            if (Round > Settings.ROUND_CHANGE_COUNT_ITEMS)
+                ItemManager.GiveItems();
+            else
+                ItemManager.GiveItems();
             QueueManager.Next();
             /*Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
             Console.WriteLine($"{zelya.Name} на самом деле зеля  ");

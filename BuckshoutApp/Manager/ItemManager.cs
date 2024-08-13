@@ -52,11 +52,15 @@ namespace BuckshoutApp.Manager
             return Items;
         }
 
-        public void GiveItems(int count)
+        public void GiveItems()
         {
+            if (Context.Round > Context.Settings.ROUND_CHANGE_COUNT_ITEMS)
+            {
+                Context.Settings.COUNT_ITEMS_GIVE += 1;
+            }
             Context.PlayerManager.Players.ForEach(player =>
             {
-                for (var i = 0; i < count; i++)
+                for (var i = 0; i < Context.Settings.COUNT_ITEMS_GIVE; i++)
                 {
                     player.AddItem(Items.Pop());
                 }
