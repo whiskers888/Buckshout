@@ -24,6 +24,7 @@
         TURN_SKIPPED,
 
         RIFLE_LOADED,
+        RIFLE_PULLED,
         RIFLE_AIMED,
         RIFLE_SHOT,
         RIFLE_EMPTIED,

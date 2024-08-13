@@ -17,7 +17,7 @@ namespace Buckshout.Models
         public string UUID { get; set; } = "Empty";
         public string Name { get; set; } = "Empty";
         public string Description { get; set; } = "Empty";
-        public bool IsStealable { get; set; } 
+        public bool IsStealable { get; set; }
         public TargetType TargetType { get; set; }
         public TargetTeam TargetTeam { get; set; }
     }

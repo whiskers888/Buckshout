@@ -2,10 +2,8 @@
 
 namespace BuckshoutApp.Items
 {
-    public class Cancel : Item
+    public class Cancel(GameContext context) : Item(context)
     {
-        public Cancel(GameContext context) : base(context) { }
-
         public override string Name => "Печать \"Переделать\"";
 
         public override string Description => "Все фигня, переделывай";
@@ -20,7 +18,7 @@ namespace BuckshoutApp.Items
         {
             Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
             Item target = Context.ItemManager.GetLastAfter(this);
-            if (target is not null) target.Cancel();
+            target?.Cancel();
         }
 
         internal override void BeforeCancel()

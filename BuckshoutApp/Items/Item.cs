@@ -9,30 +9,26 @@ namespace BuckshoutApp.Items
     {
         public Player? initiator { get; set; }
         public Player? target { get; set; }
-        public Dictionary<string,object> special { get; set; } = new Dictionary<string,object>();
+        public Dictionary<string, object> special { get; set; } = [];
     }
-    public class Item
+    public class Item(GameContext context)
     {
-        public Item (GameContext context)
-        {
-            Context = context;
-        }
-        public GameContext Context { get; }
+        public GameContext Context { get; } = context;
         public string UUID => Guid.NewGuid().ToString();
         public virtual string Name { get; } = "Default item name";
         public virtual string Description { get; } = "Default item description";
-        public virtual ItemBehavior[] Behavior { get; } = { ItemBehavior.NO_TARGET };
+        public virtual ItemBehavior[] Behavior { get; } = [ItemBehavior.NO_TARGET];
         public virtual TargetType TargetType { get; } = TargetType.NONE;
         public virtual TargetTeam TargetTeam { get; } = TargetTeam.NONE;
         public ItemType ItemType { get; } = ItemType.DEFAULT;
-        public ItemModifier[] ItemModifier { get; } = {     };
+        public ItemModifier[] ItemModifier { get; } = [];
         public ItemState ItemState { get; set; } = ItemState.IN_BOX;
 
 
         public virtual void Effect(EventData e) { }
         internal virtual void BeforeUse(EventData e) { }
         internal virtual void BeforeCancel() { }
-        public void Use(EventData e) 
+        public void Use(EventData e)
         {
             ItemState = ItemState.USING;
             e.special.Add("ITEM", this);
@@ -44,7 +40,7 @@ namespace BuckshoutApp.Items
                 return;
             }
             Context.EventManager.Trigger(Event.ITEM_USED, e);
-            int timer= 0;
+            int timer = 0;
             int progress = 0;
 
             timer = TimerExtension.SetInterval(() =>
@@ -64,13 +60,20 @@ namespace BuckshoutApp.Items
                 }
             }, Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL);
         }
-
+        public void Disallow(EventData e, string msg)
+        {
+            ItemState = ItemState.NOT_ALLOWED;
+            e.special.Add("MESSAGE", msg);
+            Context.EventManager.Trigger(Event.MESSAGE_RECEIVED, e);
+        }
         public void Cancel()
         {
             Context.EventManager.Trigger(
-                Event.ITEM_CANCELED, 
-                new EventData() { special = new Dictionary<string, object>() { { "ITEM", this } } 
-            });
+                Event.ITEM_CANCELED,
+                new EventData()
+                {
+                    special = new Dictionary<string, object>() { { "ITEM", this } }
+                });
             BeforeCancel();
             Console.WriteLine($"{Name} был отменен");
             ItemState = ItemState.CANCELED;

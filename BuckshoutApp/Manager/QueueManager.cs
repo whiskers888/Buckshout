@@ -4,23 +4,22 @@ namespace BuckshoutApp.Manager
 {
     public class QueueManager
     {
-        private GameContext Context;
+        private readonly GameContext Context;
         public QueueManager(GameContext context)
         {
             Context = context;
             Queue = Context.PlayerManager.Players;
             Queue.Shuffle();
             Current = Context.PlayerManager.Players.First();
-            SkipPlayers = new List<Player>();
+            SkipPlayers = [];
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
         public List<Player> SkipPlayers { get; set; }
-        public IDisposable timer { get; set; } 
+        public IDisposable? timer { get; set; } = null;
         public void Next(Player player)
         {
-            if (timer is not null)
-                timer.Dispose();
+            timer?.Dispose();
             if (SkipPlayers.Contains(player))
             {
                 Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
@@ -50,7 +49,7 @@ namespace BuckshoutApp.Manager
         }
         public void Next()
         {
-            int nextPlayerIndex = Queue.IndexOf(Current)+1;
+            int nextPlayerIndex = Queue.IndexOf(Current) + 1;
             if (nextPlayerIndex > Queue.Count - 1)
                 nextPlayerIndex = 0;
             Player nextPlayer = Queue[nextPlayerIndex];

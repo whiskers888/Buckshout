@@ -2,12 +2,12 @@
 
 namespace BuckshoutApp.Context
 {
-    public class ApplicationContext 
+    public class ApplicationContext
     {
         public ApplicationContext(IConfiguration config)
         {
-            Version = "0.1";
-            Title = "HealthAPI";
+            Version = "0.9999-beta2";
+            Title = "Buckshout";
             Configuration = config;
             Initialize();
         }

@@ -2,28 +2,36 @@
 {
     public static class Extension
     {
+        public static T? Pop<T>(this IList<T> list)
+        {
+            if (list.Count < 1) return default;
+            var item = list.Last();
+            list.Remove(item);
+            return item;
+        }
         public static void Shuffle<T>(this IList<T> list)
         {
-            Random rng = new Random();
+            Random rng = new();
             int n = list.Count;
             while (n > 1)
             {
                 n--;
                 int k = rng.Next(n + 1);
-                T value = list[k];
+                (list[n], list[k]) = (list[k], list[n]);
+                /*T value = list[k];
                 list[k] = list[n];
-                list[n] = value;
+                list[n] = value;*/
             }
         }
     }
     public static class TimerExtension
     {
 
-        private static Dictionary<int, System.Timers.Timer> _timers = new Dictionary<int, System.Timers.Timer>();
+        private static Dictionary<int, System.Timers.Timer> _timers = [];
         private static int _nextTimerId = 1;
         public static int SetInterval(Action method, int delayInMilliseconds)
         {
-            System.Timers.Timer timer = new System.Timers.Timer(delayInMilliseconds);
+            System.Timers.Timer timer = new(delayInMilliseconds);
             timer.Elapsed += (source, e) =>
             {
                 method();
@@ -40,7 +48,7 @@
 
         public static IDisposable SetTimeout(Action method, int delayInMilliseconds)
         {
-            System.Timers.Timer timer = new System.Timers.Timer(delayInMilliseconds);
+            System.Timers.Timer timer = new(delayInMilliseconds);
             timer.Elapsed += (source, e) =>
             {
                 method();

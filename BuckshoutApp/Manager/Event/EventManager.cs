@@ -45,7 +45,7 @@ namespace BuckshoutApp.Manager.Events {
                 UnlimitedEvents.Add(e, new List<Action<EventData>>());
             UnlimitedEvents[e].Add(action);
         }
-        public void Trigger(Event e, EventData? eventData)
+        public void Trigger(Event e, EventData? eventData = null)
         {
             OnEventActions.ForEach(action => action(e, eventData));
             if (eventData == null)

@@ -10,9 +10,9 @@ namespace BuckshoutApp.Manager
         public ItemManager(GameContext context)
         {
             Context = context;
-            Items = new List<Item>();
-            Queue = new List<Item>();
-            History = new List<Item>();
+            Items = [];
+            Queue = [];
+            History = [];
 
             Context.EventManager.Subcribe(Event.ITEM_USED, (e) =>
             {
@@ -30,22 +30,43 @@ namespace BuckshoutApp.Manager
 
         public List<Item> FillBox()
         {
+            Items.Clear();
+            if (Context.Round > Context.Settings.ROUND_INVENTORIES_CLEAR)
+            {
+                Context.PlayerManager.Players.ForEach(p =>
+                {
+                    //TODO: Если вдруг игры слишком затяжные и имеется абуз курения, то здесь стоит дамажить при отсутствии итемов
+                    // Возможно какая то логика как у предмета наркотика с сигами 
+                    p.Inventory.RemoveAt(Context.Random.Next(0, p.Inventory.Count - 1));
+                });
+            }
             Context.Settings.RefAvaliableItems.ForEach(item =>
             {
                 for (var i = 0; i < Context.PlayerManager.Players.Count * Context.Settings.ITEMS_PER_PLAYER_COEF; i++)
                 {
                     // TODO: ТУТ МОЖЕТ БЫТЬ ПИЗДА
-                    Items.Add((Item)Activator.CreateInstance(item, new object[] { Context }));
+                    Items.Add((Item)Activator.CreateInstance(item, new object[] { Context })!);
                 }
             });
             Items.Shuffle();
             return Items;
         }
+
+        public void GiveItems(int count)
+        {
+            Context.PlayerManager.Players.ForEach(player =>
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    player.AddItem(Items.Pop());
+                }
+            });
+        }
         public Item GetLastAfter(Item item)
         {
             if (item is not null)
                 return Queue.Last(it => it != item);
-            return Queue[Queue.Count - 1];
+            return Queue[^1]/*Queue[Queue.Count - 1]*/;
         }
     }
 }

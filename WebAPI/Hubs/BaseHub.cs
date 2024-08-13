@@ -10,18 +10,13 @@ using System.Text.Json;
 
 namespace Buckshout.Hubs
 {
-    
-    public class BaseHub :Hub
+
+    public class BaseHub(ApplicationContext applicationContext, IDistributedCache cache) : Hub
     {
-        private readonly IDistributedCache _cache;
-        internal ApplicationContext ApplicationContext { get; set; }
+        private readonly IDistributedCache _cache = cache;
+        internal ApplicationContext ApplicationContext { get; set; } = applicationContext;
         internal RoomManager RoomManager => ApplicationContext.RoomManager;
 
-        public BaseHub(ApplicationContext applicationContext, IDistributedCache cache)
-        {
-            ApplicationContext = applicationContext;
-            _cache = cache;
-        }
         internal async void SetCache(string userName, string roomName)
         {
             var stringConnection = JsonSerializer.Serialize(new UserConnection(userName, roomName));
@@ -47,7 +42,7 @@ namespace Buckshout.Hubs
         internal dynamic GetCommon() => new ExpandoObject();
         internal async Task Send(string roomName, Event eventName, object? data = null)
         {
-            await Clients.Group(roomName).SendAsync(eventName.ToString(), new JsonResult(new
+            await ApplicationContext.RoomManager.GetRoom(roomName).Group.SendAsync(eventName.ToString(), new JsonResult(new
             {
                 data,
                 datetime = DateTime.Now.ToString()
@@ -71,13 +66,13 @@ namespace Buckshout.Hubs
             }));
         }
 
-        internal async Task SendFromSystem(string roomName, object message )
+        internal async Task SendFromSystem(string roomName, object message)
         {
             await Clients.Group(roomName).SendAsync(Event.MESSAGE_RECEIVED.ToString(), new JsonResult(new
             {
                 data = new
                 {
-                    sender ="WALL-E",
+                    sender = "WALL-E",
                     message
                 },
                 datetime = DateTime.Now.ToString()
@@ -86,7 +81,7 @@ namespace Buckshout.Hubs
 
         internal GameContext GetGameContext(string roomName)
         {
-            return RoomManager.GetRoom(roomName).GameContext;
+            return ApplicationContext.RoomManager.GetRoom(roomName).GameContext;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace BuckshoutApp.Manager
     {
         public Settings()
         {
-            RefAvaliableItems = new List<Type>();
+            RefAvaliableItems = [];
 
             // Описываем ссылки на классы
             Type adrenaline = typeof(Adrenaline);
@@ -23,6 +23,7 @@ namespace BuckshoutApp.Manager
         public int ITEM_CHANNELING_CHECK_INTERVAL = 100;
         public int MAX_TURN_DURATION = 100;
         public int ITEMS_PER_PLAYER_COEF = 10;
+        public int ROUND_INVENTORIES_CLEAR = 6;
 
 
         public List<Type> RefAvaliableItems { get; set; }

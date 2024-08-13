@@ -14,9 +14,9 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            int countPatrons = Context.RifleManager.Patrons.Length;
-            int indexRndPatron = Context.Random.Next(0, countPatrons);
-            bool isCharged = Context.RifleManager.Patrons[indexRndPatron].IsCharged;
+            int countPatrons = Context.Rifle.Patrons.Count ;
+            int indexRndPatron = Context.Random.Next(0, countPatrons - 1);
+            bool isCharged = Context.Rifle.Patrons[indexRndPatron].IsCharged;
             e.special.Add("MESSAGE", $"{indexRndPatron + 1} патрон" + (isCharged ? "заряжен" : "не заряжен")); 
             Context.EventManager.Trigger(Event.MESSAGE_INITIATOR_RECEIVED, e);;
         }

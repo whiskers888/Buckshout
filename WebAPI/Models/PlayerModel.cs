@@ -4,7 +4,7 @@ namespace Buckshout.Models
 {
     public class PlayerModel
     {
-        public PlayerModel () { }
+        public PlayerModel() { }
         public PlayerModel(Player player)
         {
             UUID = player.UUID;

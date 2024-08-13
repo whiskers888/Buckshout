@@ -1,5 +1,6 @@
 ﻿using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
+using BuckshoutApp.Manager.Rifle;
 
 namespace BuckshoutApp.Context
 {
@@ -16,19 +17,19 @@ namespace BuckshoutApp.Context
 
             PlayerManager = new PlayerManager(this);
             EventManager = new EventManager(this);
-            RifleManager = new RifleManager(this);
+            Rifle = new Rifle(this);
             ItemManager = new ItemManager(this);
             Settings = new Settings();
         }
 
 
-        public Random Random => new Random();
+        public Random Random => new();
         public string UUID;
         public int Round { get; set; }
 
         public PlayerManager PlayerManager { get; set; }
         public QueueManager QueueManager { get; set; }
-        public RifleManager RifleManager { get; set; }
+        public Rifle Rifle { get; set; }
         public EventManager EventManager { get; set; }
 
         public Settings Settings { get; set; }
@@ -37,22 +38,24 @@ namespace BuckshoutApp.Context
 
         public void StartGame(Mode mode)
         {
-
             QueueManager = new QueueManager(this);
             QueueManager.Queue.Shuffle();
             Mode = mode;
         }
         public void StartRound()
         {
+            EventManager.Trigger(Event.ROUND_STARTED);
             Round += 1;
-            RifleManager.CreatePatrons();
-            Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
+            Rifle.LoadRifle();
+            ItemManager.FillBox();
+            ItemManager.GiveItems(2);
+            QueueManager.Next();
+            /*Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
             Console.WriteLine($"{zelya.Name} на самом деле зеля  ");
 
             Player shabloebla = PlayerManager.Players.First(it => it != zelya);
-            Console.WriteLine($"{shabloebla.Name} на самом деле саня");
-            ItemManager.FillBox();
-            RifleManager.Shoot(zelya);
+            Console.WriteLine($"{shabloebla.Name} на самом деле саня");*/
+            /*RifleManager.Shoot(zelya);*/
 
             /*Item item = zelya.Inventory.First(it => it.Name == "Наручники");
             var a = new EventData() { target = shabloebla, initiator = zelya };
