@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Item } from '@/stores/game';
+import { ItemBehavior, type Item } from '@/stores/game';
 
 const { item } = defineProps<{
 	item?: Item;
@@ -23,6 +23,13 @@ const { item } = defineProps<{
 				</template>
 				<div class="item-tooltip">
 					<h3>{{ item.name }}</h3>
+					<div class="item-behavior">
+						<div>Тип: {{ item.typeTooltip }}</div>
+						<div>Способность: {{ item.behaviorTooltip }}</div>
+						<div v-if="item.behavior.includes(ItemBehavior.UNIT_TARGET)">
+							Цель: {{ item.targetTooltip }}
+						</div>
+					</div>
 					<p class="item-tooltip-description">{{ item.description }}</p>
 					<p
 						v-if="item.lore"
@@ -56,17 +63,27 @@ const { item } = defineProps<{
 }
 
 .item-tooltip {
-	max-width: 500px;
+	max-width: 400px;
+}
+
+.item-tooltip h3 {
+	margin-bottom: 6px;
+}
+
+.item-behavior {
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	padding: 8px 0;
 }
 
 .item-tooltip-description {
 	white-space: pre-wrap;
+	padding: 8px 0;
 }
 
 .item-tooltip-lore {
 	border-top: 1px solid;
 	font-style: italic;
-	margin-top: 6px;
-	padding: 6px 0;
+	padding: 8px 0;
 }
 </style>

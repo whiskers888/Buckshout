@@ -10,7 +10,7 @@ namespace BuckshoutApp.Items
                                               "Отменяет эффект этого предмета.\n" +
                                               "Действие печати также можно отменить другой печатью, это приведет к тому, что действие предыдущего предмета не отменится.";
 
-        public override string Lore => "Всё х**ня, переделать!";
+        public override string Lore => "Все х**ня, переделать!";
 
         public override string Model => "cancel";
 

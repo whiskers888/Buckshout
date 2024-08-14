@@ -2,35 +2,35 @@
 {
     public enum TargetType
     {
-        NONE = 0,
-        PLAYER = 1,
-        ITEM = 2,
+        NONE,
+        PLAYER,
+        ITEM,
     }
     public enum TargetTeam
     {
-        NONE = 0,
-        FRIENDLY = 1,
-        ENEMY = 2,
-        ANY = 3
+        NONE,
+        FRIENDLY,
+        ENEMY,
+        ANY
     }
 
     public enum ItemBehavior
     {
-        NO_TARGET = 0,
-        UNIT_TARGET = 1,
-        IMMEDIATE = 2,
-        CUSTOM = 3
+        NO_TARGET,
+        UNIT_TARGET,
+        IMMEDIATE,
+        CUSTOM
     }
 
     public enum ItemType
     {
-        DEFAULT = 0,
-        TRAP = 1,
+        DEFAULT,
+        TRAP,
     }
     public enum ItemModifier
     {
-        CANNOT_BE_STOLEN = 0,
-        INVISIBLE = 1,
+        CANNOT_BE_STOLEN,
+        INVISIBLE,
     }
     public enum ItemState
     {

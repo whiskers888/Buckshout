@@ -17,7 +17,7 @@ namespace BuckshoutApp.Items
         {
             if(Context.Rifle.Modifiers.Contains(RifleModifier.DOUBLE_DAMAGE))
             {
-                Disallow(e,"Ножовка уже применена к дробовику");
+                Disallow(e,"Ножовка уже применена к дробовику!");
             }
         }
         public override void Effect(EventData e)

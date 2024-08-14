@@ -15,7 +15,6 @@ namespace BuckshoutApp.Items
         public override TargetType TargetType => TargetType.ITEM;
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;
 
-
         internal override void BeforeUse(EventData e)
         {
             Player target = e.target!;
