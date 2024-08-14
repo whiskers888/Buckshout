@@ -14,9 +14,11 @@ namespace BuckshoutApp.Items
     public class Item(GameContext context)
     {
         public GameContext Context { get; } = context;
-        public string UUID => Guid.NewGuid().ToString();
-        public virtual string Name { get; } = "Default item name";
-        public virtual string Description { get; } = "Default item description";
+        public string Id => Guid.NewGuid().ToString();
+        public virtual string Name { get; } = "UNKNOWN";
+        public virtual string Description { get; } = "UNKNOWN";
+        public virtual string Lore { get; } = "";
+        public virtual string Model { get; } = "unknown";
         public virtual ItemBehavior[] Behavior { get; } = [ItemBehavior.NO_TARGET];
         public virtual TargetType TargetType { get; } = TargetType.NONE;
         public virtual TargetTeam TargetTeam { get; } = TargetTeam.NONE;

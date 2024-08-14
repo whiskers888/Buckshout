@@ -7,11 +7,9 @@ namespace BuckshoutApp.Items
         public Phone(GameContext context) : base(context)
         {
         }
-
         public override string Name => "Телефон";
-        public override string Description => "Расскрывает случайную пулю ( от текущей пули)";
-
-
+        public override string Description => "Сообщает вам, заряжен ли случайный патрон (счет идет от текущего).";
+        public override string Model => "phone";
         public override void Effect(EventData e)
         {
             int countPatrons = Context.Rifle.Patrons.Count ;

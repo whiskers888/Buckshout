@@ -2,10 +2,16 @@
 {
     public enum Event
     {
-        /*ROOM_CREATED,
+        CONNECTED,
+        DISCONNECTED,
+        RECONNECTED,
+
+        ROOM_CREATED,
         ROOM_ADMIN_CHANGED,
+        ROOM_JOINED,
+        ROOM_LEFT,
         ROOM_UPDATED,
-        ROOM_REMOVED,*/
+        ROOM_REMOVED,
 
         GAME_STARTED,
         GAME_PAUSED,

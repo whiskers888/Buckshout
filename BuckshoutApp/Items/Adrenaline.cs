@@ -7,9 +7,10 @@ namespace BuckshoutApp.Items
     public class Adrenaline(GameContext context) : Item(context)
     {
         public override string Name => "Адреналин";
-        public override string Description => "Крадет предмет на выбор.\n" +
-                                            "Запрещено брать адреналин и наручники\n" +
-                                            "Используйте предмет, иначе он пропадет на следующий ход";
+        public override string Description => "Вы забираете выбранный предмет себе.\n" +
+                                            "Запрещено применять на: Адреналин, Наручники, Глина.\n" +
+                                            "Украденный предмет исчезнет в конце хода, если его не использовать.";
+        public override string Model => "adrenaline";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override TargetType TargetType => TargetType.ITEM;
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;

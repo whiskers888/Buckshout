@@ -1,10 +1,12 @@
 ﻿using Buckshout.Hubs;
+using Buckshout.Managers;
 using Buckshout.Models;
 using BuckshoutApp.Context;
 using BuckshoutApp.Manager.Events;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Buckshout.Controllers
 {
@@ -23,59 +25,86 @@ namespace Buckshout.Controllers
                 {
                     SetCache(sessionId, null);
                     ApplicationContext.Sessions.Add(sessionId, null);
-                    await SendCaller("CONNECTED", data);
+                    await SendCaller(Event.CONNECTED, data);
                 }
                 else
                 {
                     await Groups.AddToGroupAsync(Context.ConnectionId, sessionId);
 
                     // восстановить контекст игрока
-                    await SendCaller("RECONNECTED", data);
+                    await SendCaller(Event.RECONNECTED, data);
                 }
             }
             else
             {
                 sessionId = Guid.NewGuid().ToString();
-                httpContext.Response.Cookies.Append("SESSION_ID", sessionId);
-                await SendCaller("CONNECTED", data);
+                // httpContext.Response.Cookies.Append("SESSION_ID", sessionId);
+                await SendCaller(Event.CONNECTED, data);
             }
             return base.OnConnectedAsync();
         }
-        public async Task CreatedRoom(UserConnection connection)
+        public async Task CreateRoom(string roomName)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, connection.roomName);
-            ApplicationContext.RoomManager.CreateRoom(connection.roomName, Clients.Group(connection.roomName));
+            var room = ApplicationContext.RoomManager.CreateRoom(roomName, Clients.Group(roomName));
 
-            await SendAll("ROOM_CREATED", new
+            GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
-                room = new RoomModel(ApplicationContext.RoomManager.GetRoom(connection.roomName).Players),
-                connectionId = Context.ConnectionId,
-                count_players = ApplicationContext.RoomManager.GetRoom(connection.roomName).Players.Count,
+                if (e == Event.MESSAGE_INITIATOR_RECEIVED)
+                    await SendPlayer(data.initiator!.Id, e, new DataModel(data));
+                else
+                    await Send(roomName, e, new DataModel(data));
+            });
+
+            await SendAll(Event.ROOM_CREATED, new
+            {
+                room = new RoomModel(room),
+                initiator = Context.ConnectionId,
             });
         }
-        public async Task JoinRoom(UserConnection connection)
+        public async Task JoinRoom(string playerName, string roomName)
         {
-            string? roomName = connection.roomName;
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
-
-            await Send(roomName, "JOINED_ROOM", new
+            await SendCaller(Event.ROOM_JOINED, new
             {
-                roomName,
+                room = new RoomModel(ApplicationContext.RoomManager.GetRoom(roomName))
+                //settings
+            });
+
+            ApplicationContext.RoomManager.AddToRoom(roomName, Context.ConnectionId, playerName);
+
+            await SendAll(Event.ROOM_UPDATED, new
+            {
+                room = new RoomModel(ApplicationContext.RoomManager.GetRoom(roomName))
             });
         }
+
+        public async Task LeaveRoom(string roomName)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+            var needRemoveRoom = ApplicationContext.RoomManager.RemoveFromRoom(roomName, Context.ConnectionId);
+            
+            if (needRemoveRoom)
+            {
+                await SendAll(Event.ROOM_REMOVED, new
+                {
+                    name = roomName
+                });
+            } else
+            {
+                await SendAll(Event.ROOM_UPDATED, new
+                {
+                    room = new RoomModel(ApplicationContext.RoomManager.GetRoom(roomName))
+                });
+            }
+            await SendCaller(Event.ROOM_LEFT);
+        }
+
         public async Task StartGame()
         {
             var connection = await GetCache();
 
             var gameContext = GetGameContext(connection.roomName);
-
-            GetGameContext(connection.roomName).EventManager.OnEvent(async (e, data) =>
-            {
-                if (e == Event.MESSAGE_INITIATOR_RECEIVED)
-                    await SendPlayer(data.initiator!.UUID, e, new DataModel(data));
-                else
-                    await Send(connection.roomName, e, new DataModel(data));
-            });
 
             gameContext.StartGame(Mode.Default);
             var dataGameStarted = GetCommon();
@@ -115,6 +144,7 @@ namespace Buckshout.Controllers
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
+            await SendCaller(Event.DISCONNECTED);
             /*var connection = await GetCache();
             var httpContext = Context.GetHttpContext();
             var sessionId = httpContext.Request.Cookies["SESSION_ID"];

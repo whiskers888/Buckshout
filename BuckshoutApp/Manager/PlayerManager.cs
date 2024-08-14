@@ -14,7 +14,7 @@ namespace BuckshoutApp.Manager
 
         public List<Player> Players { get; set; } = [];
 
-        public Player Get(string id) => Players.First(it => it.UUID == id);
+        public Player Get(string id) => Players.First(it => it.Id == id);
         public void AddPlayer(string id, string name)
         {
             Player player = new Player(Context, id, name);
@@ -23,23 +23,22 @@ namespace BuckshoutApp.Manager
         }
         public void DeletePlayer(string id)
         {
-            Player player = Players.First(it => it.UUID == id);
+            Player player = Players.First(it => it.Id == id);
             Context.EventManager.Trigger(Events.Event.PLAYER_DISCONNECTED, new EventData() { target = player, initiator = player });
             Players.Remove(player);
         }
-
     }
 
     public class Player
     {
         private GameContext Context { get; set; }
-        public Player(GameContext context, string uuid, string name)
+        public Player(GameContext context, string id, string name)
         {
             Context = context;
 
-            UUID = uuid;
+            Id = id;
             Name = name;
-            Inventory = [new Cancel(Context), new Handcuffs(context)];
+            Inventory = [new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)];
             if (Context.Mode == Mode.Default)
                 Health = 4;
             else if (Context.Mode == Mode.Pro)
@@ -48,14 +47,14 @@ namespace BuckshoutApp.Manager
                 Context.EventManager.Trigger(Events.Event.MESSAGE_RECEIVED, new EventData()
                 {
                     target = this,
-                    special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{uuid}" } }
+                    special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{id}" } }
                 });
         }
         public void UseItem(string itemId, string targetId)
         {
             Player target = Context.PlayerManager.Get(targetId);
             EventData e = new() { initiator = this, target = target };
-            Item item = Inventory.First(it => it.UUID == itemId);
+            Item item = Inventory.First(it => it.Id == itemId);
             item.Use(e);
             Inventory.Remove(item);
 
@@ -92,7 +91,7 @@ namespace BuckshoutApp.Manager
                 special = new Dictionary<string, object>() { { "ITEM", item } }
             });
         }
-        public string UUID { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public List<Item> Inventory { get; set; }
         public int Health { get; set; }

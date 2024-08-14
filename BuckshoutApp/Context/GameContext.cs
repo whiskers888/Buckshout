@@ -13,7 +13,7 @@ namespace BuckshoutApp.Context
     {
         public GameContext()
         {
-            UUID = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid().ToString();
 
             PlayerManager = new PlayerManager(this);
             EventManager = new EventManager(this);
@@ -24,7 +24,7 @@ namespace BuckshoutApp.Context
 
 
         public Random Random => new();
-        public string UUID;
+        public string Id;
         public int Round { get; set; }
 
         public PlayerManager PlayerManager { get; set; }

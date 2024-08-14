@@ -88,9 +88,9 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
-        internal async Task SendAll(string eventName, object? data = null)
+        internal async Task SendAll(Event eventName, object? data = null)
         {
-            await Clients.All.SendAsync(eventName, new JsonResult(new
+            await Clients.All.SendAsync(eventName.ToString(), new JsonResult(new
             {
                 data,
                 datetime = DateTime.Now.ToString()

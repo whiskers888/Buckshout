@@ -1,15 +1,17 @@
 ﻿using Buckshout.Managers;
+using BuckshoutApp.Context;
 
 namespace Buckshout.Models
 {
     public class RoomModel
     {
-        public RoomModel(List<UserModel> players)
+        public RoomModel(Room room)
         {
-            this.players = players.ToArray();
+            name = room.RoomName;
+            game = new GameModel(room.GameContext);
         }
 
-        public string roomName { get; set; }
-        public UserModel[] players { get; set; }
+        public string name { get; set; }
+        public GameModel game { get; set; }
     }
 }

@@ -1,0 +1,22 @@
+.v-selected-row,
+.v-list-item.v-list-item--active .v-list-item--variant-text .v-list-item__overlay {
+	background: rgb(var(--v-theme-primary-light));
+	opacity: 1;
+}
+
+.v-autocomplete--active-menu .v-field--active .v-field__outline,
+.v-field--focused .v-field__outline {
+	color: rgb(var(--v-theme-secondary)) !important;
+}
+
+.v-tabs .v-tab__slider {
+	color: rgb(var(--v-theme-secondary)) !important;
+}
+
+.v-tab--selected {
+	background: rgba(var(--v-theme-secondary), var(--v-selected-opacity)) !important;
+}
+
+.selected {
+	outline: 2px solid rgb(var(--v-theme-secondary)) !important;
+}

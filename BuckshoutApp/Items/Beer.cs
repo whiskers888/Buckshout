@@ -9,9 +9,11 @@ namespace BuckshoutApp.Items
         {
         }
 
-        public override string Name => "Пееевооо";
-        public override string Description => "Сбрасывает одну пулю, не теряя ход.";
+        public override string Name => "Пиво";
+        public override string Description => "Сбрасывает текущий патрон из дробовика.\n" +
+                                              "Если после этого в дробовике не останется патронов, начнется следующий раунд.";
 
+        public override string Model => "beer";
 
         public override void Effect(EventData e)
         {

@@ -9,7 +9,8 @@ namespace BuckshoutApp.Items
         }
 
         public override string Name => "Наручники";
-        public override string Description => "Противник пропускает свой следующий ход";
+        public override string Description => "Выбранный противник пропускает свой следующий ход.";
+        public override string Model => "handcuffs";
         public override ItemBehavior[] Behavior { get; } = { ItemBehavior.UNIT_TARGET };
         public override TargetType TargetType => TargetType.PLAYER;
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;

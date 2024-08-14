@@ -1,0 +1,15 @@
+.v-footer--border {
+	border-left: none;
+}
+
+.v-toolbar--border {
+	border-bottom: none;
+}
+
+.v-tabs {
+	min-height: var(--v-tabs-height);
+}
+
+.scrollable {
+	overflow: auto;
+}

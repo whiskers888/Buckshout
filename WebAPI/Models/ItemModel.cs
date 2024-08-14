@@ -7,18 +7,23 @@ namespace Buckshout.Models
         public ItemModel() { }
         public ItemModel(Item item)
         {
-            UUID = item.UUID;
+            Id = item.Id;
             Name = item.Name;
             Description = item.Description;
             TargetType = item.TargetType;
             TargetTeam = item.TargetTeam;
-
+            Behavior = item.Behavior;
+            Model = item.Model;
+            Lore = item.Lore;
         }
-        public string UUID { get; set; } = "Empty";
+        public string Id { get; set; } = "Empty";
         public string Name { get; set; } = "Empty";
-        public string Description { get; set; } = "Empty";
+        public string Description { get; set; } = "Empty"; 
+        public string Lore { get; set; } = "";
+        public string Model { get; set; } = "unknown";
         public bool IsStealable { get; set; }
         public TargetType TargetType { get; set; }
         public TargetTeam TargetTeam { get; set; }
+        public ItemBehavior[] Behavior { get; set; } = [ItemBehavior.NO_TARGET];
     }
 }

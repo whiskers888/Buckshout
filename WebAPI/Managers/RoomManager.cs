@@ -4,17 +4,15 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Buckshout.Managers
 {
-    public class UserModel(string name, string connectionId)
+/*    public class UserModel(string name, string connectionId)
     {
         public string Name { get; set; } = name;
         public string ConnectionId { get; set; } = connectionId;
-        public bool CreatedRoom { get; set; } = false;
     }
-
+*/
     public class Room(string roomName, GameContext gameContext, IClientProxy group)
     {
         public string RoomName { get; set; } = roomName;
-        public List<UserModel> Players { get; set; } = [];
         public IClientProxy Group { get; set; } = group;
         public GameContext GameContext { get; set; } = gameContext;
     }
@@ -24,43 +22,47 @@ namespace Buckshout.Managers
     {
         private readonly Dictionary<string, Room> rooms = [];
 
-        public void CreateRoom(string roomName, IClientProxy group)
+        public Room CreateRoom(string roomName, IClientProxy group)
         {
+            var room = new Room(roomName, new GameContext(), group);
             if (!rooms.ContainsKey(roomName))
             {
-                rooms[roomName] = new Room(roomName, new GameContext(), group);
+                rooms[roomName] = room;
             }
-        }
-        public void AddToRoom(string roomName, UserModel player, IClientProxy group)
-        {
-            if (!rooms.ContainsKey(roomName))
-            {
-                rooms[roomName] = new Room(roomName, new GameContext(), group);
-            }
-            if (rooms[roomName].Players.Count == 1)
-                player.CreatedRoom = true;
-            rooms[roomName].GameContext.PlayerManager.AddPlayer(player.ConnectionId, player.Name);
-            rooms[roomName].Players.Add(player);
+            return room;
         }
 
-        public void RemoveFromRoom(string roomName, string connectionId)
+        public void AddToRoom(string roomName, string id, string name)
+        {
+            if (!rooms.ContainsKey(roomName))
+            {
+                return;
+            }
+            rooms[roomName].GameContext.PlayerManager.AddPlayer(id, name);
+            // rooms[roomName].Players.Add(player);
+        }
+
+        public bool RemoveFromRoom(string roomName, string connectionId)
         {
             if (rooms.ContainsKey(roomName))
             {
-                rooms[roomName].Players.Remove(rooms[roomName].Players.First(it => it.ConnectionId == connectionId));
-                if (rooms[roomName].Players.Count == 0)
+                rooms[roomName].GameContext.PlayerManager.DeletePlayer(connectionId);
+                if (rooms[roomName].GameContext.PlayerManager.Players.Count <= 0)
                 {
                     rooms.Remove(roomName);
+                    return true;
                 }
             }
+            return false;
         }
+
         public Room GetRoom(string roomName)
         {
-            return rooms.FirstOrDefault(it => it.Key == roomName).Value;
+            return rooms[roomName];
         }
-        public Dictionary<string, RoomModel> GetAllRooms()
+        public RoomModel[] GetAllRooms()
         {
-            return rooms.ToDictionary(room => room.Key, room => new RoomModel(room.Value.Players));
+            return rooms.Select(it => new RoomModel(it.Value)).ToArray();
         }
     }
 }
