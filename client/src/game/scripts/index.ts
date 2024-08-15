@@ -44,6 +44,9 @@ export function init() {
 		rooms.invokeLeave();
 	});
 
+	on(Event.MESSAGE_RECEIVED, () => {});
+	on(Event.MESSAGE_INITIATOR_RECEIVED, () => {});
+
 	on(Event.ROOM_CREATED, e => {
 		rooms.add(e.room);
 		if (e.initiator === connection.connectionId) {
@@ -77,9 +80,14 @@ export function init() {
 	on(Event.TURN_CHANGED, e => {
 		game.startTurn(e.target, e.special['TIME']);
 	});
+
 	on(Event.ITEM_RECEIVED, e => {
 		game.addItem(e.target, e.special['ITEM']);
 	});
+	on(Event.ITEM_USED, e => {
+		game.removeItem(e.initiator, e.special['ITEM']);
+	});
+	on(Event.ITEM_EFFECTED, e => {});
 
 	on(Event.ROUND_STARTED, e => {
 		game.setRound(e.special['ROUND']);

@@ -2,8 +2,10 @@
 import { useGame, type Player } from '@/stores/game';
 import Item from './items/Item.vue';
 import { RifleStatus, useRifle } from '@/stores/rifle';
+import { usePlayer } from '@/stores/player';
 
 const game = useGame();
+const localPlayer = usePlayer();
 const rifle = useRifle();
 
 const { player } = defineProps<{
@@ -47,7 +49,7 @@ const { player } = defineProps<{
 				</div>
 			</div>
 			<div
-				v-if="game.isYourTurn"
+				v-if="localPlayer.isCurrent"
 				class="player-actions"
 			>
 				<v-tooltip
@@ -82,7 +84,7 @@ const { player } = defineProps<{
 		</div>
 		<div class="player-inventory">
 			<Item
-				v-for="item in 8"
+				v-for="item in game.settings.MAX_INVENTORY_SLOTS"
 				:key="player.inventory[item - 1]?.id ?? item"
 				:item="player.inventory[item - 1]"
 			/>

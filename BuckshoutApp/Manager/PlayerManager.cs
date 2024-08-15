@@ -56,8 +56,9 @@ namespace BuckshoutApp.Manager
             Player target = Context.PlayerManager.Get(targetId);
             EventData e = new() { initiator = this, target = target };
             Item item = Inventory.First(it => it.Id == itemId);
-            item.Use(e);
-            Inventory.Remove(item);
+            var used = item.Use(e);
+            if (used)
+                Inventory.Remove(item);
 
         }
 

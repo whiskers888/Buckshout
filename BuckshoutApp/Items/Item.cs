@@ -14,7 +14,7 @@ namespace BuckshoutApp.Items
     public class Item(GameContext context)
     {
         public GameContext Context { get; } = context;
-        public string Id => Guid.NewGuid().ToString();
+        public string Id { get; } = Guid.NewGuid().ToString();
         public virtual string Name { get; } = "UNKNOWN";
         public virtual string Description { get; } = "UNKNOWN";
         public virtual string Lore { get; } = "";
@@ -30,7 +30,7 @@ namespace BuckshoutApp.Items
         public virtual void Effect(EventData e) { }
         internal virtual void BeforeUse(EventData e) { }
         internal virtual void BeforeCancel() { }
-        public void Use(EventData e)
+        public bool Use(EventData e)
         {
             ItemState = ItemState.USING;
             e.special.Add("ITEM", this);
@@ -39,7 +39,7 @@ namespace BuckshoutApp.Items
             if (ItemState == ItemState.NOT_ALLOWED)
             {
                 ItemState = ItemState.IN_HAND;
-                return;
+                return false;
             }
             Context.EventManager.Trigger(Event.ITEM_USED, e);
             int timer = 0;
@@ -60,7 +60,8 @@ namespace BuckshoutApp.Items
                     ItemState = ItemState.REMOVED;
                     TimerExtension.ClearInterval(timer);
                 }
-            }, Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL);
+            }, Context.Settings.ITEM_CHANNELING_TIME);
+            return true;
         }
         public void Disallow(EventData e, string msg)
         {

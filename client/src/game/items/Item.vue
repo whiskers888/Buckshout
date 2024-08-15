@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ItemBehavior, type Item } from '@/stores/game';
+import { usePlayer } from '@/stores/player';
+
+const localPlayer = usePlayer();
 
 const { item } = defineProps<{
 	item?: Item;
@@ -11,6 +14,7 @@ const { item } = defineProps<{
 		<div
 			v-if="item"
 			class="item"
+			@click="localPlayer.beginUse(item)"
 		>
 			<v-tooltip location="right">
 				<template v-slot:activator="{ props }">

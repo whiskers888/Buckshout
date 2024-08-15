@@ -139,6 +139,9 @@ export class Player {
 		if (this.inventory.length > this.context.settings.MAX_INVENTORY_SLOTS) return;
 		this.inventory.push(new Item(item));
 	}
+	removeItem(item: Item) {
+		this.inventory = this.inventory.filter(it => it.id !== item.id);
+	}
 	damage(value: number) {
 		this.health -= value;
 		if (this.health < 0) {
@@ -195,9 +198,6 @@ export const useGame = defineStore('game', {
 		},
 	}),
 	getters: {
-		isYourTurn: state => {
-			return state.current?.id === connection.connectionId;
-		},
 		player: state => {
 			return (target: Player) => state.players.find(it => it.id === target.id)!;
 		},
@@ -255,6 +255,10 @@ export const useGame = defineStore('game', {
 		addItem(target: Player, item: Item) {
 			const player = this.players.find(it => it.id === target.id);
 			player?.addItem(item);
+		},
+		removeItem(target: Player, item: Item) {
+			const player = this.players.find(it => it.id === target.id);
+			player?.removeItem(item);
 		},
 
 		invokeStart() {
