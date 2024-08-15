@@ -49,6 +49,7 @@ namespace Buckshout.Managers
                 rooms[roomName].GameContext.PlayerManager.DeletePlayer(connectionId);
                 if (rooms[roomName].GameContext.PlayerManager.Players.Count <= 0)
                 {
+                    GetRoom(roomName).GameContext.FinishGame();
                     rooms.Remove(roomName);
                     return true;
                 }

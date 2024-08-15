@@ -41,12 +41,13 @@ export const useRooms = defineStore('room', {
 			const game = useGame();
 
 			this.current = room;
-			game.$patch(room.game);
+			game.update(room.game);
 		},
 		clearCurrent() {
 			const game = useGame();
 
 			this.current = null;
+			game.clear();
 			game.$reset();
 		},
 		add(room: Room) {

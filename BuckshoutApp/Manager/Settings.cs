@@ -19,18 +19,22 @@ namespace BuckshoutApp.Manager
             RefAvaliableItems.AddRange([adrenaline, beer, cancel, hackSaw, handCuffs]);
 
         }
-        public int ITEM_CHANNELING_TIME = 3000;
-        public int ITEM_CHANNELING_CHECK_INTERVAL = 100;
-        public int MAX_TURN_DURATION = 100;
+        public int ITEM_CHANNELING_TIME { get; set; } = 3000; // Время в течение которого можно отменить итем при помощи Печати
+        public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 
+        public int MAX_TURN_DURATION { get; set; } = 10000;
 
+        public int MAX_PLAYER_HEALTH { get; set; } = 8;
+        
+        public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
+        public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 
-        public int ITEMS_PER_PLAYER_COEF = 10;
+        public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
+        public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
 
-        public int ROUND_CHANGE_COUNT_ITEMS = 3;
-        public int ROUND_INVENTORIES_CLEAR = 6;
-        public int COUNT_ITEMS_GIVE { get; set; } = 2;
+        public int FATIGUE_ROUND { get; set; } = 6; // начиная с этого раунда у игрока появляется усталость. предметы больше не выдаются
+        public int FATIGUE_ITEMS_TO_LOSE { get; set; } = 1; // он начинает терять предметы
+        public int FATIGUE_DAMAGE_PER_ITEM { get; set; } = 1; // и получает урон, если их не осталось
 
-
-        public List<Type> RefAvaliableItems { get; set; }
+        internal List<Type> RefAvaliableItems { get; set; }
     }
 }

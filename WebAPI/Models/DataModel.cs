@@ -4,9 +4,10 @@ namespace Buckshout.Models
 {
     public class DataModel
     {
-        public DataModel(EventData e)
+        public DataModel(EventData? e)
         {
             special = [];
+            if (e == null) return;
 
             if (e.target is not null)
                 target = new PlayerModel(e.target);

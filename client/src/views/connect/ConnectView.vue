@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { GameStatus } from '@/stores/game';
 import { useRooms } from '@/stores/room';
 
 const rooms = useRooms();
@@ -9,7 +10,7 @@ const rooms = useRooms();
 		<v-card
 			class="mx-auto"
 			width="80%"
-			v-for="room in rooms.items"
+			v-for="room in rooms.items.filter(it => it.game.status === GameStatus.PREPARING)"
 			:key="room.name"
 		>
 			<v-card-title>

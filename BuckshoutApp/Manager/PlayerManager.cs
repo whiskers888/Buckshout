@@ -38,7 +38,8 @@ namespace BuckshoutApp.Manager
 
             Id = id;
             Name = name;
-            Inventory = [new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)];
+            Team = id; // TODO: сделать реализацию команд
+            Inventory = [/*new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)*/];
             if (Context.Mode == Mode.Default)
                 Health = 4;
             else if (Context.Mode == Mode.Pro)
@@ -95,6 +96,6 @@ namespace BuckshoutApp.Manager
         public string Name { get; set; }
         public List<Item> Inventory { get; set; }
         public int Health { get; set; }
-
+        public string Team { get; set; }
     }
 }

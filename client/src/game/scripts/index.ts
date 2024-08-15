@@ -1,6 +1,13 @@
 import { connection, Event } from '@/api';
-import { useGame } from '@/stores/game';
+import { Player, useGame } from '@/stores/game';
+import { useRifle } from '@/stores/rifle';
 import { useRooms } from '@/stores/room';
+
+interface EventData {
+	target?: Player;
+	initiator?: Player;
+	special: any;
+}
 
 function on(e: Event, callback: (data: any) => void) {
 	connection.on(e, ans => {
@@ -28,6 +35,7 @@ window.onbeforeunload = function () {
 export function init() {
 	const rooms = useRooms();
 	const game = useGame();
+	const rifle = useRifle();
 
 	on(Event.CONNECTED, e => {
 		rooms.items = e.rooms;
@@ -60,5 +68,20 @@ export function init() {
 	});
 	on(Event.PLAYER_DISCONNECTED, e => {
 		game.removePlayer(e.target);
+	});
+
+	on(Event.GAME_STARTED, e => {
+		game.update(e.special['GAME']);
+		game.start();
+	});
+	on(Event.TURN_CHANGED, e => {
+		game.startTurn(e.target, e.special['TIME']);
+	});
+	on(Event.ITEM_RECEIVED, e => {
+		game.addItem(e.target, e.special['ITEM']);
+	});
+
+	on(Event.RIFLE_AIMED, e => {
+		rifle.aim(e.target);
 	});
 }

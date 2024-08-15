@@ -39,9 +39,14 @@ namespace BuckshoutApp.Manager
             Context.EventManager.Trigger(Events.Event.TURN_CHANGED, new Items.EventData()
             {
                 target = Context.QueueManager.Current,
+                special = new Dictionary<string, object>
+                {
+                    { "TIME", Context.Settings.MAX_TURN_DURATION }
+                }
             });
             timer = TimerExtension.SetTimeout(() =>
             {
+                if (Context.Status == GameStatus.FINISHED) return;
                 Context.EventManager.Trigger(Events.Event.TURN_EXPIRED, new Items.EventData());
                 Next();
             }, Context.Settings.MAX_TURN_DURATION);

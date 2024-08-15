@@ -31,13 +31,18 @@ namespace BuckshoutApp.Manager
         public List<Item> FillBox()
         {
             Items.Clear();
-            if (Context.Round > Context.Settings.ROUND_INVENTORIES_CLEAR)
+            if (Context.Round > Context.Settings.FATIGUE_ROUND)
             {
                 Context.PlayerManager.Players.ForEach(p =>
                 {
-                    //TODO: Если вдруг игры слишком затяжные и имеется абуз курения, то здесь стоит дамажить при отсутствии итемов
-                    // Возможно какая то логика как у предмета наркотика с сигами 
-                    p.Inventory.RemoveAt(Context.Random.Next(0, p.Inventory.Count - 1));
+                    for (var i = 0; i < Context.Settings.FATIGUE_ITEMS_TO_LOSE; i++ )
+                    {
+                        if (p.Inventory.Count == 0)
+                        {
+                            p.ChangeHealth(ChangeHealthType.Damage, Context.Settings.FATIGUE_DAMAGE_PER_ITEM, p);
+                        }
+                        p.Inventory.RemoveAt(Context.Random.Next(0, p.Inventory.Count - 1));
+                    }
                 });
             }
             Context.Settings.RefAvaliableItems.ForEach(item =>
@@ -54,17 +59,14 @@ namespace BuckshoutApp.Manager
 
         public void GiveItems()
         {
-            if (Context.Round > Context.Settings.ROUND_CHANGE_COUNT_ITEMS)
-            {
-                Context.Settings.COUNT_ITEMS_GIVE += 1;
-            }
             Context.PlayerManager.Players.ForEach(player =>
             {
-                for (var i = 0; i < Context.Settings.COUNT_ITEMS_GIVE; i++)
+                for (var i = 0; i < Context.Settings.ITEMS_PER_ROUND; i++)
                 {
                     player.AddItem(Items.Pop());
                 }
             });
+            Context.Settings.ITEMS_PER_ROUND += Context.Settings.ITEMS_PER_ROUND_INCREMENT;
         }
         public Item GetLastAfter(Item item)
         {

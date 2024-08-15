@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import type { Player } from '@/stores/game';
+import { useGame, type Player } from '@/stores/game';
 import Item from './items/Item.vue';
+import { useRifle } from '@/stores/rifle';
+
+const game = useGame();
+const rifle = useRifle();
 
 const { player } = defineProps<{
 	player: Player;
@@ -8,24 +12,71 @@ const { player } = defineProps<{
 </script>
 
 <template>
-	<div class="player">
-		<div class="player-info">
-			<div>{{ player.name }}</div>
-			<v-tooltip
-				location="right"
-				:text="`Здоровье игрока: ${player.health} ед.`"
+	<div
+		:class="[
+			'player',
+			{
+				me: player.isOwnedByUser,
+				current: player.isCurrent,
+			},
+		]"
+		:style="{ borderColor: player.color }"
+	>
+		<div class="player-status">
+			<div class="player-info">
+				<div class="player-avatar">?</div>
+				<div>
+					<h3>{{ player.name }} {{ player.isOwnedByUser ? '(Вы)' : '' }}</h3>
+
+					<v-tooltip
+						location="right"
+						:text="`Здоровье игрока: ${player.health}/${game.settings.MAX_PLAYER_HEALTH} ед.`"
+					>
+						<template v-slot:activator="{ props }">
+							<div v-bind="props">
+								<span
+									v-for="hp in 8"
+									:style="{ color: hp <= player.health ? '#f00' : '#000' }"
+									:key="hp"
+								>
+									❤
+								</span>
+							</div>
+						</template>
+					</v-tooltip>
+				</div>
+			</div>
+			<div
+				v-if="game.isYourTurn"
+				class="player-actions"
 			>
-				<template v-slot:activator="{ props }">
-					<div v-bind="props">
-						<span
-							v-for="hp in player.health"
-							:key="hp"
-						>
-							❤
-						</span>
-					</div>
-				</template>
-			</v-tooltip>
+				<v-tooltip
+					v-if="rifle.target !== player"
+					location="bottom"
+					text="Прицелиться"
+				>
+					<template v-slot:activator="{ props }">
+						<v-btn
+							v-bind="props"
+							icon="mdi-target"
+							@click="game.invokeAim(player)"
+						/>
+					</template>
+				</v-tooltip>
+				<v-tooltip
+					v-else
+					location="bottom"
+					text="Выстрелить"
+				>
+					<template v-slot:activator="{ props }">
+						<v-btn
+							v-bind="props"
+							icon="mdi-bullet"
+							@click="game.invokeShoot(player)"
+						/>
+					</template>
+				</v-tooltip>
+			</div>
 		</div>
 		<div class="player-inventory">
 			<Item
@@ -41,18 +92,47 @@ const { player } = defineProps<{
 .player {
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	width: 500px;
 	padding: 20px;
-	border: 1px solid;
+	border: 3px solid;
 	margin: 10px;
 	border-radius: 10px;
+	height: 350px;
+}
+
+.current {
+	background: #a7a7a73b;
+}
+
+.me {
+	background: #00ff0014;
+}
+
+.player-status {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .player-info {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	cursor: default;
+	gap: 10px;
+}
+
+.player-avatar {
+	width: 50px;
+	height: 50px;
+	background: #000;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 20px;
+	font-weight: bold;
+	color: #fff;
 }
 
 .player-inventory {

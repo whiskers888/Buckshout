@@ -4,11 +4,20 @@ using BuckshoutApp.Manager.Rifle;
 
 namespace BuckshoutApp.Context
 {
+    public enum GameStatus
+    {
+        PREPARING,
+        IN_PROGRESS,
+        PAUSED,
+        FINISHED,
+    }
+
     public enum Mode
     {
         Default = 0,
         Pro = 1
     }
+
     public class GameContext
     {
         public GameContext()
@@ -36,11 +45,14 @@ namespace BuckshoutApp.Context
         public ItemManager ItemManager { get; set; }
         public Mode Mode { get; set; }
 
+        public GameStatus Status { get; set; } = GameStatus.PREPARING;
+
         public void StartGame(Mode mode)
         {
             QueueManager = new QueueManager(this);
             QueueManager.Queue.Shuffle();
             Mode = mode;
+            Status = GameStatus.IN_PROGRESS;
         }
         public void StartRound()
         {
@@ -49,10 +61,7 @@ namespace BuckshoutApp.Context
             Rifle.LoadRifle();
             ItemManager.FillBox();
 
-            if (Round > Settings.ROUND_CHANGE_COUNT_ITEMS)
-                ItemManager.GiveItems();
-            else
-                ItemManager.GiveItems();
+            ItemManager.GiveItems();
             QueueManager.Next();
             /*Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
             Console.WriteLine($"{zelya.Name} на самом деле зеля  ");
@@ -74,6 +83,9 @@ namespace BuckshoutApp.Context
             item2.Use(a2);*/
         }
 
-
+        public void FinishGame()
+        {
+            Status = GameStatus.FINISHED;
+        }
     }
 }

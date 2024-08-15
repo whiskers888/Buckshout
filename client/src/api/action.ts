@@ -4,6 +4,7 @@ export enum Action {
 	LEAVE_ROOM = 'LeaveRoom',
 
 	START_GAME = 'StartGame',
+	TAKE_AIM = 'TakeAim',
 	SHOOT = 'Shoot',
 	USE_ITEM = 'Use',
 }

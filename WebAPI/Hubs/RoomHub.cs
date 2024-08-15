@@ -2,6 +2,7 @@
 using Buckshout.Managers;
 using Buckshout.Models;
 using BuckshoutApp.Context;
+using BuckshoutApp.Items;
 using BuckshoutApp.Manager.Events;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
@@ -63,6 +64,8 @@ namespace Buckshout.Controllers
         }
         public async Task JoinRoom(string playerName, string roomName)
         {
+            if (GetGameContext(roomName).Status != GameStatus.PREPARING) return;
+
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
             await SendCaller(Event.ROOM_JOINED, new
@@ -100,43 +103,54 @@ namespace Buckshout.Controllers
             await SendCaller(Event.ROOM_LEFT);
         }
 
-        public async Task StartGame()
+        public async Task StartGame(string roomName)
         {
-            var connection = await GetCache();
+           /* var connection = await GetCache();*/
 
-            var gameContext = GetGameContext(connection.roomName);
+            var gameContext = GetGameContext(roomName);
 
             gameContext.StartGame(Mode.Default);
-            var dataGameStarted = GetCommon();
-            dataGameStarted.players = gameContext.PlayerManager.Players.Select(it => new PlayerModel(it)).ToArray();
-            gameContext.EventManager.Trigger(Event.GAME_STARTED, dataGameStarted);
+
+            await SendAll(Event.ROOM_UPDATED, new
+            {
+                room = new RoomModel(ApplicationContext.RoomManager.GetRoom(roomName))
+            });
+
+            gameContext.EventManager.Trigger(Event.GAME_STARTED, new EventData {
+                special = new Dictionary<string, object>
+                {
+                    { "GAME", new GameModel(gameContext) }
+                }
+            });
 
             gameContext.StartRound();
         }
 
-        public async Task Shoot(string targetId)
+        public void TakeAim(string roomName, string targetId)
         {
-            var connection = await GetCache();
-
-            var gameContext = GetGameContext(connection.roomName);
+            var gameContext = GetGameContext(roomName);
             var targetPlayer = gameContext.PlayerManager.Get(targetId);
-            /*var currentPlayer = gameContext.PlayerManager.Get(Context.ConnectionId);*/
+            var currentPlayer = gameContext.PlayerManager.Get(Context.ConnectionId);
 
-            gameContext.Rifle.Shoot(targetPlayer);
-
-            /*await SendFromSystem(connection.roomName, $"{currentPlayer.Name} стреляет в {targetPlayer}");
-            await Send(connection.roomName, Event.RIFLE_SHOT, new
+            gameContext.EventManager.Trigger(Event.RIFLE_AIMED, new EventData
             {
-                shoot
+                initiator = currentPlayer,
+                target = targetPlayer,
             });
-            await SendFromSystem(connection.roomName, shoot == true ? "Патрон был заряжен." : "Патрон не был заряжен.");*/
         }
 
-        public async Task Use(string itemId, string targetId)
-        {
-            var connection = await GetCache();
 
-            var gameContext = GetGameContext(connection.roomName);
+        public void Shoot(string roomName, string targetId)
+        {
+            var gameContext = GetGameContext(roomName);
+            var targetPlayer = gameContext.PlayerManager.Get(targetId);
+
+            gameContext.Rifle.Shoot(targetPlayer);
+        }
+
+        public void Use(string roomName, string itemId, string targetId)
+        {
+            var gameContext = GetGameContext(roomName);
 
             gameContext.PlayerManager.Get(Context.ConnectionId).UseItem(itemId, targetId);
 

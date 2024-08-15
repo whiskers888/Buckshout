@@ -17,7 +17,7 @@ const { item } = defineProps<{
 					<img
 						v-bind="props"
 						class="item-model"
-						:src="`/models/${item.model}.png`"
+						:src="`/models/items/${item.model}.png`"
 						:alt="item.name"
 					/>
 				</template>
@@ -52,14 +52,17 @@ const { item } = defineProps<{
 	border: 1px solid;
 	border-radius: 6px;
 	overflow: hidden;
+	height: 110px;
 }
 .item {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	width: 100%;
+	height: 100%;
 }
 .item-model {
-	width: 100px;
+	width: 100%;
 }
 
 .item-tooltip {

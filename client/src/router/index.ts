@@ -30,17 +30,17 @@ export const routes = [
 				name: 'connect',
 				component: () => import('@/views/connect/ConnectView.vue'),
 			},
-			{
-				path: 'room/:name',
-				meta: {
-					name: 'Комната',
-					icon: 'mdi-connection',
-					invisible: true,
-				},
-				name: 'room',
-				component: () => import('@/views/room/RoomView.vue'),
-			},
 		],
+	},
+	{
+		path: '/room/:name',
+		meta: {
+			name: 'Комната',
+			icon: 'mdi-connection',
+			invisible: true,
+		},
+		name: 'room',
+		component: () => import('@/views/room/RoomView.vue'),
 	},
 	{
 		path: '/:pathMatch(.*)',
