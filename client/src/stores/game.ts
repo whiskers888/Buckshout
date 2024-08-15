@@ -10,6 +10,7 @@ export class GameSettings {
 	MAX_TURN_DURATION = 10000;
 	MAX_INVENTORY_SLOTS = 8;
 	MAX_PLAYER_HEALTH = 8;
+	MAX_PATRONS_IN_RIFLE = 8;
 
 	ITEM_CHANNELING_TIME = 3000;
 	ITEM_CHANNELING_CHECK_INTERVAL = 100;
@@ -130,10 +131,25 @@ export class Player {
 	get isCurrent() {
 		return this.id === this.context.current?.id;
 	}
+	get isAlive() {
+		return this.health > 0;
+	}
 
 	addItem(item: Item) {
 		if (this.inventory.length > this.context.settings.MAX_INVENTORY_SLOTS) return;
 		this.inventory.push(new Item(item));
+	}
+	damage(value: number) {
+		this.health -= value;
+		if (this.health < 0) {
+			this.health = 0;
+		}
+	}
+	heal(value: number) {
+		this.health += value;
+		if (this.health > this.context.settings.MAX_PLAYER_HEALTH) {
+			this.health = this.context.settings.MAX_PLAYER_HEALTH;
+		}
 	}
 
 	context: Game;
@@ -157,6 +173,8 @@ export interface Game {
 	settings: GameSettings;
 	current: Player | null;
 	status: GameStatus;
+
+	round: number;
 	turn: {
 		thinker: number | null;
 		time: number;
@@ -170,6 +188,7 @@ export const useGame = defineStore('game', {
 		status: GameStatus.PREPARING,
 		settings: new GameSettings(),
 
+		round: 1,
 		turn: {
 			thinker: null,
 			time: 0,
@@ -179,11 +198,19 @@ export const useGame = defineStore('game', {
 		isYourTurn: state => {
 			return state.current?.id === connection.connectionId;
 		},
+		player: state => {
+			return (target: Player) => state.players.find(it => it.id === target.id)!;
+		},
 	},
 	actions: {
 		clear() {
-			if (this.turn.thinker) {
-				clearInterval(this.turn.thinker);
+			const lastInterval = setInterval(() => {});
+			for (let i = lastInterval; i > 0; i--) {
+				clearInterval(i);
+			}
+			const lastTimeout = setTimeout(() => {});
+			for (let i = lastTimeout; i > 0; i--) {
+				clearTimeout(i);
 			}
 		},
 		update(data: Game) {
@@ -195,6 +222,7 @@ export const useGame = defineStore('game', {
 			});
 		},
 		start() {
+			this.clear();
 			this.turn.thinker = setInterval(() => {
 				this.turn.time -= 1000;
 			}, 1000);
@@ -205,6 +233,17 @@ export const useGame = defineStore('game', {
 		},
 		removePlayer(player: Player) {
 			this.players = this.players.filter(it => it.id != player.id);
+		},
+
+		setRound(value: number) {
+			this.round = value;
+		},
+
+		applyDamage(target: Player, value: number) {
+			this.player(target).damage(value);
+		},
+		applyHeal(target: Player, value: number) {
+			this.player(target).heal(value);
 		},
 
 		startTurn(target: Player, time: number) {

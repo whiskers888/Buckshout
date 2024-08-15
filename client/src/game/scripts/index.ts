@@ -81,7 +81,27 @@ export function init() {
 		game.addItem(e.target, e.special['ITEM']);
 	});
 
+	on(Event.ROUND_STARTED, e => {
+		game.setRound(e.special['ROUND']);
+	});
+
+	on(Event.RIFLE_LOADED, e => {
+		rifle.load(e.special['COUNT'], e.special['CHARGED']);
+	});
 	on(Event.RIFLE_AIMED, e => {
 		rifle.aim(e.target);
+	});
+	on(Event.RIFLE_SHOT, e => {
+		rifle.shoot(e.special['IS_CHARGED']);
+	});
+	on(Event.RIFLE_PULLED, e => {
+		rifle.pull(e.special['IS_CHARGED']);
+	});
+
+	on(Event.DAMAGE_TAKEN, e => {
+		game.applyDamage(e.target, e.special['VALUE']);
+	});
+	on(Event.HEALTH_RESTORED, e => {
+		game.applyHeal(e.target, e.special['VALUE']);
 	});
 }

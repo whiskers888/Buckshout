@@ -4,9 +4,9 @@ using BuckshoutApp.Manager.Events;
 
 namespace BuckshoutApp.Manager.Rifle
 {
-    public class Patron
+    public class Patron(bool IsCharged)
     {
-        public bool IsCharged { get; set; }
+        public bool IsCharged { get; set; } = IsCharged;
     }
 
     public class Rifle
@@ -35,23 +35,20 @@ namespace BuckshoutApp.Manager.Rifle
         public int Damage => Modifiers.Contains(RifleModifier.DOUBLE_DAMAGE) ? 2 : 1;
         public void LoadRifle()
         {
-            int countPatrons = Context.Random.Next(2, 6);
-            List<Patron> createdPatrons = [];
-            for (int i = 0; i < countPatrons; i++)
+            int countPatrons = Context.Random.Next(2, Context.Settings.MAX_PATRONS_IN_RIFLE);
+            List<Patron> createdPatrons = [new Patron(true), new Patron(false)];
+            for (int i = 0; i < countPatrons - 2; i++)
             {
-                createdPatrons.Add(new Patron()
-                {
-                    IsCharged = Context.Random.Next(2) == 1
-                });
+                createdPatrons.Add(new Patron(Context.Random.Next(2) == 1));
             }
             Patrons.AddRange(createdPatrons);
             Patrons.Shuffle();
             Context.EventManager.Trigger(Event.RIFLE_LOADED, new Items.EventData()
             {
                 special = {
-                {"CHARGED", Patrons.Where(it => it.IsCharged == true).Count() },
-                {"COUNT", Patrons.Count }
-            }
+                    {"CHARGED", Patrons.Where(it => it.IsCharged == true).Count() },
+                    {"COUNT", Patrons.Count }
+                }
             });
         }
 

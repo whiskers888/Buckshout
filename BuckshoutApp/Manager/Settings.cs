@@ -21,10 +21,10 @@ namespace BuckshoutApp.Manager
         }
         public int ITEM_CHANNELING_TIME { get; set; } = 3000; // Время в течение которого можно отменить итем при помощи Печати
         public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 
-        public int MAX_TURN_DURATION { get; set; } = 10000;
-
+        public int MAX_TURN_DURATION { get; set; } = 60000;
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
-        
+        public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
+
         public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
         public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 

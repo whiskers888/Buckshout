@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useGame, type Player } from '@/stores/game';
 import Item from './items/Item.vue';
-import { useRifle } from '@/stores/rifle';
+import { RifleStatus, useRifle } from '@/stores/rifle';
 
 const game = useGame();
 const rifle = useRifle();
@@ -35,7 +35,7 @@ const { player } = defineProps<{
 						<template v-slot:activator="{ props }">
 							<div v-bind="props">
 								<span
-									v-for="hp in 8"
+									v-for="hp in game.settings.MAX_PLAYER_HEALTH"
 									:style="{ color: hp <= player.health ? '#f00' : '#000' }"
 									:key="hp"
 								>
@@ -59,6 +59,7 @@ const { player } = defineProps<{
 						<v-btn
 							v-bind="props"
 							icon="mdi-target"
+							:disabled="rifle.status !== RifleStatus.READY"
 							@click="game.invokeAim(player)"
 						/>
 					</template>
@@ -72,6 +73,7 @@ const { player } = defineProps<{
 						<v-btn
 							v-bind="props"
 							icon="mdi-bullet"
+							:disabled="rifle.status !== RifleStatus.READY"
 							@click="game.invokeShoot(player)"
 						/>
 					</template>

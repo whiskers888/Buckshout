@@ -12,13 +12,9 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-	<v-container class="fill-height">
-		<v-btn
-			color="danger"
-			text="Выйти"
-			@click="rooms.leave"
-		/>
-
-		<Game />
-	</v-container>
+	<v-app>
+		<v-main scrollable>
+			<Game />
+		</v-main>
+	</v-app>
 </template>

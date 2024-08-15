@@ -1,5 +1,7 @@
 using Buckshout.Controllers;
 using BuckshoutApp.Context;
+using Microsoft.AspNetCore.Hosting;
+using System.Net;
 
 namespace Buckshout
 {
@@ -14,6 +16,7 @@ namespace Buckshout
                 var connection = builder.Configuration.GetConnectionString("Redis");
                 options.Configuration = connection;
             });
+
 
             builder.Services.AddCors(options =>
             {
@@ -36,5 +39,6 @@ namespace Buckshout
 
             app.Run();
         }
+
     }
 }

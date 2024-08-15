@@ -56,7 +56,13 @@ namespace BuckshoutApp.Context
         }
         public void StartRound()
         {
-            EventManager.Trigger(Event.ROUND_STARTED);
+            EventManager.Trigger(Event.ROUND_STARTED, new Items.EventData
+            {
+                special = new Dictionary<string, object>
+                {
+                    { "ROUND", Round }
+                }
+            });
             Round += 1;
             Rifle.LoadRifle();
             ItemManager.FillBox();
