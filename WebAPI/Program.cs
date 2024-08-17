@@ -2,6 +2,7 @@ using Buckshout.Controllers;
 using BuckshoutApp.Context;
 using Microsoft.AspNetCore.Hosting;
 using System.Net;
+using System.Reflection.PortableExecutable;
 
 namespace Buckshout
 {
@@ -10,13 +11,11 @@ namespace Buckshout
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             builder.Services.AddStackExchangeRedisCache(options =>
             {
                 var connection = builder.Configuration.GetConnectionString("Redis");
                 options.Configuration = connection;
             });
-
 
             builder.Services.AddCors(options =>
             {

@@ -8,7 +8,7 @@ const rooms = useRooms();
 <template>
 	<v-container class="fill-height">
 		<v-card
-			class="mx-auto"
+			class="mx-auto mb-4"
 			width="80%"
 			v-for="room in rooms.items.filter(it => it.game.status === GameStatus.PREPARING)"
 			:key="room.name"

@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ItemBehavior, type Item } from '@/stores/game';
-import { usePlayer } from '@/stores/player';
+import { ItemBehavior, ItemModifier, Player, type Item } from '@/stores/game';
+import { PlayerActivity, usePlayer } from '@/stores/player';
 
 const localPlayer = usePlayer();
 
-const { item } = defineProps<{
+function onItemClick() {
+	if (localPlayer.activity === PlayerActivity.USING_ITEM) {
+		console.log('OK');
+		localPlayer.selectAsTarget(owner, item);
+	} else {
+		localPlayer.beginUse(item!);
+	}
+}
+
+const { owner, item } = defineProps<{
+	owner: Player;
 	item?: Item;
 }>();
 </script>
@@ -13,19 +23,31 @@ const { item } = defineProps<{
 	<div class="item-container">
 		<div
 			v-if="item"
-			class="item"
-			@click="localPlayer.beginUse(item)"
+			:class="[
+				'item',
+				{
+					target: localPlayer.canTargetItem(owner, item),
+				},
+			]"
+			@click="onItemClick"
 		>
 			<v-tooltip location="right">
 				<template v-slot:activator="{ props }">
 					<img
 						v-bind="props"
 						class="item-model"
-						:src="`/models/items/${item.model}.png`"
+						:src="
+							!item.modifiers.includes(ItemModifier.INVISIBLE)
+								? `/models/items/${item.model}.png`
+								: '/models/items/unknown.png'
+						"
 						:alt="item.name"
 					/>
 				</template>
-				<div class="item-tooltip">
+				<div
+					v-if="!item.modifiers.includes(ItemModifier.INVISIBLE)"
+					class="item-tooltip"
+				>
 					<h3>{{ item.name }}</h3>
 					<div class="item-behavior">
 						<div>Тип: {{ item.typeTooltip }}</div>
@@ -42,6 +64,10 @@ const { item } = defineProps<{
 						{{ item.lore }}
 					</p>
 				</div>
+				<div v-else>
+					<h3>Неизвестно</h3>
+					<p class="item-tooltip-description">Этот предмет скрыт от вашего взора.</p>
+				</div>
 			</v-tooltip>
 		</div>
 	</div>
@@ -56,7 +82,7 @@ const { item } = defineProps<{
 	border: 1px solid;
 	border-radius: 6px;
 	overflow: hidden;
-	height: 110px;
+	height: 80px;
 }
 .item {
 	display: flex;
@@ -66,7 +92,8 @@ const { item } = defineProps<{
 	height: 100%;
 }
 .item-model {
-	width: 100%;
+	max-width: 100%;
+	max-height: 100%;
 }
 
 .item-tooltip {

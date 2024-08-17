@@ -39,6 +39,7 @@ namespace BuckshoutApp.Manager
             Id = id;
             Name = name;
             Team = id; // TODO: сделать реализацию команд
+            Avatar = Context.Random.Next(2, 10000);
             Inventory = [/*new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)*/];
             if (Context.Mode == Mode.Default)
                 Health = 4;
@@ -51,15 +52,18 @@ namespace BuckshoutApp.Manager
                     special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{id}" } }
                 });
         }
-        public void UseItem(string itemId, string targetId)
+        public void UseItem(string itemId, string targetId, string? targetItemId = null)
         {
             Player target = Context.PlayerManager.Get(targetId);
-            EventData e = new() { initiator = this, target = target };
             Item item = Inventory.First(it => it.Id == itemId);
+            EventData e = new() { initiator = this, target = target };
+            if (targetItemId != null && item.Behavior.Contains(ItemBehavior.UNIT_TARGET) && item.TargetType == TargetType.ITEM)
+            {
+                e.special["TARGET_ITEM"] = target.Inventory.First(it => it.Id == targetItemId);
+            }
             var used = item.Use(e);
             if (used)
                 Inventory.Remove(item);
-
         }
 
         public void ChangeHealth(ChangeHealthType direction, int count, Player initiator)
@@ -98,5 +102,6 @@ namespace BuckshoutApp.Manager
         public List<Item> Inventory { get; set; }
         public int Health { get; set; }
         public string Team { get; set; }
+        public int Avatar { get; set; }
     }
 }

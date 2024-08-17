@@ -1,13 +1,10 @@
 ﻿using Buckshout.Hubs;
-using Buckshout.Managers;
 using Buckshout.Models;
 using BuckshoutApp.Context;
 using BuckshoutApp.Items;
 using BuckshoutApp.Manager.Events;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
-using System.Data;
-using System.Xml.Linq;
 
 namespace Buckshout.Controllers
 {
@@ -86,14 +83,15 @@ namespace Buckshout.Controllers
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
             var needRemoveRoom = ApplicationContext.RoomManager.RemoveFromRoom(roomName, Context.ConnectionId);
-            
+
             if (needRemoveRoom)
             {
                 await SendAll(Event.ROOM_REMOVED, new
                 {
                     name = roomName
                 });
-            } else
+            }
+            else
             {
                 await SendAll(Event.ROOM_UPDATED, new
                 {
@@ -105,7 +103,7 @@ namespace Buckshout.Controllers
 
         public async Task StartGame(string roomName)
         {
-           /* var connection = await GetCache();*/
+            /* var connection = await GetCache();*/
 
             var gameContext = GetGameContext(roomName);
 
@@ -116,7 +114,8 @@ namespace Buckshout.Controllers
                 room = new RoomModel(ApplicationContext.RoomManager.GetRoom(roomName))
             });
 
-            gameContext.EventManager.Trigger(Event.GAME_STARTED, new EventData {
+            gameContext.EventManager.Trigger(Event.GAME_STARTED, new EventData
+            {
                 special = new Dictionary<string, object>
                 {
                     { "GAME", new GameModel(gameContext) }
@@ -148,12 +147,11 @@ namespace Buckshout.Controllers
             gameContext.Rifle.Shoot(targetPlayer);
         }
 
-        public void Use(string roomName, string itemId, string targetId)
+        public void Use(string roomName, string itemId, string targetId, string? targetItemId = null)
         {
             var gameContext = GetGameContext(roomName);
 
-            gameContext.PlayerManager.Get(Context.ConnectionId).UseItem(itemId, targetId);
-
+            gameContext.PlayerManager.Get(Context.ConnectionId).UseItem(itemId, targetId, targetItemId);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)

@@ -1,5 +1,6 @@
 import { connection, Event } from '@/api';
 import { Player, useGame } from '@/stores/game';
+import { PlayerActivity, usePlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
 import { useRooms } from '@/stores/room';
 
@@ -36,9 +37,11 @@ export function init() {
 	const rooms = useRooms();
 	const game = useGame();
 	const rifle = useRifle();
+	const player = usePlayer();
 
 	on(Event.CONNECTED, e => {
 		rooms.items = e.rooms;
+		player.setConnectionId(connection.connectionId!);
 	});
 	on(Event.DISCONNECTED, () => {
 		rooms.invokeLeave();
@@ -79,15 +82,24 @@ export function init() {
 	});
 	on(Event.TURN_CHANGED, e => {
 		game.startTurn(e.target, e.special['TIME']);
+		player.setActivity(PlayerActivity.WAITING);
 	});
+	on(Event.TURN_SKIPPED, e => {});
 
 	on(Event.ITEM_RECEIVED, e => {
 		game.addItem(e.target, e.special['ITEM']);
 	});
 	on(Event.ITEM_USED, e => {
 		game.removeItem(e.initiator, e.special['ITEM']);
+		player.setActivity(PlayerActivity.DECIDES_CANCEL);
 	});
-	on(Event.ITEM_EFFECTED, e => {});
+	on(Event.ITEM_EFFECTED, e => {
+		player.setActivity(PlayerActivity.WAITING);
+	});
+	on(Event.ITEM_STOLEN, e => {
+		game.removeItem(e.target, e.special['TARGET_ITEM']);
+	});
+	on(Event.ITEM_CANCELED, e => {});
 
 	on(Event.ROUND_STARTED, e => {
 		game.setRound(e.special['ROUND']);

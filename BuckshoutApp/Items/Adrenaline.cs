@@ -1,5 +1,4 @@
 ﻿using BuckshoutApp.Context;
-using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 
 namespace BuckshoutApp.Items
@@ -8,28 +7,25 @@ namespace BuckshoutApp.Items
     {
         public override string Name => "Адреналин";
         public override string Description => "Вы забираете выбранный предмет себе.\n" +
-                                            "Запрещено применять на: Адреналин, Наручники, Глина.\n" +
+                                            "Запрещено применять на: Адреналин, Глина.\n" +
                                             "Украденный предмет исчезнет в конце хода, если его не использовать.";
         public override string Model => "adrenaline";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override TargetType TargetType => TargetType.ITEM;
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;
+        public new ItemModifier[] Modifiers { get; } = [ItemModifier.CANNOT_BE_STOLEN];
 
         internal override void BeforeUse(EventData e)
         {
-            Player target = e.target!;
-            Item item = (Item)e.special["ITEM"];
-            if (!target.Inventory.Contains(item))
-                Disallow(e, "Такого предмета не существует");
-            if (!item.ItemModifier.Contains(Items.ItemModifier.CANNOT_BE_STOLEN))
+            Item item = (Item)e.special["TARGET_ITEM"];
+            if (item.Modifiers.Contains(ItemModifier.CANNOT_BE_STOLEN))
             {
                 Disallow(e, $"{Name} нельзя применить на {item.Name}");
             }
-            ItemState = ItemState.NOT_ALLOWED;
         }
         public override void Effect(EventData e)
         {
-            Item item = (Item)e.special["ITEM"];
+            Item item = (Item)e.special["TARGET_ITEM"];
 
             e.target!.Inventory.Remove(item);
             Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
@@ -38,7 +34,6 @@ namespace BuckshoutApp.Items
             {
                 e.initiator!.Inventory.Remove(item);
             });
-
         }
     }
 }

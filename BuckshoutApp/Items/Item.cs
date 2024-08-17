@@ -23,7 +23,7 @@ namespace BuckshoutApp.Items
         public virtual TargetType TargetType { get; } = TargetType.NONE;
         public virtual TargetTeam TargetTeam { get; } = TargetTeam.NONE;
         public ItemType ItemType { get; } = ItemType.DEFAULT;
-        public ItemModifier[] ItemModifier { get; } = [];
+        public ItemModifier[] Modifiers { get; } = [];
         public ItemState ItemState { get; set; } = ItemState.IN_BOX;
 
 

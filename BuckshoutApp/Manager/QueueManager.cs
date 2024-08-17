@@ -28,7 +28,7 @@ namespace BuckshoutApp.Manager
                 });
                 SkipPlayers.Remove(player);
                 int currentPlayerIndex = Queue.IndexOf(Current);
-                Player? nextPlayer = Queue.Skip(currentPlayerIndex).First(it => it != Current && it != player);
+                Player? nextPlayer = Queue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player);
                 if (nextPlayer != null)
                     Next(nextPlayer);
                 else

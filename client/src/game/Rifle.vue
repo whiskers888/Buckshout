@@ -44,10 +44,13 @@ const rifle = useRifle();
 	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
 	position: relative;
 	transition: all 0.3s linear;
+	max-width: 40%;
+	height: 0;
 }
 
 .rifle-model {
 	width: 500px;
+	max-width: 100%;
 }
 
 .rifle-buckshot-smoke {

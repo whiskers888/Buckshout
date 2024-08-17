@@ -1,6 +1,7 @@
 import { Action, connection } from '@/api';
 import { defineStore } from 'pinia';
 import { useRooms } from './room';
+import { PlayerActivity, usePlayer } from './player';
 
 export class GameSettings {
 	constructor(data?: GameSettings) {
@@ -119,6 +120,9 @@ export class Player {
 		this.name = data.name;
 		this.inventory = [];
 
+		this.team = data.team;
+		this.avatar = data.avatar;
+
 		this.color = PLAYER_COLORS[context.players.length];
 
 		data.inventory.forEach(it => {
@@ -138,6 +142,9 @@ export class Player {
 	addItem(item: Item) {
 		if (this.inventory.length > this.context.settings.MAX_INVENTORY_SLOTS) return;
 		this.inventory.push(new Item(item));
+	}
+	hasItem(item: Item) {
+		return !!this.inventory.find(it => it.id === item.id);
 	}
 	removeItem(item: Item) {
 		this.inventory = this.inventory.filter(it => it.id !== item.id);
@@ -159,7 +166,9 @@ export class Player {
 	id: string;
 	health: number;
 	name: string;
+	team: string;
 	inventory: Item[];
+	avatar: number;
 
 	color: string;
 }
@@ -198,6 +207,9 @@ export const useGame = defineStore('game', {
 		},
 	}),
 	getters: {
+		playerById: state => {
+			return (id: Player['id']) => state.players.find(it => it.id === id)!;
+		},
 		player: state => {
 			return (target: Player) => state.players.find(it => it.id === target.id)!;
 		},
@@ -273,9 +285,9 @@ export const useGame = defineStore('game', {
 			const rooms = useRooms();
 			connection.invoke(Action.SHOOT, rooms.current?.name, target.id);
 		},
-		invokeUseItem(item: Item, target: Player) {
+		invokeUseItem(item: Item, target: Player, targetItem?: Item) {
 			const rooms = useRooms();
-			connection.invoke(Action.USE_ITEM, rooms.current?.name, item.id, target.id);
+			connection.invoke(Action.USE_ITEM, rooms.current?.name, item.id, target.id, targetItem?.id || null);
 		},
 	},
 });

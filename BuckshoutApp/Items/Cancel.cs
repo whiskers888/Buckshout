@@ -14,6 +14,8 @@ namespace BuckshoutApp.Items
 
         public override string Model => "cancel";
 
+        public override ItemBehavior[] Behavior => [ItemBehavior.NO_TARGET, ItemBehavior.CUSTOM];
+
         internal override void BeforeUse(EventData e)
         {
             Item target = Context.ItemManager.GetLastAfter(this);
