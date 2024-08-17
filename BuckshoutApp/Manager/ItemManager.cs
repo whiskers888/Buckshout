@@ -14,13 +14,13 @@ namespace BuckshoutApp.Manager
             Queue = [];
             History = [];
 
-            Context.EventManager.Subcribe(Event.ITEM_USED, (e) =>
+            Context.EventManager.Subscribe(Event.ITEM_USED, (e) =>
             {
                 History.Add((Item)e.special["ITEM"]);
                 Queue.Add((Item)e.special["ITEM"]);
             });
-            Context.EventManager.Subcribe(Event.ITEM_EFFECTED, ClearQueue);
-            Context.EventManager.Subcribe(Event.ITEM_CANCELED, ClearQueue);
+            Context.EventManager.Subscribe(Event.ITEM_EFFECTED, ClearQueue);
+            Context.EventManager.Subscribe(Event.ITEM_CANCELED, ClearQueue);
         }
 
         public void ClearQueue(EventData e) => Queue.Remove((Item)e.special["ITEM"]);
@@ -35,7 +35,7 @@ namespace BuckshoutApp.Manager
             {
                 Context.PlayerManager.Players.ForEach(p =>
                 {
-                    for (var i = 0; i < Context.Settings.FATIGUE_ITEMS_TO_LOSE; i++ )
+                    for (var i = 0; i < Context.Settings.FATIGUE_ITEMS_TO_LOSE; i++)
                     {
                         if (p.Inventory.Count == 0)
                         {

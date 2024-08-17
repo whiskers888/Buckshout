@@ -40,10 +40,14 @@
         RIFLE_EMPTIED,
 
         ITEM_RECEIVED,
+        ITEM_REMOVED,
         ITEM_USED,
         ITEM_CANCELED,
         ITEM_EFFECTED,
         ITEM_STOLEN,
+
+        MODIFIER_APPLIED,
+        MODIFIER_REMOVED,
 
         TRAP_SET,
         TRAP_TRIGGERED,

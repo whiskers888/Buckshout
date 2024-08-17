@@ -4,7 +4,7 @@
     {
         NONE,
         PLAYER,
-        ITEM,
+        ITEM
     }
     public enum TargetTeam
     {

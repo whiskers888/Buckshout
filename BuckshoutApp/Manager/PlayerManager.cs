@@ -1,5 +1,6 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Items;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Manager
 {
@@ -41,6 +42,7 @@ namespace BuckshoutApp.Manager
             Team = id; // TODO: сделать реализацию команд
             Avatar = Context.Random.Next(2, 10000);
             Inventory = [/*new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)*/];
+            Modifiers = [];
             if (Context.Mode == Mode.Default)
                 Health = 4;
             else if (Context.Mode == Mode.Pro)
@@ -97,9 +99,39 @@ namespace BuckshoutApp.Manager
                 special = new Dictionary<string, object>() { { "ITEM", item } }
             });
         }
+
+        public void RemoveItem(Item item)
+        {
+            if (!Inventory.Contains(item)) return;
+            Inventory.Remove(item);
+            Context.EventManager.Trigger(Events.Event.ITEM_REMOVED, new EventData()
+            {
+                target = this,
+                special = new Dictionary<string, object>() { { "ITEM", item } }
+            });
+        }
+
+
+        public void AddModifier(PlayerModifier modifier)
+        {
+        }
+        public void RemoveModifier(PlayerModifier modifier)
+        {
+            Modifiers.Remove(modifier);
+            Context.EventManager.Trigger(Events.Event.MODIFIER_REMOVED, new EventData()
+            {
+                target = this,
+                special = { { "MODIFIER", modifier.Id } }
+            });
+        }
+        public void ClearModifiers()
+        {
+            Modifiers.Clear();
+        }
         public string Id { get; set; }
         public string Name { get; set; }
         public List<Item> Inventory { get; set; }
+        public List<PlayerModifier> Modifiers { get; set; }
         public int Health { get; set; }
         public string Team { get; set; }
         public int Avatar { get; set; }

@@ -30,9 +30,10 @@ namespace BuckshoutApp.Items
             e.target!.Inventory.Remove(item);
             Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
             e.initiator!.AddItem(item);
-            Context.EventManager.Once(Event.TURN_CHANGED, (e) =>
+            Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
             {
-                e.initiator!.Inventory.Remove(item);
+                e.initiator.RemoveItem(item);
+
             });
         }
     }

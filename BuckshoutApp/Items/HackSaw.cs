@@ -1,10 +1,10 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Manager.Events;
-using BuckshoutApp.Manager.Rifle;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Hacksaw:Item
+    public class Hacksaw : Item
     {
         public Hacksaw(GameContext context) : base(context) { }
 
@@ -15,18 +15,18 @@ namespace BuckshoutApp.Items
         public override string Model => "hacksaw";
         internal override void BeforeUse(EventData e)
         {
-            if(Context.Rifle.Modifiers.Contains(RifleModifier.DOUBLE_DAMAGE))
+            if (Context.Rifle.Modifiers.Contains(RifleModifierState.BONUS_DAMAGE))
             {
-                Disallow(e,"Ножовка уже применена к дробовику!");
+                Disallow(e, "Ножовка уже применена к дробовику!");
             }
         }
         public override void Effect(EventData e)
         {
-            Context.Rifle.Modifiers.Add(RifleModifier.DOUBLE_DAMAGE);
+            Context.Rifle.Modifiers.Add(RifleModifierState.BONUS_DAMAGE);
 
             Context.EventManager.Once(Event.RIFLE_SHOT/*TURN_CHANGED*/, (e) =>
             {
-                Context.Rifle.Modifiers.Remove(RifleModifier.DOUBLE_DAMAGE);
+                Context.Rifle.Modifiers.Remove(RifleModifierState.BONUS_DAMAGE);
             });
         }
     }

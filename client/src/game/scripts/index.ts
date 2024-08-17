@@ -89,6 +89,9 @@ export function init() {
 	on(Event.ITEM_RECEIVED, e => {
 		game.addItem(e.target, e.special['ITEM']);
 	});
+	on(Event.ITEM_REMOVED, e => {
+		game.removeItem(e.target, e.special['ITEM']);
+	});
 	on(Event.ITEM_USED, e => {
 		game.removeItem(e.initiator, e.special['ITEM']);
 		player.setActivity(PlayerActivity.DECIDES_CANCEL);

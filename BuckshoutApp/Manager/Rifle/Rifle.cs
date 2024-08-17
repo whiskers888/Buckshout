@@ -1,6 +1,7 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Items;
 using BuckshoutApp.Manager.Events;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Manager.Rifle
 {
@@ -18,11 +19,11 @@ namespace BuckshoutApp.Manager.Rifle
             Patrons = [];
             Modifiers = [];
 
-            Context.EventManager.Subcribe(Event.RIFLE_EMPTIED, (_) =>
+            Context.EventManager.Subscribe(Event.RIFLE_EMPTIED, (_) =>
             {
                 Context.StartRound();
             });
-            Context.EventManager.Subcribe(Event.RIFLE_PULLED, (_) =>
+            Context.EventManager.Subscribe(Event.RIFLE_PULLED, (_) =>
             {
                 if (Patrons.Count == 0)
                 {
@@ -31,8 +32,10 @@ namespace BuckshoutApp.Manager.Rifle
             });
         }
         public List<Patron> Patrons { get; private set; }
-        public List<RifleModifier> Modifiers { get; set; }
-        public int Damage => Modifiers.Contains(RifleModifier.DOUBLE_DAMAGE) ? 2 : 1;
+
+        public List<Modifier> Modifier { get; set; }
+        public List<RifleModifierState> Modifiers { get; set; }
+        public int Damage => Modifiers.Contains(RifleModifierState.BONUS_DAMAGE) ? 2 : 1;
         public void LoadRifle()
         {
             int countPatrons = Context.Random.Next(2, Context.Settings.MAX_PATRONS_IN_RIFLE);
@@ -43,7 +46,7 @@ namespace BuckshoutApp.Manager.Rifle
             }
             Patrons.AddRange(createdPatrons);
             Patrons.Shuffle();
-            Context.EventManager.Trigger(Event.RIFLE_LOADED, new Items.EventData()
+            Context.EventManager.Trigger(Event.RIFLE_LOADED, new EventData()
             {
                 special = {
                     {"CHARGED", Patrons.Where(it => it.IsCharged == true).Count() },

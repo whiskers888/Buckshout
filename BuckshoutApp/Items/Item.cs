@@ -7,6 +7,7 @@ namespace BuckshoutApp.Items
 
     public class EventData
     {
+        public string Id { get; } = Guid.NewGuid().ToString();
         public Player? initiator { get; set; }
         public Player? target { get; set; }
         public Dictionary<string, object> special { get; set; } = [];
