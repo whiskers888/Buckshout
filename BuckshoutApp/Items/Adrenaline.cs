@@ -33,7 +33,6 @@ namespace BuckshoutApp.Items
             Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
             {
                 e.initiator.RemoveItem(item);
-
             });
         }
     }

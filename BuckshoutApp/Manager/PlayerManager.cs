@@ -40,7 +40,7 @@ namespace BuckshoutApp.Manager
             Id = id;
             Name = name;
             Team = id; // TODO: сделать реализацию команд
-            Avatar = Context.Random.Next(2, 10000);
+            Avatar = Context.Random.Next(2, 50);
             Inventory = [/*new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)*/];
             Modifiers = [];
             if (Context.Mode == Mode.Default)
@@ -87,6 +87,12 @@ namespace BuckshoutApp.Manager
                     Context.EventManager.Trigger(Events.Event.DAMAGE_TAKEN, e);
                     break;
             }
+            e.special.Clear();
+            if (Health <= 0)
+            {
+                Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
+                Context.PlayerModifiers["modifier_dead"].Apply(this);
+            }
         }
 
         public void AddItem(Item item)
@@ -111,9 +117,14 @@ namespace BuckshoutApp.Manager
             });
         }
 
-
         public void AddModifier(PlayerModifier modifier)
         {
+            Modifiers.Add(modifier);
+            Context.EventManager.Trigger(Events.Event.MODIFIER_APPLIED, new EventData()
+            {
+                target = this,
+                special = { { "MODIFIER", modifier } }
+            });
         }
         public void RemoveModifier(PlayerModifier modifier)
         {
@@ -121,12 +132,21 @@ namespace BuckshoutApp.Manager
             Context.EventManager.Trigger(Events.Event.MODIFIER_REMOVED, new EventData()
             {
                 target = this,
-                special = { { "MODIFIER", modifier.Id } }
+                special = { { "MODIFIER_ID", modifier.Id } }
             });
         }
         public void ClearModifiers()
         {
             Modifiers.Clear();
+        }
+
+        public bool Is(PlayerModifierState state)
+        {
+            foreach (var modifier in Modifiers)
+            {
+                if (modifier.State.Contains(state)) return true;
+            }
+            return false;
         }
         public string Id { get; set; }
         public string Name { get; set; }

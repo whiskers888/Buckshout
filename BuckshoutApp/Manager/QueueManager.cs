@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Context;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Manager
 {
@@ -11,39 +12,39 @@ namespace BuckshoutApp.Manager
             Queue = Context.PlayerManager.Players;
             Queue.Shuffle();
             Current = Context.PlayerManager.Players.First();
-            SkipPlayers = [];
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
-        public List<Player> SkipPlayers { get; set; }
         public IDisposable? timer { get; set; } = null;
         public void Next(Player player)
         {
             timer?.Dispose();
-            if (SkipPlayers.Contains(player))
-            {
-                Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
-                {
-                    target = player,
-                });
-                SkipPlayers.Remove(player);
-                int currentPlayerIndex = Queue.IndexOf(Current);
-                Player? nextPlayer = Queue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player);
-                if (nextPlayer != null)
-                    Next(nextPlayer);
-                else
-                    Next(Queue[0]);
-            }
-            else
-                Current = player;
             Context.EventManager.Trigger(Events.Event.TURN_CHANGED, new Items.EventData()
             {
-                target = Context.QueueManager.Current,
+                target = player,
                 special = new Dictionary<string, object>
                 {
                     { "TIME", Context.Settings.MAX_TURN_DURATION }
                 }
             });
+            if (player.Is(PlayerModifierState.STUNED))
+            {
+                Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
+                {
+                    target = player,
+                });
+                int currentPlayerIndex = Queue.IndexOf(Current);
+
+                Player nextPlayer;
+                if (Queue.Count > 2)
+                    nextPlayer = Queue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player) ?? Queue[0];
+                else
+                    nextPlayer = Current;
+
+                Next(nextPlayer);
+            }
+            else
+                Current = player;
             timer = TimerExtension.SetTimeout(() =>
             {
                 if (Context.Status == GameStatus.FINISHED) return;
@@ -60,11 +61,6 @@ namespace BuckshoutApp.Manager
             Player nextPlayer = Queue[nextPlayerIndex];
             if (nextPlayer != null)
                 Next(nextPlayer);
-        }
-        public void SkipPlayer(Player player)
-        {
-            if (!SkipPlayers.Contains(player))
-                SkipPlayers.Add(player);
         }
     }
 }

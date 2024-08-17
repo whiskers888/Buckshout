@@ -1,17 +1,10 @@
 ﻿using Buckshout.Managers;
-using BuckshoutApp.Context;
 
 namespace Buckshout.Models
 {
-    public class RoomModel
+    public class RoomModel(Room room)
     {
-        public RoomModel(Room room)
-        {
-            name = room.RoomName;
-            game = new GameModel(room.GameContext);
-        }
-
-        public string name { get; set; }
-        public GameModel game { get; set; }
+        public string name { get; set; } = room.RoomName;
+        public GameModel game { get; set; } = new GameModel(room.GameContext);
     }
 }

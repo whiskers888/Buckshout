@@ -1,6 +1,7 @@
 ﻿using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Manager.Rifle;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Context
 {
@@ -29,6 +30,25 @@ namespace BuckshoutApp.Context
             Rifle = new Rifle(this);
             ItemManager = new ItemManager(this);
             Settings = new Settings();
+
+            PlayerModifiers.Add("modifier_dead", new(this)
+            {
+                Name = "Мертв!",
+                Description = "Больше никакие дефибрилляторы и переливания крови ему не помогут...",
+                Duration = -1,
+                Icon = "emoticon-dead-outline",
+                IsBuff = false,
+                State = [PlayerModifierState.DEAD]
+            });
+            PlayerModifiers.Add("modifier_handcuffs", new(this)
+            {
+                Name = "Оцепенение",
+                Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход",
+                Duration = 1,
+                State = [PlayerModifierState.STUNED],
+                Icon = "handcuffs",
+                IsBuff = false,
+            });
         }
 
 
@@ -47,6 +67,8 @@ namespace BuckshoutApp.Context
 
         public GameStatus Status { get; set; } = GameStatus.PREPARING;
 
+        public readonly Dictionary<string, PlayerModifier> PlayerModifiers = [];
+
         public void StartGame(Mode mode)
         {
             QueueManager = new QueueManager(this);
@@ -64,6 +86,7 @@ namespace BuckshoutApp.Context
                 }
             });
             Round += 1;
+            PlayerManager.Players.ForEach(p => p.ClearModifiers());
             Rifle.LoadRifle();
             ItemManager.FillBox();
 

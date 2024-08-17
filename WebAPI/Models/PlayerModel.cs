@@ -2,23 +2,14 @@
 
 namespace Buckshout.Models
 {
-    public class PlayerModel
+    public class PlayerModel(Player player)
     {
-        public PlayerModel() { }
-        public PlayerModel(Player player)
-        {
-            Id = player.Id;
-            Name = player.Name;
-            Health = player.Health;
-            Inventory = player.Inventory.Select(it => new ItemModel(it)).ToArray();
-            Team = player.Team;
-            Avatar = player.Avatar;
-        }
-        public string Id { get; set; } = "Empty";
-        public string Name { get; set; } = "Empty";
-        public int Health { get; set; } = 0;
-        public ItemModel[] Inventory { get; set; } = [];
-        public string Team { get; set; } = "";
-        public int Avatar { get; set; }
+        public string Id { get; set; } = player.Id;
+        public string Name { get; set; } = player.Name;
+        public int Health { get; set; } = player.Health;
+        public ItemModel[] Inventory { get; set; } = player.Inventory.Select(it => new ItemModel(it)).ToArray();
+        public PlayerModifierModel[] Modifiers { get; set; } = player.Modifiers.Select(it => new PlayerModifierModel(it)).ToArray();
+        public string Team { get; set; } = player.Team;
+        public int Avatar { get; set; } = player.Avatar;
     }
 }

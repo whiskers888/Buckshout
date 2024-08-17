@@ -2,24 +2,11 @@
 import { useGame, type Player } from '@/stores/game';
 import Item from './items/Item.vue';
 import { RifleStatus, useRifle } from '@/stores/rifle';
-import { PlayerActivity, usePlayer } from '@/stores/player';
+import { usePlayer } from '@/stores/player';
 
 const game = useGame();
 const localPlayer = usePlayer();
 const rifle = useRifle();
-
-const modifiers = [
-	{
-		name: 'Мертв!',
-		description: 'Больше никакие дефибрилляторы и переливания крови ему не помогут...',
-		icon: 'mdi-emoticon-dead-outline',
-	},
-	{
-		name: 'Ловушка!',
-		description: 'Игрок применил какую-то ловушку, кто знает, что спровоцирует ее действие...',
-		icon: 'mdi-crosshairs-question',
-	},
-];
 
 const { player } = defineProps<{
 	player: Player;
@@ -119,14 +106,20 @@ const { player } = defineProps<{
 		<div class="player-modifiers">
 			<b>Статус:</b>
 			<v-tooltip
-				v-for="modifier in modifiers"
+				v-for="modifier in player.modifiers"
 				:key="modifier.name"
 				location="right"
 			>
 				<template v-slot:activator="{ props }">
 					<v-icon
 						v-bind="props"
-						:icon="modifier.icon"
+						:style="{
+							border: `1px solid ${modifier.isBuff ? '#0f0' : '#f00'}`,
+							borderRadius: '50%',
+							padding: '12px',
+							fontSize: '18px',
+						}"
+						:icon="`mdi-${modifier.icon}`"
 					/>
 				</template>
 				<div class="modifier-tooltip">

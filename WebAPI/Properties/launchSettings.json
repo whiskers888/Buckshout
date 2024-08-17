@@ -1,6 +1,16 @@
 {
   "profiles": {
-    "https": {
+    "network": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "room",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://192.168.0.104:5001"
+    },
+    "local": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "room",

@@ -61,16 +61,15 @@ namespace BuckshoutApp.Manager.Events
         public void Trigger(Event e, EventData? eventData = null)
         {
             OnEventActions.ForEach(action => action(e, eventData));
-            if (eventData == null)
-                eventData = new EventData();
+            eventData ??= new EventData();
 
             if (UnlimitedEvents.ContainsKey(e))
-                UnlimitedEvents[e].ForEach(it => it(eventData));
+                UnlimitedEvents[e].ToList().ForEach(it => it(eventData));
             if (UniqEvents.ContainsKey(e))
-                UniqEvents[e].ForEach(it => it.Item2.Invoke(eventData));
+                UniqEvents[e].ToList().ForEach(it => it.Item2(eventData));
             if (DisposableEvents.ContainsKey(e))
             {
-                DisposableEvents[e].ForEach(it => it(eventData));
+                DisposableEvents[e].ToList().ForEach(it => it(eventData));
                 DisposableEvents[e].Clear();
             }
         }
@@ -88,6 +87,5 @@ namespace BuckshoutApp.Manager.Events
             Tuple<string, Action<EventData>> uniqEvent = UniqEvents[e].FirstOrDefault(it => it.Item1 == id);
             UniqEvents[e].Remove(uniqEvent);
         }
-
     }
 }

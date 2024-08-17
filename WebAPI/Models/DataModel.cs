@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Items;
+using BuckshoutApp.Modifiers;
 
 namespace Buckshout.Models
 {
@@ -6,23 +7,25 @@ namespace Buckshout.Models
     {
         public DataModel(EventData? e)
         {
-            special = [];
+            Special = [];
             if (e == null) return;
 
             if (e.target is not null)
-                target = new PlayerModel(e.target);
+                Target = new PlayerModel(e.target);
             if (e.initiator is not null)
-                initiator = new PlayerModel(e.initiator);
+                Initiator = new PlayerModel(e.initiator);
             foreach (var kv in e.special)
             {
                 if (kv.Value is Item item)
-                    special.Add(kv.Key, new ItemModel(item));
+                    Special.Add(kv.Key, new ItemModel(item));
+                else if (kv.Value is PlayerModifier modifier)
+                    Special.Add(kv.Key, new PlayerModifierModel(modifier));
                 else
-                    special.Add(kv.Key, kv.Value);
+                    Special.Add(kv.Key, kv.Value);
             };
         }
-        public PlayerModel? target { get; set; }
-        public PlayerModel? initiator { get; set; }
-        public Dictionary<string, object> special { get; set; }
+        public PlayerModel? Target { get; set; }
+        public PlayerModel? Initiator { get; set; }
+        public Dictionary<string, object> Special { get; set; }
     }
 }

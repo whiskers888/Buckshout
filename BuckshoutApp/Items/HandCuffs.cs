@@ -1,5 +1,4 @@
 ﻿using BuckshoutApp.Context;
-using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
@@ -19,16 +18,8 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
-            PlayerModifier modifier = new PlayerModifier(Context)
-            {
-                Name = "Оцепенение",
-                Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход",
-                /*Context.EventManager.Subcribe(Manager.Events.Event.TURN_CHANGED, (e) =>
-                {
 
-                })*/
-            };
-            e.target.AddModifier(modifier);
+            Context.PlayerModifiers["modifier_handcuffs"].Apply(e.target);
 
             /*Context.QueueManager.SkipPlayer(e.target);*/
         }

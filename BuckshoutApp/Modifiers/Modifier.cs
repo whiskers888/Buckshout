@@ -10,23 +10,20 @@ namespace BuckshoutApp.Modifiers
         public Modifier(GameContext context)
         {
             Context = context;
-            OnCreated.Invoke();
+            OnApplied?.Invoke();
         }
         public string Name { get; set; } = "";
         public Player? Target { get; set; }
         public string Description { get; set; } = "";
-        public Dictionary<ModifierFunction, object> Functions { get; set; } = new Dictionary<ModifierFunction, object>();
+        public Dictionary<ModifierFunction, object> Functions { get; set; } = [];
         public int Duration { get; set; } = 0;
         public string Icon { get; set; } = "";
         public bool IsBuff { get; set; } = false;
-        public Action OnCreated { get; set; }
+        public Action? OnApplied { get; set; }
     }
 
-    public class ItemModifier : Modifier
+    public class ItemModifier(GameContext context) : Modifier(context)
     {
-        public ItemModifier(GameContext context) : base(context) { }
-
-
         public List<ItemModifierState> State { get; set; } = [];
     }
     public class PlayerModifier : Modifier
@@ -34,6 +31,11 @@ namespace BuckshoutApp.Modifiers
         public PlayerModifier(GameContext context) : base(context)
         {
             Context = context;
+        }
+
+        public void Apply(Player target)
+        {
+            Target = target;
             string id = "";
             if (Duration > 0)
             {
@@ -52,18 +54,14 @@ namespace BuckshoutApp.Modifiers
                     }
                 });
             }
-
-            OnCreated.Invoke();
+            OnApplied?.Invoke();
+            Target.AddModifier(this);
         }
 
         public List<PlayerModifierState> State { get; set; } = [];
     }
-    public class RifleModifier : Modifier
+    public class RifleModifier(GameContext context) : Modifier(context)
     {
-        public RifleModifier(GameContext context) : base(context)
-        {
-        }
-
         public List<RifleModifierState> State { get; set; } = [];
     }
 }

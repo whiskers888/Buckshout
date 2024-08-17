@@ -1,7 +1,6 @@
 import { Action, connection } from '@/api';
 import { defineStore } from 'pinia';
 import { useRooms } from './room';
-import { PlayerActivity, usePlayer } from './player';
 
 export class GameSettings {
 	constructor(data?: GameSettings) {
@@ -110,6 +109,26 @@ export class Item {
 	modifiers: ItemModifier[] = [];
 }
 
+export enum PlayerModifierState {
+	STUNNED,
+	DEAD,
+}
+
+export class PlayerModifier {
+	constructor(data: PlayerModifier) {
+		console.log(data);
+		Object.assign(this, data);
+	}
+
+	id!: string;
+	name!: string;
+	description!: string;
+	duration!: number;
+	icon!: string;
+	isBuff!: boolean;
+	state!: PlayerModifierState[];
+}
+
 const PLAYER_COLORS = ['#c23a3a', '#2b63c2', '#2cc22b', '#a83ac2', '#cd9b3d'];
 
 export class Player {
@@ -119,9 +138,14 @@ export class Player {
 		this.health = data.health;
 		this.name = data.name;
 		this.inventory = [];
+		this.modifiers = [];
 
 		this.team = data.team;
 		this.avatar = data.avatar;
+
+		data.modifiers.forEach(it => {
+			this.addModifier(it);
+		});
 
 		this.color = PLAYER_COLORS[context.players.length];
 
@@ -149,6 +173,22 @@ export class Player {
 	removeItem(item: Item) {
 		this.inventory = this.inventory.filter(it => it.id !== item.id);
 	}
+
+	addModifier(modifier: PlayerModifier) {
+		this.modifiers.push(new PlayerModifier(modifier));
+	}
+	removeModifier(id: string) {
+		this.modifiers = this.modifiers.filter(it => it.id !== id);
+	}
+	is(state: PlayerModifierState) {
+		for (const modifier of this.modifiers) {
+			if (modifier.state.includes(state)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	damage(value: number) {
 		this.health -= value;
 		if (this.health < 0) {
@@ -168,6 +208,7 @@ export class Player {
 	name: string;
 	team: string;
 	inventory: Item[];
+	modifiers: PlayerModifier[];
 	avatar: number;
 
 	color: string;
@@ -260,17 +301,22 @@ export const useGame = defineStore('game', {
 
 		startTurn(target: Player, time: number) {
 			this.turn.time = time;
-			const player = this.players.find(it => it.id === target.id) || null;
+			const player = this.playerById(target.id);
 			this.current = player;
 		},
 
 		addItem(target: Player, item: Item) {
-			const player = this.players.find(it => it.id === target.id);
-			player?.addItem(item);
+			this.playerById(target.id)?.addItem(item);
 		},
 		removeItem(target: Player, item: Item) {
-			const player = this.players.find(it => it.id === target.id);
-			player?.removeItem(item);
+			this.playerById(target.id)?.removeItem(item);
+		},
+
+		applyModifier(target: Player, modifier: PlayerModifier) {
+			this.playerById(target.id)?.addModifier(modifier);
+		},
+		removeModifier(target: Player, id: string) {
+			this.playerById(target.id)?.removeModifier(id);
 		},
 
 		invokeStart() {

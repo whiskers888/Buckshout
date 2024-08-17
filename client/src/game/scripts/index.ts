@@ -1,5 +1,6 @@
 import { connection, Event } from '@/api';
 import { Player, useGame } from '@/stores/game';
+import { useNotifier } from '@/stores/notifier';
 import { PlayerActivity, usePlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
 import { useRooms } from '@/stores/room';
@@ -38,6 +39,7 @@ export function init() {
 	const game = useGame();
 	const rifle = useRifle();
 	const player = usePlayer();
+	const notifier = useNotifier();
 
 	on(Event.CONNECTED, e => {
 		rooms.items = e.rooms;
@@ -47,8 +49,12 @@ export function init() {
 		rooms.invokeLeave();
 	});
 
-	on(Event.MESSAGE_RECEIVED, () => {});
-	on(Event.MESSAGE_INITIATOR_RECEIVED, () => {});
+	on(Event.MESSAGE_RECEIVED, e => {
+		notifier.info(e.special['MESSAGE']);
+	});
+	on(Event.MESSAGE_INITIATOR_RECEIVED, e => {
+		notifier.info(e.special['MESSAGE']);
+	});
 
 	on(Event.ROOM_CREATED, e => {
 		rooms.add(e.room);
@@ -119,6 +125,13 @@ export function init() {
 	});
 	on(Event.RIFLE_PULLED, e => {
 		rifle.pull(e.special['IS_CHARGED']);
+	});
+
+	on(Event.MODIFIER_APPLIED, e => {
+		game.applyModifier(e.target, e.special['MODIFIER']);
+	});
+	on(Event.MODIFIER_REMOVED, e => {
+		game.removeModifier(e.target, e.special['MODIFIER_ID']);
 	});
 
 	on(Event.DAMAGE_TAKEN, e => {
