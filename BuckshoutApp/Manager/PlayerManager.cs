@@ -9,6 +9,12 @@ namespace BuckshoutApp.Manager
         Damage = 0,
         Heal = 1
     }
+    public enum PlayerStatus
+    {
+        CONNECTED,
+        DISCONECTED,
+        LEAVE,
+    }
     public class PlayerManager(GameContext context)
     {
         private readonly GameContext Context = context;
@@ -43,6 +49,7 @@ namespace BuckshoutApp.Manager
             Avatar = Context.Random.Next(2, 50);
             Inventory = [/*new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)*/];
             Modifiers = [];
+            Status = PlayerStatus.CONNECTED;
             if (Context.Mode == Mode.Default)
                 Health = 4;
             else if (Context.Mode == Mode.Pro)
@@ -53,7 +60,16 @@ namespace BuckshoutApp.Manager
                     target = this,
                     special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{id}" } }
                 });
+
         }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public List<Item> Inventory { get; set; }
+        public List<Modifier> Modifiers { get; set; }
+        public int Health { get; set; }
+        public string Team { get; set; }
+        public int Avatar { get; set; }
+        public PlayerStatus Status { get; set; }
         public void UseItem(string itemId, string targetId, string? targetItemId = null)
         {
             Player target = Context.PlayerManager.Get(targetId);
@@ -105,7 +121,6 @@ namespace BuckshoutApp.Manager
                 special = new Dictionary<string, object>() { { "ITEM", item } }
             });
         }
-
         public void RemoveItem(Item item)
         {
             if (!Inventory.Contains(item)) return;
@@ -148,12 +163,5 @@ namespace BuckshoutApp.Manager
             }
             return false;
         }
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public List<Item> Inventory { get; set; }
-        public List<Modifier> Modifiers { get; set; }
-        public int Health { get; set; }
-        public string Team { get; set; }
-        public int Avatar { get; set; }
     }
 }

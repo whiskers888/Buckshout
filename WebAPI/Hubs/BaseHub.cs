@@ -1,49 +1,26 @@
 ﻿using Buckshout.Managers;
-using Buckshout.Models;
 using BuckshoutApp.Context;
 using BuckshoutApp.Manager.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Dynamic;
-using System.Text.Json;
 
 namespace Buckshout.Hubs
 {
 
-    public class BaseHub(ApplicationContext applicationContext, IDistributedCache cache) : Hub
+    public class BaseHub : Hub
     {
-        private readonly IDistributedCache _cache = cache;
-        internal ApplicationContext ApplicationContext { get; set; } = applicationContext;
+        public BaseHub(ApplicationContext applicationContext, IDistributedCache cache)
+        {
+            ApplicationContext = applicationContext;
+        }
+        internal ApplicationContext ApplicationContext { get; set; }
         internal RoomManager RoomManager => ApplicationContext.RoomManager;
 
-        internal async void SetCache(string sessionId, string roomName)
-        {
-            var stringConnection = JsonSerializer.Serialize(new UserConnection(sessionId, roomName));
-            await _cache.SetStringAsync(Context.ConnectionId, stringConnection);
-        }
+        internal CacheManager CacheManager => ApplicationContext.CacheManager;
 
-        internal async Task<UserConnection> GetCache()
-        {
-            var stringConnection = await _cache.GetAsync(Context.ConnectionId);
-            UserConnection connection = JsonSerializer.Deserialize<UserConnection>(stringConnection);
-            if (connection is not null)
-                return connection;
-            else
-                throw new Exception("Невозможно достать из кэша подключение пользователя");
-        }
 
-        /*        internal async Task<UserConnection> UpdateCache(UserConnection conn)
-                {
-                    var cache = GetCache();
-
-                }*/
-
-        internal async void RemoveCache(string roomName)
-        {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
-            await _cache.RemoveAsync(Context.ConnectionId);
-        }
 
         internal dynamic GetCommon() => new ExpandoObject();
         internal async Task Send(string roomName, Event eventName, object? data = null)
@@ -54,6 +31,8 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
+        /*
+        Метод нигде не используется, не думаю что он еще где то будет юзаться,
         internal async Task Send(string roomName, string eventName, object? data = null)
         {
 
@@ -62,16 +41,21 @@ namespace Buckshout.Hubs
                 data,
                 datetime = DateTime.Now.ToString()
             }));
-        }
+        }*/
         internal async Task SendPlayer(string connectionID, Event eventName, object? data = null)
         {
-            await Clients.Client(connectionID).SendAsync(eventName.ToString(), new JsonResult(new
+
+            await RoomManager.GetClient(connectionID).SendAsync(eventName.ToString(), new JsonResult(new
             {
                 data,
                 datetime = DateTime.Now.ToString()
             }));
         }
 
+        // HACK: Методы ниже реализованы через интерфейс встроенного хаба в синглтон, на данный момент они работают
+        // так как вызываются не из под контекста игрового модуля.
+        [Obsolete(" Не стоит вызывать этот метод в контексте игрового процесса." +
+                    "Если вызывать из RoomHub - проблем не будет")]
         internal async Task SendCaller(Event methodName, object? data = null)
         {
             await Clients.Caller.SendAsync(methodName.ToString(), new JsonResult(new
@@ -80,14 +64,8 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
-        internal async Task SendCaller(string methodName, object? data = null)
-        {
-            await Clients.Caller.SendAsync(methodName.ToString(), new JsonResult(new
-            {
-                data,
-                datetime = DateTime.Now.ToString()
-            }));
-        }
+        [Obsolete(" Не стоит вызывать этот метод в контексте игрового процесса, так как ивенты отправляемые через него не имеют контекст хаба." +
+            "Если вызывать из RoomHub - проблем не будет")]
         internal async Task SendAll(Event eventName, object? data = null)
         {
             await Clients.All.SendAsync(eventName.ToString(), new JsonResult(new
@@ -96,7 +74,6 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
-
         internal GameContext GetGameContext(string roomName)
         {
             return ApplicationContext.RoomManager.GetRoom(roomName).GameContext;

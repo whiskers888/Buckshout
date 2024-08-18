@@ -4,26 +4,22 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Buckshout.Managers
 {
-/*    public class UserModel(string name, string connectionId)
-    {
-        public string Name { get; set; } = name;
-        public string ConnectionId { get; set; } = connectionId;
-    }
-*/
     public class Room(string roomName, GameContext gameContext, IClientProxy group)
     {
-        public string RoomName { get; set; } = roomName;
+        public string Name { get; set; } = roomName;
         public IClientProxy Group { get; set; } = group;
+        public Dictionary<string, IClientProxy> Clients { get; set; } = [];
         public GameContext GameContext { get; set; } = gameContext;
     }
 
 
     public class RoomManager
     {
-        private readonly Dictionary<string, Room> rooms = [];
+        private readonly Dictionary<string, Room> rooms = new();
 
         public Room CreateRoom(string roomName, IClientProxy group)
         {
+
             var room = new Room(roomName, new GameContext(), group);
             if (!rooms.ContainsKey(roomName))
             {
@@ -32,24 +28,27 @@ namespace Buckshout.Managers
             return room;
         }
 
-        public void AddToRoom(string roomName, string id, string name)
+        public void AddToRoom(string roomName, ISingleClientProxy client, string connectionId, string name)
         {
             if (!rooms.ContainsKey(roomName))
             {
                 return;
             }
-            rooms[roomName].GameContext.PlayerManager.AddPlayer(id, name);
-            // rooms[roomName].Players.Add(player);
+            Room room = GetRoom(roomName);
+            room.GameContext.PlayerManager.AddPlayer(connectionId, name);
+            room.Clients.Add(connectionId, client);
         }
 
         public bool RemoveFromRoom(string roomName, string connectionId)
         {
             if (rooms.ContainsKey(roomName))
             {
-                rooms[roomName].GameContext.PlayerManager.DeletePlayer(connectionId);
-                if (rooms[roomName].GameContext.PlayerManager.Players.Count <= 0)
+                Room room = GetRoom(roomName);
+                room.GameContext.PlayerManager.DeletePlayer(connectionId);
+                room.Clients.Remove(connectionId);
+                if (room.GameContext.PlayerManager.Players.Count <= 0)
                 {
-                    GetRoom(roomName).GameContext.FinishGame();
+                    room.GameContext.FinishGame();
                     rooms.Remove(roomName);
                     return true;
                 }
@@ -61,7 +60,20 @@ namespace Buckshout.Managers
         {
             return rooms[roomName];
         }
-        public RoomModel[] GetAllRooms()
+        public Room GetClientRoom(string connectionId)
+        {
+            return rooms.FirstOrDefault(r => r.Value.Clients.Any(c => c.Key == connectionId)).Value;
+        }
+        public IClientProxy? GetClient(string connectionId)
+        {
+            return GetClientRoom(connectionId).Clients.FirstOrDefault(it => it.Key == connectionId).Value;
+        }
+
+        public Room[] GetAllRooms()
+        {
+            return rooms.Values.Select(it => it).ToArray();
+        }
+        public RoomModel[] GetAllRoomsModel()
         {
             return rooms.Select(it => new RoomModel(it.Value)).ToArray();
         }

@@ -5,6 +5,7 @@
         CONNECTED,
         DISCONNECTED,
         RECONNECTED,
+        LEAVE,
 
         ROOM_CREATED,
         ROOM_ADMIN_CHANGED,

@@ -35,6 +35,7 @@ namespace BuckshoutApp.Manager
         public int FATIGUE_ITEMS_TO_LOSE { get; set; } = 1; // он начинает терять предметы
         public int FATIGUE_DAMAGE_PER_ITEM { get; set; } = 1; // и получает урон, если их не осталось
 
+        public int RECCONECTION_TIME { get; set; } = 12 * 100 * 100;
         internal List<Type> RefAvaliableItems { get; set; }
     }
 }

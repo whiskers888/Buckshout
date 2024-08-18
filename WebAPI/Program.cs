@@ -22,6 +22,7 @@ namespace Buckshout
             {
                 options.AddDefaultPolicy(policy =>
                 {
+
                     policy.SetIsOriginAllowed((host) => true)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
