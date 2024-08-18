@@ -32,6 +32,7 @@ namespace BuckshoutApp.Items
         public virtual void Effect(EventData e) { }
         internal virtual void BeforeUse(EventData e) { }
         internal virtual void BeforeCancel() { }
+        internal virtual void OnCanceled(EventData e) { }
         public bool Use(EventData e)
         {
             ItemState = ItemState.USING;
@@ -58,6 +59,10 @@ namespace BuckshoutApp.Items
                     {
                         Context.EventManager.Trigger(Event.ITEM_EFFECTED, e);
                         Effect(e);
+                    }
+                    else
+                    {
+                        OnCanceled(e);
                     }
                     ItemState = ItemState.REMOVED;
                     TimerExtension.ClearInterval(timer);

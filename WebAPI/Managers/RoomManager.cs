@@ -58,6 +58,7 @@ namespace Buckshout.Managers
 
         public Room GetRoom(string roomName)
         {
+            if (!rooms.ContainsKey(roomName)) return null;
             return rooms[roomName];
         }
         public Room GetClientRoom(string connectionId)

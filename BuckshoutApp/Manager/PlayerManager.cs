@@ -51,7 +51,7 @@ namespace BuckshoutApp.Manager
             Modifiers = [];
             Status = PlayerStatus.CONNECTED;
             if (Context.Mode == Mode.Default)
-                Health = 4;
+                Health = Context.Settings.INIT_PLAYER_HEALTH;
             else if (Context.Mode == Mode.Pro)
                 Health = 2;
             else
@@ -106,8 +106,9 @@ namespace BuckshoutApp.Manager
             e.special.Clear();
             if (Health <= 0)
             {
-                Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
                 Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DEAD).Apply(this);
+                Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
+
             }
         }
 

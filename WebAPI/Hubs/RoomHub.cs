@@ -1,6 +1,5 @@
 ﻿using Buckshout.Hubs;
 using Buckshout.Models;
-using BuckshoutApp;
 using BuckshoutApp.Context;
 using BuckshoutApp.Items;
 using BuckshoutApp.Manager.Events;
@@ -48,7 +47,7 @@ namespace Buckshout.Controllers
 
             GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
-                if (e == Event.MESSAGE_INITIATOR_RECEIVED)
+                if (e == Event.SECRET_MESSAGE)
                     await SendPlayer(data.initiator!.Id, e, new DataModel(data));
                 else
                     await Send(roomName, e, new DataModel(data));
@@ -158,8 +157,8 @@ namespace Buckshout.Controllers
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            // await SendCaller(Event.DISCONNECTED);
-            var room = ApplicationContext.RoomManager.GetClientRoom(Context.ConnectionId);
+            await SendCaller(Event.DISCONNECTED);
+            /*var room = ApplicationContext.RoomManager.GetClientRoom(Context.ConnectionId);
             if (room is not null)
             {
                 ApplicationContext.RoomManager.RemoveFromRoom(room.Name, Context.ConnectionId);
@@ -179,7 +178,7 @@ namespace Buckshout.Controllers
                 {
                     timer.Dispose();
                 });
-            }
+            }*/
 
             await base.OnDisconnectedAsync(exception);
         }

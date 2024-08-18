@@ -19,6 +19,7 @@ namespace BuckshoutApp.Manager
         public void Next(Player player)
         {
             Timer?.Dispose();
+            if (Context.Status == GameStatus.FINISHED) return;
             if (player.Is(ModifierState.PLAYER_DEAD))
             {
                 Next();

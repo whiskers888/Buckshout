@@ -1,6 +1,7 @@
 ﻿using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Manager.Rifle;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Context
 {
@@ -60,6 +61,7 @@ namespace BuckshoutApp.Context
         }
         public void StartRound()
         {
+            if (Status == GameStatus.FINISHED) return;
             EventManager.Trigger(Event.ROUND_STARTED, new Items.EventData
             {
                 special = new Dictionary<string, object>
@@ -74,26 +76,22 @@ namespace BuckshoutApp.Context
 
             ItemManager.GiveItems();
             QueueManager.Next();
-            /*Player zelya = PlayerManager.Players.First(it => it != QueueManager.Current);
-            Console.WriteLine($"{zelya.Name} на самом деле зеля  ");
+            EventManager.Once(Event.PLAYER_WON, (e) =>
+            {
+                FinishGame();
+            });
 
-            Player shabloebla = PlayerManager.Players.First(it => it != zelya);
-            Console.WriteLine($"{shabloebla.Name} на самом деле саня");*/
-            /*RifleManager.Shoot(zelya);*/
-
-            /*Item item = zelya.Inventory.First(it => it.Name == "Наручники");
-            var a = new EventData() { target = shabloebla, initiator = zelya };
-            item.Use(a);
-
-            Item item1 = shabloebla.Inventory.First(it => it.Name == "Печать \"Переделать\"");
-            var a1 = new EventData() { target = zelya, initiator = shabloebla };
-            item1.Use(a1);
-
-            Item item2 = zelya.Inventory.First(it => it.Name == "Печать \"Переделать\"");
-            var a2 = new EventData() { target = shabloebla, initiator = zelya };
-            item2.Use(a2);*/
+            EventManager.Subscribe(Event.PLAYER_LOST, (e) =>
+            {
+                if (PlayerManager.Players.Where(it => !it.Is(ModifierState.PLAYER_DEAD)).Count() == 1)
+                {
+                    EventManager.Trigger(Event.PLAYER_WON, new Items.EventData()
+                    {
+                        target = PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
+                    });
+                }
+            });
         }
-
         public void FinishGame()
         {
             Status = GameStatus.FINISHED;

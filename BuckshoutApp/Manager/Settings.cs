@@ -16,13 +16,24 @@ namespace BuckshoutApp.Manager
             Type phone = typeof(Phone);
             Type handCuffs = typeof(Handcuffs);
 
+            Type cigarettes = typeof(Cigarettes);
+            Type expiredMedicine = typeof(ExpiredMedicine);
+            Type magnifier = typeof(Magnifier);
+            Type invertor = typeof(Invertor);
+
             // Добавляем их в массив
-            RefAvaliableItems.AddRange([beer, cancel, adrenaline, handCuffs, hackSaw, phone]);
+            RefAvaliableItems.AddRange([beer, cancel, adrenaline, handCuffs,
+                                        hackSaw, phone, cigarettes, expiredMedicine,
+                                        magnifier, invertor]);
         }
         public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
         public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 
+
         public int MAX_TURN_DURATION { get; set; } = 60000;
+
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
+        public int INIT_PLAYER_HEALTH { get; set; } = 1;
+
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 
         public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
@@ -36,6 +47,8 @@ namespace BuckshoutApp.Manager
         public int FATIGUE_DAMAGE_PER_ITEM { get; set; } = 1; // и получает урон, если их не осталось
 
         public int RECCONECTION_TIME { get; set; } = 12 * 100 * 100;
+
+
         internal List<Type> RefAvaliableItems { get; set; }
     }
 }

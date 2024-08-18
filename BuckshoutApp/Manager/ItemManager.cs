@@ -63,6 +63,7 @@ namespace BuckshoutApp.Manager
             {
                 for (var i = 0; i < Context.Settings.ITEMS_PER_ROUND; i++)
                 {
+                    if (player.Inventory.Count >= Context.Settings.MAX_INVENTORY_SLOTS) return;
                     player.AddItem(Items.Pop());
                 }
             });

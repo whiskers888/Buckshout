@@ -16,9 +16,7 @@ namespace BuckshoutApp.Items
         internal override void BeforeUse(EventData e)
         {
             if (Context.Rifle.Is(ModifierState.RIFLE_BONUS_DAMAGE))
-            {
                 Disallow(e, "Ножовка уже применена к дробовику!");
-            }
         }
         public override void Effect(EventData e)
         {
