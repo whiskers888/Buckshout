@@ -15,11 +15,11 @@
 
         ITEM_CANNOT_BE_STOLEN,
         ITEM_ADRENALINE
-
     }
+
     public enum ModifierState
     {
-        PLAYER_STUNED,
+        PLAYER_STUNNED,
         PLAYER_DEAD,
         PLAYER_TURN_TIME_LIMITED,
         PLAYER_EVASION,
@@ -30,6 +30,5 @@
         ITEM_INVISIBLE,
         ITEM_CANNOT_BE_STOLEN,
         ITEM_LOST_ON_TURN_ENDED
-
     }
 }

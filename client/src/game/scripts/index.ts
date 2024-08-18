@@ -128,10 +128,10 @@ export function init() {
 	});
 
 	on(Event.MODIFIER_APPLIED, e => {
-		game.applyModifier(e.target, e.special['MODIFIER']);
+		game.applyModifier(e.special['MODIFIER'], e.target, e.special['ITEM']);
 	});
 	on(Event.MODIFIER_REMOVED, e => {
-		game.removeModifier(e.target, e.special['MODIFIER_ID']);
+		game.removeModifier(e.special['MODIFIER'], e.target, e.special['ITEM']);
 	});
 
 	on(Event.DAMAGE_TAKEN, e => {

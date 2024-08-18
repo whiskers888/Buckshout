@@ -33,7 +33,7 @@ namespace BuckshoutApp.Manager
                 Name = "Оцепенение",
                 Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход",
                 Duration = 1,
-                State = [ModifierState.PLAYER_STUNED],
+                State = [ModifierState.PLAYER_STUNNED],
                 TargetType = ModifierTargetType.PLAYER,
                 Icon = "handcuffs",
                 IsBuff = false,

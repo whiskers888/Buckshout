@@ -1,6 +1,7 @@
 import { Action, connection } from '@/api';
 import { defineStore } from 'pinia';
 import { useRooms } from './room';
+import { useRifle } from './rifle';
 
 export class GameSettings {
 	constructor(data?: GameSettings) {
@@ -95,6 +96,21 @@ export class Item {
 		return `${targetTeamTooltip[this.targetTeam]} ${targetTypeTooltip[this.targetType]}`;
 	}
 
+	addModifier(modifier: Modifier) {
+		this.modifiers.push(new Modifier(modifier));
+	}
+	removeModifier(id: string) {
+		this.modifiers = this.modifiers.filter(it => it.id !== id);
+	}
+	is(state: ModifierState) {
+		for (const modifier of this.modifiers) {
+			if (modifier.state.includes(state)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	id = '';
 	name = '';
 	description = '';
@@ -106,27 +122,42 @@ export class Item {
 	targetTeam = UnitTargetTeam.NONE;
 	type = ItemType.DEFAULT;
 
-	modifiers: ItemModifier[] = [];
+	modifiers: Modifier[] = [];
 }
 
-export enum PlayerModifierState {
-	STUNNED,
-	DEAD,
+export enum ModifierTargetType {
+	PLAYER,
+	RIFLE,
+	ITEM,
 }
 
-export class PlayerModifier {
-	constructor(data: PlayerModifier) {
-		console.log(data);
+export enum ModifierState {
+	PLAYER_STUNNED,
+	PLAYER_DEAD,
+	PLAYER_TURN_TIME_LIMITED,
+	PLAYER_EVASION,
+	PLAYER_ADDICTED,
+
+	RIFLE_BONUS_DAMAGE,
+
+	ITEM_INVISIBLE,
+	ITEM_CANNOT_BE_STOLEN,
+	ITEM_LOST_ON_TURN_ENDED,
+}
+
+export class Modifier {
+	constructor(data: Modifier) {
 		Object.assign(this, data);
 	}
 
 	id!: string;
+	targetType!: ModifierTargetType;
 	name!: string;
 	description!: string;
 	duration!: number;
 	icon!: string;
 	isBuff!: boolean;
-	state!: PlayerModifierState[];
+	state!: ModifierState[];
 }
 
 const PLAYER_COLORS = ['#c23a3a', '#2b63c2', '#2cc22b', '#a83ac2', '#cd9b3d'];
@@ -174,13 +205,13 @@ export class Player {
 		this.inventory = this.inventory.filter(it => it.id !== item.id);
 	}
 
-	addModifier(modifier: PlayerModifier) {
-		this.modifiers.push(new PlayerModifier(modifier));
+	addModifier(modifier: Modifier) {
+		this.modifiers.push(new Modifier(modifier));
 	}
 	removeModifier(id: string) {
 		this.modifiers = this.modifiers.filter(it => it.id !== id);
 	}
-	is(state: PlayerModifierState) {
+	is(state: ModifierState) {
 		for (const modifier of this.modifiers) {
 			if (modifier.state.includes(state)) {
 				return true;
@@ -208,7 +239,7 @@ export class Player {
 	name: string;
 	team: string;
 	inventory: Item[];
-	modifiers: PlayerModifier[];
+	modifiers: Modifier[];
 	avatar: number;
 
 	color: string;
@@ -312,11 +343,35 @@ export const useGame = defineStore('game', {
 			this.playerById(target.id)?.removeItem(item);
 		},
 
-		applyModifier(target: Player, modifier: PlayerModifier) {
-			this.playerById(target.id)?.addModifier(modifier);
+		applyModifier(modifier: Modifier, target: Player, _item?: Item) {
+			switch (modifier.targetType) {
+				case ModifierTargetType.PLAYER:
+					this.playerById(target.id)?.addModifier(modifier);
+					break;
+				case ModifierTargetType.ITEM:
+					this.playerById(target.id)
+						?.inventory.find(it => it.id === _item!.id)!
+						.addModifier(modifier);
+					break;
+				case ModifierTargetType.RIFLE:
+					useRifle().addModifier(modifier);
+					break;
+			}
 		},
-		removeModifier(target: Player, id: string) {
-			this.playerById(target.id)?.removeModifier(id);
+		removeModifier(modifier: Modifier, target: Player, item: Item) {
+			switch (modifier.targetType) {
+				case ModifierTargetType.PLAYER:
+					this.playerById(target.id)?.removeModifier(modifier.id);
+					break;
+				case ModifierTargetType.ITEM:
+					this.playerById(target.id)
+						?.inventory.find(it => it.id === item.id)!
+						.removeModifier(modifier.id);
+					break;
+				case ModifierTargetType.RIFLE:
+					useRifle().removeModifier(modifier.id);
+					break;
+			}
 		},
 
 		invokeStart() {

@@ -14,6 +14,30 @@ const rifle = useRifle();
 			},
 		]"
 	>
+		<div class="rifle-modifiers">
+			<v-tooltip
+				v-for="modifier in rifle.modifiers"
+				:key="modifier.name"
+				location="bottom"
+			>
+				<template v-slot:activator="{ props }">
+					<v-icon
+						v-bind="props"
+						:style="{
+							border: `1px solid ${modifier.isBuff ? '#0f0' : '#f00'}`,
+							borderRadius: '50%',
+							padding: '12px',
+							fontSize: '18px',
+						}"
+						:icon="`mdi-${modifier.icon}`"
+					/>
+				</template>
+				<div class="modifier-tooltip">
+					<h3>{{ modifier.name }}</h3>
+					<p class="rifle-tooltip-description">{{ modifier.description }}</p>
+				</div>
+			</v-tooltip>
+		</div>
 		<img
 			v-if="rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED"
 			class="rifle-buckshot-smoke"
@@ -41,7 +65,6 @@ const rifle = useRifle();
 
 <style scoped>
 .rifle-container {
-	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
 	position: relative;
 	transition: all 0.3s linear;
 	max-width: 40%;
@@ -51,6 +74,7 @@ const rifle = useRifle();
 .rifle-model {
 	width: 500px;
 	max-width: 100%;
+	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
 }
 
 .rifle-buckshot-smoke {

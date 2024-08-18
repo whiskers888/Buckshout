@@ -27,7 +27,7 @@ namespace BuckshoutApp.Manager
                     { "TIME", Context.Settings.MAX_TURN_DURATION }
                 }
             });
-            if (player.Is(ModifierState.PLAYER_STUNED))
+            if (player.Is(ModifierState.PLAYER_STUNNED))
             {
                 Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
                 {

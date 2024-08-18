@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ItemBehavior, ItemModifier, Player, UnitTargetTeam, UnitTargetType, useGame, type Item } from './game';
+import { ItemBehavior, ModifierState, Player, UnitTargetTeam, UnitTargetType, useGame, type Item } from './game';
 
 export enum PlayerActivity {
 	WAITING,
@@ -44,7 +44,7 @@ export const usePlayer = defineStore('player', {
 		},
 		canTargetItem: state => (target: Player, item: Item) => {
 			if (state.itemToUse?.targetType !== UnitTargetType.ITEM) return false;
-			if (item.modifiers.includes(ItemModifier.INVISIBLE)) return false;
+			if (item.is(ModifierState.ITEM_INVISIBLE)) return false;
 			return canTargetTeam(state, target);
 		},
 	},

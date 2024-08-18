@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useGame, type Player } from './game';
+import { Modifier, ModifierState, useGame, type Player } from './game';
 
 export enum RifleStatus {
 	NOT_LOADED,
@@ -20,6 +20,7 @@ export interface Rifle {
 	position: number;
 
 	status: RifleStatus;
+	modifiers: Modifier[];
 
 	patrons: {
 		current: RiflePatron;
@@ -44,6 +45,7 @@ export const useRifle = defineStore('rifle', {
 		target: null,
 		position: 0,
 		status: RifleStatus.NOT_LOADED,
+		modifiers: [],
 		patrons: {
 			current: RiflePatron.UNKNOWN,
 			charged: 0,
@@ -120,6 +122,21 @@ export const useRifle = defineStore('rifle', {
 					}, 500);
 				}, 5000);
 			}, 2200);
+		},
+
+		addModifier(modifier: Modifier) {
+			this.modifiers.push(new Modifier(modifier));
+		},
+		removeModifier(id: string) {
+			this.modifiers = this.modifiers.filter(it => it.id !== id);
+		},
+		is(state: ModifierState) {
+			for (const modifier of this.modifiers) {
+				if (modifier.state.includes(state)) {
+					return true;
+				}
+			}
+			return false;
 		},
 	},
 });
