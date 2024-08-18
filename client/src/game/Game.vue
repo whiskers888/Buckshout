@@ -13,7 +13,7 @@ const localPlayer = usePlayer();
 </script>
 
 <template>
-	<v-container>
+	<v-container class="game-container actions-disabled">
 		<div class="game-toolbar">
 			<v-btn
 				color="red"
@@ -98,6 +98,14 @@ const localPlayer = usePlayer();
 </template>
 
 <style scoped>
+.game-container {
+	user-select: none;
+}
+
+/* .actions-disabled {
+	pointer-events: none;
+} */
+
 .flex {
 	display: flex;
 	align-items: center;

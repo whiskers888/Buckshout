@@ -8,7 +8,7 @@ namespace BuckshoutApp.Items
     {
         public Adrenaline(GameContext context) : base(context)
         {
-            Modifiers = [Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CANNOT_BE_STOLEN)];
+            Modifiers.Add(Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CANNOT_BE_STOLEN));
         }
         public override string Name => "Адреналин";
         public override string Description => "Вы забираете выбранный предмет себе.\n" +
@@ -16,10 +16,8 @@ namespace BuckshoutApp.Items
                                             "Украденный предмет исчезнет в конце хода, если его не использовать.";
         public override string Model => "adrenaline";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
-        public override TargetType TargetType => TargetType.ITEM;
-        public override TargetTeam TargetTeam => TargetTeam.ENEMY;
-        public new List<Modifier> Modifiers { get; }
-
+        public override ItemTargetType TargetType => ItemTargetType.ITEM;
+        public override ItemTargetTeam TargetTeam => ItemTargetTeam.ENEMY;
         internal override void BeforeUse(EventData e)
         {
             Item item = (Item)e.special["TARGET_ITEM"];

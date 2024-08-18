@@ -15,10 +15,15 @@ namespace BuckshoutApp.Manager
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
-        public IDisposable? timer { get; set; } = null;
+        public IDisposable? Timer { get; set; } = null;
         public void Next(Player player)
         {
-            timer?.Dispose();
+            Timer?.Dispose();
+            if (player.Is(ModifierState.PLAYER_DEAD))
+            {
+                Next();
+                return;
+            }
             Context.EventManager.Trigger(Events.Event.TURN_CHANGED, new Items.EventData()
             {
                 target = player,
@@ -44,14 +49,18 @@ namespace BuckshoutApp.Manager
                 Next(nextPlayer);
             }
             else
-                Current = player;
-            timer = TimerExtension.SetTimeout(() =>
             {
-                if (Context.Status == GameStatus.FINISHED) return;
-                Context.EventManager.Trigger(Events.Event.TURN_EXPIRED, new Items.EventData());
-                Next();
-            }, Context.Settings.MAX_TURN_DURATION);
-
+                Current = player;
+                Timer = TimerExtension.SetTimeout(() =>
+                {
+                    if (Context.Status == GameStatus.FINISHED) return;
+                    Context.EventManager.Trigger(Events.Event.TURN_EXPIRED, new Items.EventData()
+                    {
+                        target = player
+                    });
+                    Next();
+                }, Context.Settings.MAX_TURN_DURATION);
+            }
         }
         public void Next()
         {

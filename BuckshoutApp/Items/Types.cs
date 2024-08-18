@@ -1,12 +1,12 @@
 ﻿namespace BuckshoutApp.Items
 {
-    public enum TargetType
+    public enum ItemTargetType
     {
         NONE,
         PLAYER,
         ITEM,
     }
-    public enum TargetTeam
+    public enum ItemTargetTeam
     {
         NONE,
         FRIENDLY,
@@ -27,11 +27,7 @@
         DEFAULT,
         TRAP,
     }
-    public enum ItemModifier
-    {
-        CANNOT_BE_STOLEN,
-        INVISIBLE,
-    }
+
     public enum ItemState
     {
         IN_BOX,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ItemBehavior, ItemModifier, Player, type Item } from '@/stores/game';
+import { ItemBehavior, ModifierState, Player, type Item } from '@/stores/game';
 import { PlayerActivity, usePlayer } from '@/stores/player';
 
 const localPlayer = usePlayer();
@@ -27,6 +27,7 @@ const { owner, item } = defineProps<{
 				'item',
 				{
 					target: localPlayer.canTargetItem(owner, item),
+					special: item?.behavior.includes(ItemBehavior.CUSTOM),
 				},
 			]"
 			@click="onItemClick"
@@ -37,7 +38,7 @@ const { owner, item } = defineProps<{
 						v-bind="props"
 						class="item-model"
 						:src="
-							!item.modifiers.includes(ItemModifier.INVISIBLE)
+							!item.is(ModifierState.ITEM_INVISIBLE)
 								? `/models/items/${item.model}.png`
 								: '/models/items/unknown.png'
 						"
@@ -45,7 +46,7 @@ const { owner, item } = defineProps<{
 					/>
 				</template>
 				<div
-					v-if="!item.modifiers.includes(ItemModifier.INVISIBLE)"
+					v-if="!item.is(ModifierState.ITEM_INVISIBLE)"
 					class="item-tooltip"
 				>
 					<h3>{{ item.name }}</h3>
@@ -78,7 +79,7 @@ const { owner, item } = defineProps<{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 10px;
+	padding: 4px;
 	border: 1px solid;
 	border-radius: 6px;
 	overflow: hidden;
@@ -119,5 +120,36 @@ const { owner, item } = defineProps<{
 	border-top: 1px solid;
 	font-style: italic;
 	padding: 8px 0;
+}
+
+/*  */
+.special {
+	--border-angle: 0turn;
+	--main-bg: conic-gradient(from var(--border-angle), #213, #112 5%, #112 60%, #213 95%);
+	border: solid 5px transparent;
+	border-radius: 6px;
+	--gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #08f, #f03 99%, transparent);
+	background:
+		var(--main-bg) padding-box,
+		var(--gradient-border) border-box,
+		var(--main-bg) border-box;
+	background-position: center center;
+	-webkit-animation: bg-spin-ee4c7182 3s linear infinite;
+	animation: bg-spin-ee4c7182 3s linear infinite;
+}
+@-webkit-keyframes bg-spin {
+	to {
+		--border-angle: 1turn;
+	}
+}
+@keyframes bg-spin {
+	to {
+		--border-angle: 1turn;
+	}
+}
+@property --border-angle {
+	syntax: '<angle>';
+	inherits: true;
+	initial-value: 0turn;
 }
 </style>

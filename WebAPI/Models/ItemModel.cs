@@ -9,8 +9,8 @@ namespace Buckshout.Models
         public string Description { get; set; } = item.Description;
         public string Lore { get; set; } = item.Lore;
         public string Model { get; set; } = item.Model;
-        public TargetType TargetType { get; set; } = item.TargetType;
-        public TargetTeam TargetTeam { get; set; } = item.TargetTeam;
+        public ItemTargetType TargetType { get; set; } = item.TargetType;
+        public ItemTargetTeam TargetTeam { get; set; } = item.TargetTeam;
         public ItemType Type { get; set; } = item.ItemType;
         public ItemBehavior[] Behavior { get; set; } = item.Behavior;
     }

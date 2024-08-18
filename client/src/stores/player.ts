@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ItemBehavior, ModifierState, Player, UnitTargetTeam, UnitTargetType, useGame, type Item } from './game';
+import { useNotifier } from './notifier';
 
 export enum PlayerActivity {
 	WAITING,
@@ -63,11 +64,18 @@ export const usePlayer = defineStore('player', {
 		},
 		beginUse(item: Item) {
 			const game = useGame();
+			const notifier = useNotifier();
 
 			if (!game.playerById(this.id!).hasItem(item)) return;
 			if (this.activity === PlayerActivity.DECIDES_CANCEL) {
 				if (item.behavior.includes(ItemBehavior.CUSTOM)) game.invokeUseItem(item, game.current!);
 				else return;
+			}
+			if (game.turn.time < game.settings.ITEM_CHANNELING_TIME * 2) {
+				notifier.error(
+					`Нельзя использовать предметы, когда до конца хода менее ${(game.settings.ITEM_CHANNELING_TIME * 2) / 1000} сек.`,
+				);
+				return;
 			}
 			if (!this.isCurrent || item.behavior.includes(ItemBehavior.CUSTOM)) return;
 			if (item.behavior.includes(ItemBehavior.NO_TARGET)) {

@@ -59,7 +59,7 @@ namespace BuckshoutApp.Manager
             Player target = Context.PlayerManager.Get(targetId);
             Item item = Inventory.First(it => it.Id == itemId);
             EventData e = new() { initiator = this, target = target };
-            if (targetItemId != null && item.Behavior.Contains(ItemBehavior.UNIT_TARGET) && item.TargetType == TargetType.ITEM)
+            if (targetItemId != null && item.Behavior.Contains(ItemBehavior.UNIT_TARGET) && item.TargetType == ItemTargetType.ITEM)
             {
                 e.special["TARGET_ITEM"] = target.Inventory.First(it => it.Id == targetItemId);
             }

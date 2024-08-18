@@ -87,10 +87,16 @@ export function init() {
 		game.start();
 	});
 	on(Event.TURN_CHANGED, e => {
+		notifier.info(`Очередь игрока ${e.target.name}!`);
 		game.startTurn(e.target, e.special['TIME']);
 		player.setActivity(PlayerActivity.WAITING);
 	});
-	on(Event.TURN_SKIPPED, e => {});
+	on(Event.TURN_SKIPPED, e => {
+		notifier.error(`Игрок ${e.target.name} пропускает ход!`);
+	});
+	on(Event.TURN_EXPIRED, e => {
+		notifier.error(`Время хода игрока ${e.target.name} вышло!`);
+	});
 
 	on(Event.ITEM_RECEIVED, e => {
 		game.addItem(e.target, e.special['ITEM']);

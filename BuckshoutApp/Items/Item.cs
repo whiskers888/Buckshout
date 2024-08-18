@@ -22,8 +22,8 @@ namespace BuckshoutApp.Items
         public virtual string Lore { get; } = "";
         public virtual string Model { get; } = "unknown";
         public virtual ItemBehavior[] Behavior { get; } = [ItemBehavior.NO_TARGET];
-        public virtual TargetType TargetType { get; } = TargetType.NONE;
-        public virtual TargetTeam TargetTeam { get; } = TargetTeam.NONE;
+        public virtual ItemTargetType TargetType { get; } = ItemTargetType.NONE;
+        public virtual ItemTargetTeam TargetTeam { get; } = ItemTargetTeam.NONE;
         public ItemType ItemType { get; } = ItemType.DEFAULT;
         public List<Modifier> Modifiers { get; } = [];
         public ItemState ItemState { get; set; } = ItemState.IN_BOX;

@@ -13,8 +13,16 @@ namespace BuckshoutApp.Items
         public override string Description => "Выбранный противник пропускает свой следующий ход.";
         public override string Model => "handcuffs";
         public override ItemBehavior[] Behavior { get; } = { ItemBehavior.UNIT_TARGET };
-        public override TargetType TargetType => TargetType.PLAYER;
-        public override TargetTeam TargetTeam => TargetTeam.ENEMY;
+        public override ItemTargetType TargetType => ItemTargetType.PLAYER;
+        public override ItemTargetTeam TargetTeam => ItemTargetTeam.ENEMY;
+
+        internal override void BeforeUse(EventData e)
+        {
+            if (e.target.Is(ModifierState.PLAYER_STUNNED))
+            {
+                Disallow(e, "Этот игрок уже пропускает ход!");
+            }
+        }
 
         public override void Effect(EventData e)
         {
