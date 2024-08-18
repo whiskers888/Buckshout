@@ -15,19 +15,16 @@ namespace BuckshoutApp.Items
         public override string Model => "hacksaw";
         internal override void BeforeUse(EventData e)
         {
-            if (Context.Rifle.Modifiers.Contains(RifleModifierState.BONUS_DAMAGE))
+            if (Context.Rifle.Is(ModifierState.RIFLE_BONUS_DAMAGE))
             {
                 Disallow(e, "Ножовка уже применена к дробовику!");
             }
         }
         public override void Effect(EventData e)
         {
-            Context.Rifle.Modifiers.Add(RifleModifierState.BONUS_DAMAGE);
-
-            Context.EventManager.Once(Event.RIFLE_SHOT/*TURN_CHANGED*/, (e) =>
-            {
-                Context.Rifle.Modifiers.Remove(RifleModifierState.BONUS_DAMAGE);
-            });
+            var modifier = Context.ModifierManager.Modifiers[ModifierKey.RIFLE_HACKSAW];
+            modifier.Apply(e.target, Context.Rifle);
+            modifier.Remove(Event.RIFLE_SHOT, e.target);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
@@ -24,7 +25,7 @@ namespace BuckshoutApp.Items
         public virtual TargetType TargetType { get; } = TargetType.NONE;
         public virtual TargetTeam TargetTeam { get; } = TargetTeam.NONE;
         public ItemType ItemType { get; } = ItemType.DEFAULT;
-        public ItemModifier[] Modifiers { get; } = [];
+        public List<Modifier> Modifiers { get; } = [];
         public ItemState ItemState { get; set; } = ItemState.IN_BOX;
 
 
@@ -82,6 +83,37 @@ namespace BuckshoutApp.Items
             Console.WriteLine($"{Name} был отменен");
             ItemState = ItemState.CANCELED;
         }
+
+        public void AddModifier(Modifier modifier, Player initiator)
+        {
+            Modifiers.Add(modifier);
+            Context.EventManager.Trigger(Event.MODIFIER_APPLIED, new EventData()
+            {
+                target = initiator,
+                special = { { "MODIFIER", modifier }, { "ITEM", this } }
+            });
+        }
+        public void RemoveModifier(Modifier modifier, Player target)
+        {
+            Modifiers.Remove(modifier);
+            Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
+            {
+                target = target,
+                special = { { "MODIFIER", modifier }, { "ITEM", this } }
+            });
+        }
+        public bool Is(ModifierState state)
+        {
+            foreach (var modifier in Modifiers)
+            {
+                if (modifier.State.Contains(state)) return true;
+            }
+            return false;
+        }
+        /*public void ClearModifiers()
+        {
+            Modifiers.Clear();
+        }*/
     }
 }
 

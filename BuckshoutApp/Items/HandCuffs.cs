@@ -19,7 +19,7 @@ namespace BuckshoutApp.Items
         {
             Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
 
-            Context.PlayerModifiers["modifier_handcuffs"].Apply(e.target);
+            Context.ModifierManager.Modifiers[BuckshoutApp.Modifiers.ModifierKey.PLAYER_HANDCUFFS].Apply(e.target);
 
             /*Context.QueueManager.SkipPlayer(e.target);*/
         }

@@ -1,10 +1,15 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Manager.Events;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Adrenaline(GameContext context) : Item(context)
+    public class Adrenaline : Item
     {
+        public Adrenaline(GameContext context) : base(context)
+        {
+            Modifiers = [Context.ModifierManager.Modifiers[ModifierKey.ITEM_CANNOT_BE_STOLEN]];
+        }
         public override string Name => "Адреналин";
         public override string Description => "Вы забираете выбранный предмет себе.\n" +
                                             "Запрещено применять на: Адреналин, Глина.\n" +
@@ -13,12 +18,12 @@ namespace BuckshoutApp.Items
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override TargetType TargetType => TargetType.ITEM;
         public override TargetTeam TargetTeam => TargetTeam.ENEMY;
-        public new ItemModifier[] Modifiers { get; } = [ItemModifier.CANNOT_BE_STOLEN];
+        public new List<Modifier> Modifiers { get; }
 
         internal override void BeforeUse(EventData e)
         {
             Item item = (Item)e.special["TARGET_ITEM"];
-            if (item.Modifiers.Contains(ItemModifier.CANNOT_BE_STOLEN))
+            if (item.Is(ModifierState.ITEM_CANNOT_BE_STOLEN))
             {
                 Disallow(e, $"{Name} нельзя применить на {item.Name}");
             }

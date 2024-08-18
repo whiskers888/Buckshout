@@ -91,7 +91,7 @@ namespace BuckshoutApp.Manager
             if (Health <= 0)
             {
                 Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
-                Context.PlayerModifiers["modifier_dead"].Apply(this);
+                Context.ModifierManager.Modifiers[ModifierKey.PLAYER_DEAD].Apply(this);
             }
         }
 
@@ -117,7 +117,7 @@ namespace BuckshoutApp.Manager
             });
         }
 
-        public void AddModifier(PlayerModifier modifier)
+        public void AddModifier(Modifier modifier)
         {
             Modifiers.Add(modifier);
             Context.EventManager.Trigger(Events.Event.MODIFIER_APPLIED, new EventData()
@@ -126,13 +126,13 @@ namespace BuckshoutApp.Manager
                 special = { { "MODIFIER", modifier } }
             });
         }
-        public void RemoveModifier(PlayerModifier modifier)
+        public void RemoveModifier(Modifier modifier)
         {
             Modifiers.Remove(modifier);
             Context.EventManager.Trigger(Events.Event.MODIFIER_REMOVED, new EventData()
             {
                 target = this,
-                special = { { "MODIFIER_ID", modifier.Id } }
+                special = { { "MODIFIER", modifier } }
             });
         }
         public void ClearModifiers()
@@ -140,7 +140,7 @@ namespace BuckshoutApp.Manager
             Modifiers.Clear();
         }
 
-        public bool Is(PlayerModifierState state)
+        public bool Is(ModifierState state)
         {
             foreach (var modifier in Modifiers)
             {
@@ -151,7 +151,7 @@ namespace BuckshoutApp.Manager
         public string Id { get; set; }
         public string Name { get; set; }
         public List<Item> Inventory { get; set; }
-        public List<PlayerModifier> Modifiers { get; set; }
+        public List<Modifier> Modifiers { get; set; }
         public int Health { get; set; }
         public string Team { get; set; }
         public int Avatar { get; set; }

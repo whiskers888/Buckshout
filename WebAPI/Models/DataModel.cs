@@ -18,8 +18,8 @@ namespace Buckshout.Models
             {
                 if (kv.Value is Item item)
                     Special.Add(kv.Key, new ItemModel(item));
-                else if (kv.Value is PlayerModifier modifier)
-                    Special.Add(kv.Key, new PlayerModifierModel(modifier));
+                else if (kv.Value is Modifier modifier)
+                    Special.Add(kv.Key, new ModifierModel(modifier));
                 else
                     Special.Add(kv.Key, kv.Value);
             };

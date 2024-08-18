@@ -33,9 +33,8 @@ namespace BuckshoutApp.Manager.Rifle
         }
         public List<Patron> Patrons { get; private set; }
 
-        public List<Modifier> Modifier { get; set; }
-        public List<RifleModifierState> Modifiers { get; set; }
-        public int Damage => Modifiers.Contains(RifleModifierState.BONUS_DAMAGE) ? 2 : 1;
+        public List<Modifier> Modifiers { get; set; }
+        public int Damage => Is(ModifierState.RIFLE_BONUS_DAMAGE) ? 2 : 1;
         public void LoadRifle()
         {
             int countPatrons = Context.Random.Next(2, Context.Settings.MAX_PATRONS_IN_RIFLE);
@@ -93,6 +92,32 @@ namespace BuckshoutApp.Manager.Rifle
             Context.EventManager.Trigger(Event.RIFLE_SHOT, e);
 
             Context.EventManager.Trigger(Event.RIFLE_PULLED, e);
+        }
+
+        public void AddModifier(Modifier modifier, Player initiator)
+        {
+            Modifiers.Add(modifier);
+            Context.EventManager.Trigger(Event.MODIFIER_APPLIED, new EventData()
+            {
+                target = initiator,
+                special = { { "MODIFIER", modifier } }
+            });
+        }
+        public void RemoveModifier(Modifier modifier)
+        {
+            Modifiers.Remove(modifier);
+            Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
+            {
+                special = { { "MODIFIER", modifier } }
+            });
+        }
+        public bool Is(ModifierState state)
+        {
+            foreach (var modifier in Modifiers)
+            {
+                if (modifier.State.Contains(state)) return true;
+            }
+            return false;
         }
     }
 }
