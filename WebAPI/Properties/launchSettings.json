@@ -1,5 +1,14 @@
 {
   "profiles": {
+    "default": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "room",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true
+    },
     "network": {
       "commandName": "Project",
       "launchBrowser": false,

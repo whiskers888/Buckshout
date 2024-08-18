@@ -1,4 +1,7 @@
-﻿namespace BuckshoutApp
+﻿using System.Net.NetworkInformation;
+using System.Net.Sockets;
+
+namespace BuckshoutApp
 {
     public static class Extension
     {
@@ -68,6 +71,26 @@
                 timer.Dispose();
                 _timers.Remove(timerId);
             }
+        }
+    }
+
+    public static class NetworkUtils
+    {
+        public static string GetLocalIPv4(NetworkInterfaceType type)
+        {
+            foreach (var networkInterface in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (networkInterface.NetworkInterfaceType == type && networkInterface.OperationalStatus == OperationalStatus.Up)
+                {
+                    var ipProperties = networkInterface.GetIPProperties();
+                    var unicastAddress = ipProperties.UnicastAddresses.FirstOrDefault(addr => addr.Address.AddressFamily == AddressFamily.InterNetwork);
+                    if (unicastAddress != null)
+                    {
+                        return unicastAddress.Address.ToString();
+                    }
+                }
+            }
+            return null;
         }
     }
 }
