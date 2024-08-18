@@ -38,43 +38,48 @@ const rifle = useRifle();
 				</div>
 			</v-tooltip>
 		</div>
-		<img
-			v-if="rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED"
-			class="rifle-buckshot-smoke"
-			src="/models/rifle/particles/smoke.gif"
-		/>
-		<img
-			class="rifle-model"
-			src="/models/rifle/rifle.png"
-		/>
+		<div class="rifle-model-container">
+			<img
+				v-if="rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED"
+				class="rifle-buckshot-smoke"
+				src="/models/rifle/particles/smoke.gif"
+			/>
+			<img
+				class="rifle-model"
+				src="/models/rifle/rifle.png"
+			/>
 
-		<div v-if="rifle.status == RifleStatus.PULLING">
-			<img
-				v-if="rifle.patrons.current == RiflePatron.CHARGED"
-				class="rifle-bullet"
-				src="/models/rifle/particles/buck.png"
-			/>
-			<img
-				v-else-if="rifle.patrons.current == RiflePatron.BLANK"
-				class="rifle-bullet"
-				src="/models/rifle/particles/blank.png"
-			/>
+			<div v-if="rifle.status == RifleStatus.PULLING">
+				<img
+					v-if="rifle.patrons.current == RiflePatron.CHARGED"
+					class="rifle-bullet"
+					src="/models/rifle/particles/buck.png"
+				/>
+				<img
+					v-else-if="rifle.patrons.current == RiflePatron.BLANK"
+					class="rifle-bullet"
+					src="/models/rifle/particles/blank.png"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
 
 <style scoped>
 .rifle-container {
-	position: relative;
 	transition: all 0.3s linear;
 	max-width: 40%;
 	height: 0;
 }
 
+.rifle-model-container {
+	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
+	position: relative;
+}
+
 .rifle-model {
 	width: 500px;
 	max-width: 100%;
-	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
 }
 
 .rifle-buckshot-smoke {

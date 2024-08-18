@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Context;
+using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
@@ -19,7 +20,7 @@ namespace BuckshoutApp.Items
         {
             Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
 
-            Context.ModifierManager.Modifiers[BuckshoutApp.Modifiers.ModifierKey.PLAYER_HANDCUFFS].Apply(e.target);
+            Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_HANDCUFFS).Apply(e.target);
 
             /*Context.QueueManager.SkipPlayer(e.target);*/
         }

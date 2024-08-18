@@ -8,72 +8,75 @@ namespace BuckshoutApp.Manager
         public ModifierManager(GameContext context)
         {
             Context = context;
-            Modifiers = [];
-            CreateModifiers();
         }
         public GameContext Context { get; }
-
-        public readonly Dictionary<ModifierKey, Modifier> Modifiers;
-        private void CreateModifiers()
+        public Modifier CreateModifier(ModifierKey key)
         {
-            // Эффекты игрока
-            Modifiers.Add(ModifierKey.PLAYER_DEAD, new(Context)
+            return key switch
             {
-                Name = "Мертв!",
-                Description = "Больше никакие дефибрилляторы и переливания крови ему не помогут...",
-                Duration = -1,
-                State = [ModifierState.PLAYER_DEAD],
-                TargetType = ModifierTargetType.PLAYER,
-                Icon = "emoticon-dead-outline",
-                IsBuff = false,
+                // Эффекты игрока
+                ModifierKey.PLAYER_DEAD => new(Context)
+                {
+                    Name = "Мертв!",
+                    Description = "Больше никакие дефибрилляторы и переливания крови ему не помогут...",
+                    Duration = -1,
+                    State = [ModifierState.PLAYER_DEAD],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "emoticon-dead-outline",
+                    IsBuff = false,
 
-            });
-            Modifiers.Add(ModifierKey.PLAYER_HANDCUFFS, new(Context)
-            {
-                Name = "Оцепенение",
-                Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход",
-                Duration = 1,
-                State = [ModifierState.PLAYER_STUNNED],
-                TargetType = ModifierTargetType.PLAYER,
-                Icon = "handcuffs",
-                IsBuff = false,
-            });
-
-            // Эффекты предметов
-            Modifiers.Add(ModifierKey.ITEM_CANNOT_BE_STOLEN, new(Context)
-            {
-                Name = "ПРЕДМЕТ 404",
-                Description = "Этот предмет нельзя украсть",
-                Duration = -1,
-                State = [ModifierState.ITEM_CANNOT_BE_STOLEN],
-                TargetType = ModifierTargetType.ITEM,
-                Icon = "hand-back-left-off",
-                IsBuff = true,
-            });
-            Modifiers.Add(ModifierKey.ITEM_ADRENALINE, new(Context)
-            {
-                Name = "Жулик, не воруй",
-                Description = "Предмет был украден, поэтому он пропадет на следующий ход",
-                Duration = 1,
-                State = [ModifierState.ITEM_LOST_ON_TURN_ENDED],
-                TargetType = ModifierTargetType.ITEM,
-                Icon = "needle-off",
-                IsBuff = false,
-            });
-
-            // Эффекты винтовки
-            Modifiers.Add(ModifierKey.RIFLE_HACKSAW, new(Context)
-            {
-                Name = "Ножовка",
-                Description = "Винтовка обрезана, будет нанесен двойной урон",
-                Duration = -1,
-                State = [ModifierState.RIFLE_BONUS_DAMAGE],
-                TargetType = ModifierTargetType.RIFLE,
-                Icon = "hand-saw",
-                IsBuff = true,
-                Value = 2
-            });
+                },
+                ModifierKey.PLAYER_HANDCUFFS => new(Context)
+                {
+                    Name = "Оцепенение",
+                    Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход",
+                    Duration = 1,
+                    State = [ModifierState.PLAYER_STUNNED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "handcuffs",
+                    IsBuff = false,
+                },
+                ModifierKey.PLAYER_TRAP => throw new NotImplementedException(),
+                ModifierKey.PLAYER_STOPWATCH => throw new NotImplementedException(),
+                ModifierKey.PLAYER_CHURCH_CROSS => throw new NotImplementedException(),
+                ModifierKey.PLAYER_COVER => throw new NotImplementedException(),
+                ModifierKey.PLAYER_DEFIBRILLATOR => throw new NotImplementedException(),
+                ModifierKey.PLAYER_CHAINED => throw new NotImplementedException(),
+                // Эффекты предметов
+                ModifierKey.ITEM_CANNOT_BE_STOLEN => new(Context)
+                {
+                    Name = "ПРЕДМЕТ 404",
+                    Description = "Этот предмет нельзя украсть",
+                    Duration = -1,
+                    State = [ModifierState.ITEM_CANNOT_BE_STOLEN],
+                    TargetType = ModifierTargetType.ITEM,
+                    Icon = "hand-back-left-off",
+                    IsBuff = true,
+                },
+                ModifierKey.ITEM_ADRENALINE => new(Context)
+                {
+                    Name = "Жулик, не воруй",
+                    Description = "Предмет был украден, поэтому он пропадет на следующий ход",
+                    Duration = 1,
+                    State = [ModifierState.ITEM_LOST_ON_TURN_ENDED],
+                    TargetType = ModifierTargetType.ITEM,
+                    Icon = "needle-off",
+                    IsBuff = false,
+                },
+                // Эффекты винтовки
+                ModifierKey.RIFLE_HACKSAW => new(Context)
+                {
+                    Name = "Ножовка",
+                    Description = "Винтовка обрезана, будет нанесен двойной урон",
+                    Duration = -1,
+                    State = [ModifierState.RIFLE_BONUS_DAMAGE],
+                    TargetType = ModifierTargetType.RIFLE,
+                    Icon = "hand-saw",
+                    IsBuff = true,
+                    Value = 2
+                },
+                _ => throw new NotImplementedException(),
+            };
         }
-
     }
 }

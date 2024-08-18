@@ -91,7 +91,7 @@ namespace BuckshoutApp.Manager
             if (Health <= 0)
             {
                 Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
-                Context.ModifierManager.Modifiers[ModifierKey.PLAYER_DEAD].Apply(this);
+                Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DEAD).Apply(this);
             }
         }
 

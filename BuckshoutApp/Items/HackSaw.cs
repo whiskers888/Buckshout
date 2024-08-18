@@ -22,7 +22,7 @@ namespace BuckshoutApp.Items
         }
         public override void Effect(EventData e)
         {
-            var modifier = Context.ModifierManager.Modifiers[ModifierKey.RIFLE_HACKSAW];
+            var modifier = Context.ModifierManager.CreateModifier(ModifierKey.RIFLE_HACKSAW);
             modifier.Apply(e.target, Context.Rifle);
             modifier.Remove(Event.RIFLE_SHOT, e.target);
         }

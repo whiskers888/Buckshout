@@ -8,7 +8,7 @@ namespace BuckshoutApp.Items
     {
         public Adrenaline(GameContext context) : base(context)
         {
-            Modifiers = [Context.ModifierManager.Modifiers[ModifierKey.ITEM_CANNOT_BE_STOLEN]];
+            Modifiers = [Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CANNOT_BE_STOLEN)];
         }
         public override string Name => "Адреналин";
         public override string Description => "Вы забираете выбранный предмет себе.\n" +
