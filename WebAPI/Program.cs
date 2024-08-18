@@ -47,13 +47,13 @@ namespace Buckshout
         {
             var ipAddressWireless = NetworkUtils.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
             var ipAddressEthernet = NetworkUtils.GetLocalIPv4(NetworkInterfaceType.Ethernet);
-            if (ipAddressWireless != null)
-            {
-                ConfigureIp(app, ipAddressWireless);
-            }
-            else if (ipAddressEthernet != null)
+            if (ipAddressEthernet != null)
             {
                 ConfigureIp(app, ipAddressEthernet);
+            }
+            else if (ipAddressWireless != null)
+            {
+                ConfigureIp(app, ipAddressWireless);
             }
             else
             {
