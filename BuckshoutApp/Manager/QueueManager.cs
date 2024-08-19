@@ -31,14 +31,24 @@ namespace BuckshoutApp.Manager
                 Next();
                 return;
             }
+
+            var turnDuration = Context.Settings.MAX_TURN_DURATION;
+            foreach (var modirier in player.Modifiers)
+            {
+                if (modirier.State.Contains(ModifierState.PLAYER_TURN_TIME_LIMITED))
+                {
+                    turnDuration /= modirier.Value;
+                }
+            }
             Context.EventManager.Trigger(Events.Event.TURN_CHANGED, new Items.EventData()
             {
                 target = player,
                 special = new Dictionary<string, object>
                 {
-                    { "TIME", Context.Settings.MAX_TURN_DURATION }
+                    { "TIME", turnDuration }
                 }
             });
+
             if (player.Is(ModifierState.PLAYER_STUNNED))
             {
                 Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
@@ -66,7 +76,7 @@ namespace BuckshoutApp.Manager
                         target = player
                     });
                     Next();
-                }, Context.Settings.MAX_TURN_DURATION);
+                }, turnDuration);
             }
         }
         public void Next()

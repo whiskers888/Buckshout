@@ -94,9 +94,8 @@ namespace BuckshoutApp.Modifiers
         }
         private void SetDuration(Player target)
         {
-
             string id = "";
-            if (Duration > 0)
+            if (Duration >= 0)
             {
                 id = Context.EventManager.SubscribeUniq(Manager.Events.Event.TURN_CHANGED, (e) =>
                 {
@@ -113,10 +112,6 @@ namespace BuckshoutApp.Modifiers
                     }
                 });
             }
-        }
-        public void On()
-        {
-
         }
     }
 }

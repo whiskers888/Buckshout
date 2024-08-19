@@ -8,13 +8,13 @@ namespace BuckshoutApp.Items
         {
         }
 
-        public override string Name => "Invertor";
-        public override string Description => "Меняет тип заряженного патрона на противоположный.";
+        public override string Name => "Инвертор";
+        public override string Description => "Меняет тип заряженного в данный момент патрона на противоположный.";
         public override string Model => "invertor";
         internal override void BeforeUse(EventData e)
         {
             var patron = Context.Rifle.Patrons.LastOrDefault();
-            if (patron == null) Disallow(e, "В винтовке не осталось патрон");
+            if (patron == null) Disallow(e, "В винтовке не осталось патронов!");
         }
         public override void Effect(EventData e)
         {

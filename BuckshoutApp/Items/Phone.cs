@@ -8,8 +8,15 @@ namespace BuckshoutApp.Items
         {
         }
         public override string Name => "Телефон";
-        public override string Description => "Сообщает вам, заряжен ли случайный патрон (счет идет от текущего).";
+        public override string Description => "Сообщает Вам, заряжен ли случайный патрон (счет идет от текущего).";
+        public override string Lore => "Алло, ну как там с патронами?";
         public override string Model => "phone";
+
+        internal override void BeforeUse(EventData e)
+        {
+            e.special.Add("SOUND", "phone_beeps");
+            Context.EventManager.Trigger(Event.PLAY_SOUND, e);
+        }
         public override void Effect(EventData e)
         {
             int countPatrons = Context.Rifle.Patrons.Count;
@@ -19,9 +26,10 @@ namespace BuckshoutApp.Items
             "Привет...." ,
             "..Это твой бекендер....",
             "..Тут такой п*.....",
-            $"..В общем {countPatrons - indexRndPatron} патрон ... ",
+            $"..В общем {countPatrons - indexRndPatron} патрон... ",
             isCharged ? " заряжен" : " не заряжен",
-            ".. вроде. Удачи!"
+            "..вроде...",
+            "...Удачи!"
             });
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);
         }
@@ -29,9 +37,10 @@ namespace BuckshoutApp.Items
         {
             e.special.Add("MESSAGE", new string[] {
                 "Извините....",
-                "..связь прервалась." });
+                "..связь прервалась..." });
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);
 
+            e.special.Remove("SOUND");
             e.special.Add("SOUND", "phone_connection_lost");
             Context.EventManager.Trigger(Event.PLAY_SOUND, e);
         }

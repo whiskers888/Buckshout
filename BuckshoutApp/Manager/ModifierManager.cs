@@ -42,7 +42,7 @@ namespace BuckshoutApp.Manager
                     Name = "Дедлайн",
                     /*StackCount = 1,*/
                     Description = $"Время хода сокращено в 2 раза.",
-                    Duration = 1,
+                    Duration = 0,
                     State = [ModifierState.PLAYER_TURN_TIME_LIMITED],
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "timer",

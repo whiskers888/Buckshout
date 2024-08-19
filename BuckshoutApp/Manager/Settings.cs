@@ -26,9 +26,9 @@ namespace BuckshoutApp.Manager
             Type churchcross = typeof(ChurchCross);
 
             // Добавляем их в массив
-            RefAvaliableItems.AddRange([/*beer, cancel, adrenaline, handCuffs,
-                                        hackSaw, phone,*/ cigarettes, expiredMedicine,
-                                        magnifier, invertor, stopwatch, churchcross]);
+            RefAvaliableItems.AddRange([/*beer, adrenaline, handCuffs,
+                                        hackSaw,*/ cancel, stopwatch, /* phone, cigarettes, expiredMedicine,
+                                        magnifier, invertor, churchcross*/]);
         }
         public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
         public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 

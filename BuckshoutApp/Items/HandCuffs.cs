@@ -26,11 +26,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
-
             Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_HANDCUFFS).Apply(e.target);
-
-            /*Context.QueueManager.SkipPlayer(e.target);*/
         }
     }
 }

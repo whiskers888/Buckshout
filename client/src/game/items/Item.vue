@@ -6,7 +6,6 @@ const localPlayer = usePlayer();
 
 function onItemClick() {
 	if (localPlayer.activity === PlayerActivity.USING_ITEM) {
-		console.log('OK');
 		localPlayer.selectAsTarget(owner, item);
 	} else {
 		localPlayer.beginUse(item!);
@@ -25,9 +24,11 @@ const { owner, item } = defineProps<{
 			v-if="item"
 			:class="[
 				'item',
+
 				{
 					target: localPlayer.canTargetItem(owner, item),
-					special: item?.behavior.includes(ItemBehavior.CUSTOM),
+					special: item?.behavior.includes(ItemBehavior.CUSTOM) && owner.id === localPlayer.id,
+					active: localPlayer.activity === PlayerActivity.DECIDES_CANCEL,
 				},
 			]"
 			@click="onItemClick"
@@ -91,6 +92,7 @@ const { owner, item } = defineProps<{
 	justify-content: center;
 	width: 100%;
 	height: 100%;
+	border: solid 2px transparent;
 }
 .item-model {
 	max-width: 100%;
@@ -124,9 +126,12 @@ const { owner, item } = defineProps<{
 
 /*  */
 .special {
+	opacity: 0.4;
+}
+.special.active {
+	opacity: 1;
 	--border-angle: 0turn;
 	--main-bg: conic-gradient(from var(--border-angle), #213, #112 5%, #112 60%, #213 95%);
-	border: solid 5px transparent;
 	border-radius: 6px;
 	--gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #08f, #f03 99%, transparent);
 	background:

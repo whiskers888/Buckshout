@@ -8,7 +8,7 @@ namespace BuckshoutApp.Items
         {
         }
 
-        public override string Name => "Сигаретты";
+        public override string Name => "Сигареты";
         public override string Description => $"Восстанавливает {COUNT_HEALTH} ед. здоровья.";
         public override string Model => "cigarettes";
         public int COUNT_HEALTH = 1;

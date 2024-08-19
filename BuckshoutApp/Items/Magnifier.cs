@@ -10,7 +10,7 @@ namespace BuckshoutApp.Items
         }
 
         public override string Name => "Лупа";
-        public override string Description => "Показывает какой патрон заряжен в данный момент в винтовку.";
+        public override string Description => "Показывает Вам, какой патрон заряжен в данный момент в винтовку.";
         public override string Model => "magnifier";
 
         public override void Effect(EventData e)

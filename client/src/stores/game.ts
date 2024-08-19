@@ -195,7 +195,7 @@ export class Player {
 	}
 
 	addItem(item: Item) {
-		if (this.inventory.length > this.context.settings.MAX_INVENTORY_SLOTS) return;
+		if (this.inventory.length >= this.context.settings.MAX_INVENTORY_SLOTS) return;
 		this.inventory.push(new Item(item));
 	}
 	hasItem(item: Item) {

@@ -52,8 +52,25 @@ export function init() {
 	on(Event.MESSAGE_RECEIVED, e => {
 		notifier.info(e.special['MESSAGE']);
 	});
-	on(Event.MESSAGE_INITIATOR_RECEIVED, e => {
-		notifier.info(e.special['MESSAGE']);
+	on(Event.SECRET_MESSAGE, e => {
+		if (Array.isArray(e.special['MESSAGE'])) {
+			e.special['MESSAGE'].forEach((it, i) => {
+				setTimeout(() => {
+					notifier.info(it, 3000);
+				}, 300 * i);
+			});
+		} else notifier.info(e.special['MESSAGE']);
+	});
+	on(Event.PLAY_SOUND, e => {
+		const sound = new Audio(`/sounds/${e.special['SOUND']}.wav`);
+		sound.play();
+	});
+
+	on(Event.PLAYER_LOST, e => {
+		notifier.error(`Игрок ${e.target.name} проиграл!`);
+	});
+	on(Event.PLAYER_WON, e => {
+		notifier.success(`Игрок ${e.target.name} победил!`);
 	});
 
 	on(Event.ROOM_CREATED, e => {
