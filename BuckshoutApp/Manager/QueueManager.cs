@@ -12,6 +12,12 @@ namespace BuckshoutApp.Manager
             Queue = Context.PlayerManager.Players;
             Queue.Shuffle();
             Current = Context.PlayerManager.Players.First();
+
+            Context.EventManager.Subscribe(Events.Event.PLAYER_LOST, (e) =>
+            {
+                if (e.target == Current)
+                    Next();
+            });
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }

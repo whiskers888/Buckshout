@@ -20,7 +20,7 @@ namespace BuckshoutApp.Items
             if (healOrDamage == 1)
                 e.initiator.ChangeHealth(Manager.ChangeHealthType.Heal, MAX_HEAL_HEALTH, e.initiator);
             else
-                e.initiator.ChangeHealth(Manager.ChangeHealthType.Heal, MAX_DAMAGE_HEALTH, e.initiator);
+                e.initiator.ChangeHealth(Manager.ChangeHealthType.Damage, MAX_DAMAGE_HEALTH, e.initiator);
         }
     }
 }

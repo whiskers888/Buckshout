@@ -37,8 +37,27 @@ namespace BuckshoutApp.Manager
                     IsBuff = false,
                 },
                 ModifierKey.PLAYER_TRAP => throw new NotImplementedException(),
-                ModifierKey.PLAYER_STOPWATCH => throw new NotImplementedException(),
-                ModifierKey.PLAYER_CHURCH_CROSS => throw new NotImplementedException(),
+                ModifierKey.PLAYER_STOPWATCH => new(Context)
+                {
+                    Name = "Дедлайн",
+                    /*StackCount = 1,*/
+                    Description = $"Время хода сокращено в 2 раза.",
+                    Duration = 1,
+                    State = [ModifierState.PLAYER_TURN_TIME_LIMITED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "timer",
+                    IsBuff = false,
+                },
+                ModifierKey.PLAYER_CHURCH_CROSS => new(Context)
+                {
+                    Name = "Крестный отец",
+                    Description = $" Возможно Всевышний поможет ему защититься от следующей пули",
+                    Duration = 1,
+                    State = [ModifierState.PLAYER_EVASION],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "cross",
+                    IsBuff = true,
+                },
                 ModifierKey.PLAYER_COVER => throw new NotImplementedException(),
                 ModifierKey.PLAYER_DEFIBRILLATOR => throw new NotImplementedException(),
                 ModifierKey.PLAYER_CHAINED => throw new NotImplementedException(),

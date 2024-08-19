@@ -30,6 +30,7 @@ namespace BuckshoutApp.Modifiers
         public string Icon { get; set; } = "";
         public bool IsBuff { get; set; } = false;
         public int Value { get; set; } = 0;
+        public int StackCount { get; set; } = 0;
         public ModifierTargetType TargetType { get; set; }
         public List<ModifierState> State { get; set; } = [];
         public Action? OnApplied { get; set; }
@@ -63,7 +64,25 @@ namespace BuckshoutApp.Modifiers
                 switch (TargetType)
                 {
                     case ModifierTargetType.PLAYER:
-                        ((Player)entity).RemoveModifier(this); break;
+                        target.RemoveModifier(this); break;
+
+                    case ModifierTargetType.RIFLE:
+                        Context.Rifle.RemoveModifier(this); break;
+
+                    case ModifierTargetType.ITEM:
+                        ((Item)entity).RemoveModifier(this, target); break;
+                }
+            });
+        }
+        public void RemoveWhen(Event @event, Player target, object entity = null, Func<EventData, bool> checkState = null)
+        {
+            Context.EventManager.Subscribe(@event, (e) =>
+            {
+                if (checkState?.Invoke(e) != true) return;
+                switch (TargetType)
+                {
+                    case ModifierTargetType.PLAYER:
+                        target.RemoveModifier(this); break;
 
                     case ModifierTargetType.RIFLE:
                         Context.Rifle.RemoveModifier(this); break;
@@ -94,6 +113,10 @@ namespace BuckshoutApp.Modifiers
                     }
                 });
             }
+        }
+        public void On()
+        {
+
         }
     }
 }

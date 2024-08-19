@@ -15,7 +15,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            e.special.Add("MESSAGE", Context.Rifle.NextPatron());
+            e.special.Add("MESSAGE", Context.Rifle.Patrons[^1].IsCharged);
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e); ;
         }
     }

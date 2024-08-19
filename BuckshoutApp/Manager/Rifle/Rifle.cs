@@ -71,15 +71,25 @@ namespace BuckshoutApp.Manager.Rifle
                 target = targetPlayer,
             };
 
+            if (Patrons.Count == 0)
+            {
+                Context.EventManager.Trigger(Event.RIFLE_EMPTIED);
+                return;
+            }
+
+
             bool IsCharged = NextPatron();
+            bool evasion = IsMissing(targetPlayer);
             if (IsCharged && targetPlayer == currentPlayer)
             {
-                targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, currentPlayer);
+                if (!evasion)
+                    targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, currentPlayer);
                 Context.QueueManager.Next();
             }
             else if (IsCharged && targetPlayer != currentPlayer)
             {
-                targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, targetPlayer);
+                if (!evasion)
+                    targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, targetPlayer);
                 Context.QueueManager.Next(targetPlayer);
             }
             else if (!IsCharged && targetPlayer == currentPlayer)
@@ -88,12 +98,21 @@ namespace BuckshoutApp.Manager.Rifle
                 Context.QueueManager.Next(targetPlayer);
 
             e.special.Add("IS_CHARGED", IsCharged);
-
+            e.special.Add("IS_MISSING", evasion);
             Context.EventManager.Trigger(Event.RIFLE_SHOT, e);
 
             Context.EventManager.Trigger(Event.RIFLE_PULLED, e);
         }
 
+        public bool IsMissing(Player target)
+        {
+            if (target.Is(ModifierState.PLAYER_EVASION))
+            {
+                int chance = Context.Random.Next(0, 100);
+                if (chance > target.GetModifier(ModifierState.PLAYER_EVASION).Value) return true;
+            }
+            return false;
+        }
         public void AddModifier(Modifier modifier, Player initiator)
         {
             Modifiers.Add(modifier);

@@ -60,7 +60,6 @@ namespace BuckshoutApp.Manager
                     target = this,
                     special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{id}" } }
                 });
-
         }
         public string Id { get; set; }
         public string Name { get; set; }
@@ -108,7 +107,6 @@ namespace BuckshoutApp.Manager
             {
                 Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DEAD).Apply(this);
                 Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
-
             }
         }
 
@@ -156,6 +154,7 @@ namespace BuckshoutApp.Manager
             Modifiers.Clear();
         }
 
+        public Modifier GetModifier(ModifierState state) => Modifiers.FirstOrDefault(it => it.State.Contains(state));
         public bool Is(ModifierState state)
         {
             foreach (var modifier in Modifiers)
