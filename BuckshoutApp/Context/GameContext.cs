@@ -58,6 +58,22 @@ namespace BuckshoutApp.Context
             QueueManager.Queue.Shuffle();
             Mode = mode;
             Status = GameStatus.IN_PROGRESS;
+
+            EventManager.Once(Event.PLAYER_WON, (e) =>
+            {
+                FinishGame();
+            });
+
+            EventManager.Subscribe(Event.PLAYER_LOST, (e) =>
+            {
+                if (PlayerManager.AlivePlayers.Count == 1)
+                {
+                    EventManager.Trigger(Event.PLAYER_WON, new Items.EventData()
+                    {
+                        target = PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
+                    });
+                }
+            });
         }
         public void StartRound()
         {
@@ -76,21 +92,6 @@ namespace BuckshoutApp.Context
 
             ItemManager.GiveItems();
             QueueManager.Next();
-            EventManager.Once(Event.PLAYER_WON, (e) =>
-            {
-                FinishGame();
-            });
-
-            EventManager.Subscribe(Event.PLAYER_LOST, (e) =>
-            {
-                if (PlayerManager.Players.Where(it => !it.Is(ModifierState.PLAYER_DEAD)).Count() == 1)
-                {
-                    EventManager.Trigger(Event.PLAYER_WON, new Items.EventData()
-                    {
-                        target = PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
-                    });
-                }
-            });
         }
         public void FinishGame()
         {

@@ -19,7 +19,7 @@
         GAME_RESUMED,
         GAME_FINISHED,
 
-        MESSAGE_RECEIVED,
+        MESSAGE,
         SECRET_MESSAGE,
         PLAY_SOUND,
 
@@ -39,6 +39,7 @@
         RIFLE_PULLED,
         RIFLE_AIMED,
         RIFLE_SHOT,
+        RIFLE_CHECKED,
         RIFLE_EMPTIED,
 
         ITEM_RECEIVED,

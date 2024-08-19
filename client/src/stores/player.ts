@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia';
-import { ItemBehavior, ModifierState, Player, UnitTargetTeam, UnitTargetType, useGame, type Item } from './game';
 import { useNotifier } from './notifier';
+import { ItemBehavior, UnitTargetTeam, UnitTargetType, type Item } from '@/game/item/item';
+import { useGame } from './game';
+import type { Player } from '@/game/player/player';
+import { ModifierState } from '@/game/modifier/modifier';
 
 export enum PlayerActivity {
 	WAITING,
 	DECIDES_CANCEL,
 	JUST_TURN,
 	USING_ITEM,
+	CHECKING_RIFLE,
 }
 
 interface LocalPlayer {
@@ -28,7 +32,7 @@ function canTargetTeam(state: LocalPlayer, target: Player) {
 	return canTargetAnything(state);
 }
 
-export const usePlayer = defineStore('player', {
+export const useLocalPlayer = defineStore('player', {
 	state: (): LocalPlayer => ({
 		id: '',
 		activity: PlayerActivity.WAITING,
@@ -57,6 +61,11 @@ export const usePlayer = defineStore('player', {
 			if (act === PlayerActivity.WAITING && this.isCurrent) {
 				this.activity = PlayerActivity.JUST_TURN;
 			} else this.activity = act;
+			if (act === PlayerActivity.CHECKING_RIFLE) {
+				setTimeout(() => {
+					this.setActivity(PlayerActivity.WAITING);
+				}, 3000);
+			}
 		},
 		cancelUse() {
 			this.setActivity(PlayerActivity.WAITING);
@@ -68,7 +77,8 @@ export const usePlayer = defineStore('player', {
 
 			if (!game.playerById(this.id!).hasItem(item)) return;
 			if (this.activity === PlayerActivity.DECIDES_CANCEL) {
-				if (item.behavior.includes(ItemBehavior.CUSTOM)) game.invokeUseItem(item, game.current!);
+				if (!game.lastCaster) return;
+				if (item.behavior.includes(ItemBehavior.CUSTOM)) game.invokeUseItem(item, game.lastCaster);
 				else return;
 			}
 			if (game.turn.time < game.settings.ITEM_CHANNELING_TIME * 2) {

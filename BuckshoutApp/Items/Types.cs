@@ -28,6 +28,13 @@
         TRAP,
     }
 
+    public enum ItemEvent
+    {
+        USED,
+        EFFECTED,
+        CANCELED
+    }
+
     public enum ItemState
     {
         IN_BOX,

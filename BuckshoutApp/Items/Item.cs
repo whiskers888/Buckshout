@@ -24,9 +24,10 @@ namespace BuckshoutApp.Items
         public virtual ItemBehavior[] Behavior { get; } = [ItemBehavior.NO_TARGET];
         public virtual ItemTargetType TargetType { get; } = ItemTargetType.NONE;
         public virtual ItemTargetTeam TargetTeam { get; } = ItemTargetTeam.NONE;
-        public ItemType ItemType { get; } = ItemType.DEFAULT;
+        public ItemType Type { get; } = ItemType.DEFAULT;
         public List<Modifier> Modifiers { get; } = [];
-        public ItemState ItemState { get; set; } = ItemState.IN_BOX;
+        public ItemState State { get; set; } = ItemState.IN_BOX;
+        public virtual Dictionary<ItemEvent, string> SoundSet { get; set; } = [];
 
 
         public virtual void Effect(EventData e) { }
@@ -35,13 +36,13 @@ namespace BuckshoutApp.Items
         internal virtual void OnCanceled(EventData e) { }
         public bool Use(EventData e)
         {
-            ItemState = ItemState.USING;
+            State = ItemState.USING;
             e.special.Add("ITEM", this);
             BeforeUse(e);
             Console.WriteLine($"{e.initiator?.Name} применяет {Name} на {e.target?.Name}");
-            if (ItemState == ItemState.NOT_ALLOWED)
+            if (State == ItemState.NOT_ALLOWED)
             {
-                ItemState = ItemState.IN_HAND;
+                State = ItemState.IN_HAND;
                 return false;
             }
             Context.EventManager.Trigger(Event.ITEM_USED, e);
@@ -50,12 +51,12 @@ namespace BuckshoutApp.Items
 
             timer = TimerExtension.SetInterval(() =>
             {
-                if (ItemState == ItemState.DELAYED) return;
+                if (State == ItemState.DELAYED) return;
                 else progress += Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL;
 
-                if (progress >= Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL || ItemState == ItemState.CANCELED)
+                if (progress >= Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL || State == ItemState.CANCELED)
                 {
-                    if (ItemState == ItemState.USING)
+                    if (State == ItemState.USING)
                     {
                         Context.EventManager.Trigger(Event.ITEM_EFFECTED, e);
                         Effect(e);
@@ -64,7 +65,7 @@ namespace BuckshoutApp.Items
                     {
                         OnCanceled(e);
                     }
-                    ItemState = ItemState.REMOVED;
+                    State = ItemState.REMOVED;
                     TimerExtension.ClearInterval(timer);
                 }
             }, Context.Settings.ITEM_CHANNELING_TIME);
@@ -72,9 +73,9 @@ namespace BuckshoutApp.Items
         }
         public void Disallow(EventData e, string msg)
         {
-            ItemState = ItemState.NOT_ALLOWED;
+            State = ItemState.NOT_ALLOWED;
             e.special.Add("MESSAGE", msg);
-            Context.EventManager.Trigger(Event.MESSAGE_RECEIVED, e);
+            Context.EventManager.Trigger(Event.MESSAGE, e);
         }
         public void Cancel()
         {
@@ -86,7 +87,7 @@ namespace BuckshoutApp.Items
                 });
             BeforeCancel();
             Console.WriteLine($"{Name} был отменен");
-            ItemState = ItemState.CANCELED;
+            State = ItemState.CANCELED;
         }
 
         public void AddModifier(Modifier modifier, Player initiator)

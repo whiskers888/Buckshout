@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Context;
+using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Manager
@@ -13,7 +14,7 @@ namespace BuckshoutApp.Manager
             Queue.Shuffle();
             Current = Context.PlayerManager.Players.First();
 
-            Context.EventManager.Subscribe(Events.Event.PLAYER_LOST, (e) =>
+            Context.EventManager.Subscribe(Event.PLAYER_LOST, (e) =>
             {
                 if (e.target == Current)
                     Next();
@@ -40,7 +41,7 @@ namespace BuckshoutApp.Manager
                     turnDuration /= modirier.Value;
                 }
             }
-            Context.EventManager.Trigger(Events.Event.TURN_CHANGED, new Items.EventData()
+            Context.EventManager.Trigger(Event.TURN_CHANGED, new Items.EventData()
             {
                 target = player,
                 special = new Dictionary<string, object>
@@ -51,7 +52,7 @@ namespace BuckshoutApp.Manager
 
             if (player.Is(ModifierState.PLAYER_STUNNED))
             {
-                Context.EventManager.Trigger(Events.Event.TURN_SKIPPED, new Items.EventData()
+                Context.EventManager.Trigger(Event.TURN_SKIPPED, new Items.EventData()
                 {
                     target = player,
                 });
@@ -71,7 +72,7 @@ namespace BuckshoutApp.Manager
                 Timer = TimerExtension.SetTimeout(() =>
                 {
                     if (Context.Status == GameStatus.FINISHED) return;
-                    Context.EventManager.Trigger(Events.Event.TURN_EXPIRED, new Items.EventData()
+                    Context.EventManager.Trigger(Event.TURN_EXPIRED, new Items.EventData()
                     {
                         target = player
                     });

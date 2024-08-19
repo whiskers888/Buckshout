@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GameStatus } from '@/stores/game';
+import { GameStatus } from '@/game/game';
 import { useRooms } from '@/stores/room';
 
 const rooms = useRooms();

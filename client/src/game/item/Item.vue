@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import { ItemBehavior, ModifierState, Player, type Item } from '@/stores/game';
-import { PlayerActivity, usePlayer } from '@/stores/player';
+import { PlayerActivity, useLocalPlayer } from '@/stores/player';
+import type { Player } from '../player/player';
+import { ItemBehavior, type Item } from './item';
+import { ModifierState } from '../modifier/modifier';
+import { useRifle } from '@/stores/rifle';
+import { RifleStatus } from '../rifle/rifle';
+import { useNotifier } from '@/stores/notifier';
 
-const localPlayer = usePlayer();
+const localPlayer = useLocalPlayer();
+const rifle = useRifle();
+const notifier = useNotifier();
 
 function onItemClick() {
+	if (rifle.status !== RifleStatus.READY) {
+		notifier.error('Винтовка еще не заряжена!');
+		return;
+	}
 	if (localPlayer.activity === PlayerActivity.USING_ITEM) {
 		localPlayer.selectAsTarget(owner, item);
 	} else {
@@ -24,7 +35,6 @@ const { owner, item } = defineProps<{
 			v-if="item"
 			:class="[
 				'item',
-
 				{
 					target: localPlayer.canTargetItem(owner, item),
 					special: item?.behavior.includes(ItemBehavior.CUSTOM) && owner.id === localPlayer.id,
@@ -43,7 +53,7 @@ const { owner, item } = defineProps<{
 								? `/models/items/${item.model}.png`
 								: '/models/items/unknown.png'
 						"
-						:alt="item.name"
+						:alt="!item.is(ModifierState.ITEM_INVISIBLE) ? item.name : 'Неизвестно'"
 					/>
 				</template>
 				<div
@@ -92,6 +102,7 @@ const { owner, item } = defineProps<{
 	justify-content: center;
 	width: 100%;
 	height: 100%;
+	border-radius: 10px;
 	border: solid 2px transparent;
 }
 .item-model {
@@ -132,15 +143,14 @@ const { owner, item } = defineProps<{
 	opacity: 1;
 	--border-angle: 0turn;
 	--main-bg: conic-gradient(from var(--border-angle), #213, #112 5%, #112 60%, #213 95%);
-	border-radius: 6px;
 	--gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #08f, #f03 99%, transparent);
 	background:
 		var(--main-bg) padding-box,
 		var(--gradient-border) border-box,
 		var(--main-bg) border-box;
 	background-position: center center;
-	-webkit-animation: bg-spin-ee4c7182 3s linear infinite;
-	animation: bg-spin-ee4c7182 3s linear infinite;
+	-webkit-animation: bg-spin 3s linear infinite;
+	animation: bg-spin 3s linear infinite;
 }
 @-webkit-keyframes bg-spin {
 	to {
@@ -152,6 +162,7 @@ const { owner, item } = defineProps<{
 		--border-angle: 1turn;
 	}
 }
+
 @property --border-angle {
 	syntax: '<angle>';
 	inherits: true;

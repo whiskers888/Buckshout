@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { useGame, type Player } from '@/stores/game';
-import Item from './items/Item.vue';
-import { RifleStatus, useRifle } from '@/stores/rifle';
-import { usePlayer } from '@/stores/player';
+import { useGame } from '@/stores/game';
+import { useLocalPlayer } from '@/stores/player';
+import { useRifle } from '@/stores/rifle';
+import type { Player } from './player';
+import { RifleStatus } from '../rifle/rifle';
+import Item from '../item/Item.vue';
+import { ModifierState } from '../modifier/modifier';
 
 const game = useGame();
-const localPlayer = usePlayer();
+const localPlayer = useLocalPlayer();
 const rifle = useRifle();
 
 const { player } = defineProps<{
@@ -21,6 +24,7 @@ const { player } = defineProps<{
 				me: player.isOwnedByUser,
 				current: player.isCurrent,
 				target: localPlayer.canTargetPlayer(player),
+				dead: player.is(ModifierState.PLAYER_DEAD),
 			},
 		]"
 		:style="{ borderColor: player.color }"
@@ -34,7 +38,14 @@ const { player } = defineProps<{
 					/>
 				</div>
 				<div style="max-width: 100%">
-					<div class="player-name">{{ player.isOwnedByUser ? '[Вы]' : '' }} {{ player.name }}</div>
+					<div class="player-name">
+						<v-icon
+							v-if="player.isOwnedByUser"
+							:color="player.color"
+							icon="mdi-star"
+						/>
+						<span>{{ player.name }}</span>
+					</div>
 
 					<v-tooltip
 						location="right"
@@ -166,6 +177,12 @@ const { player } = defineProps<{
 	background: v-bind('player.color');
 }
 
+.player.dead {
+	opacity: 0.2;
+	user-select: none;
+	pointer-events: none;
+}
+
 .current {
 	background: #a7a7a73b;
 }
@@ -212,6 +229,9 @@ const { player } = defineProps<{
 	text-overflow: ellipsis;
 	font-weight: bold;
 	font-size: 16px;
+	display: flex;
+	align-items: center;
+	gap: 4px;
 }
 
 .player-modifiers {

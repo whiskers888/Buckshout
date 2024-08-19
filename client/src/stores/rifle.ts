@@ -1,50 +1,16 @@
+import type { Player } from '@/game/player/player';
+import { RiflePatron, RifleStatus, type Rifle } from '@/game/rifle/rifle';
 import { defineStore } from 'pinia';
-import { Modifier, ModifierState, useGame, type Player } from './game';
-
-export enum RifleStatus {
-	NOT_LOADED,
-	READY,
-	SHOOTING,
-	PULLING,
-	LOADING,
-}
-
-export enum RiflePatron {
-	UNKNOWN,
-	CHARGED,
-	BLANK,
-}
-
-export interface Rifle {
-	target: Player | null;
-	position: number;
-
-	status: RifleStatus;
-	modifiers: Modifier[];
-
-	patrons: {
-		current: RiflePatron;
-		charged: number;
-		blank: number;
-		sequence: boolean[];
-	};
-}
-
-const buckshotSound = new Audio('/sounds/buckshot.wav');
-const blankshotSound = new Audio('/sounds/blankshot.wav');
-const pullSound = new Audio('/sounds/pull.wav');
-const loadSound = new Audio('/sounds/load.wav');
-
-const play = (sound: HTMLAudioElement) => {
-	sound.currentTime = 0;
-	sound.play();
-};
+import { useGame } from './game';
+import { Modifier, type ModifierState } from '@/game/modifier/modifier';
+import { useSound } from './sound';
 
 export const useRifle = defineStore('rifle', {
 	state: (): Rifle => ({
 		target: null,
 		position: 0,
 		status: RifleStatus.NOT_LOADED,
+		isMissing: false,
 		modifiers: [],
 		patrons: {
 			current: RiflePatron.UNKNOWN,
@@ -70,25 +36,33 @@ export const useRifle = defineStore('rifle', {
 			this.position = index * 350;
 			this.target = player;
 		},
-		shoot(isBuckshot: boolean) {
-			if (isBuckshot) play(buckshotSound);
-			else play(blankshotSound);
+		shoot(isCharged: boolean, isMissing: boolean) {
+			const sound = useSound();
+			if (isCharged) sound.play('buckshot', 'rifle');
+			else sound.play('blankshot', 'rifle');
 
+			this.isMissing = isMissing;
 			this.status = RifleStatus.SHOOTING;
-			this.patrons.current = isBuckshot ? RiflePatron.CHARGED : RiflePatron.BLANK;
+			this.patrons.current = isCharged ? RiflePatron.CHARGED : RiflePatron.BLANK;
 		},
-		pull(isBuckshot: boolean) {
+		pull(isCharged: boolean) {
+			const sound = useSound();
 			setTimeout(() => {
-				play(pullSound);
+				sound.play('pull', 'rifle');
 				this.status = RifleStatus.PULLING;
-				this.patrons.current = isBuckshot ? RiflePatron.CHARGED : RiflePatron.BLANK;
+				this.patrons.current = isCharged ? RiflePatron.CHARGED : RiflePatron.BLANK;
 
 				setTimeout(() => {
 					this.status = RifleStatus.READY;
 				}, 1500);
 			}, 500);
 		},
+		check(isCharged: boolean) {
+			this.patrons.current = isCharged ? RiflePatron.CHARGED : RiflePatron.BLANK;
+		},
 		load(patrons: number, charged: number) {
+			const sound = useSound();
+
 			setTimeout(() => {
 				this.status = RifleStatus.LOADING;
 				this.patrons.charged = charged;
@@ -113,7 +87,7 @@ export const useRifle = defineStore('rifle', {
 				setTimeout(() => {
 					const load = setInterval(() => {
 						if (this.patrons.sequence.length) {
-							play(loadSound);
+							sound.play('load', 'rifle');
 							this.patrons.sequence.shift();
 						} else {
 							this.status = RifleStatus.READY;

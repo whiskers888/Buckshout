@@ -19,12 +19,11 @@ namespace BuckshoutApp.Items
         internal override void BeforeUse(EventData e)
         {
             Item target = Context.ItemManager.GetLastAfter(this);
-            if (target is not null) target.ItemState = ItemState.DELAYED;
+            if (target is not null) target.State = ItemState.DELAYED;
         }
 
         public override void Effect(EventData e)
         {
-            Console.WriteLine($"{e.initiator?.Name} применил {Name} на {e.target?.Name}  ");
             Item target = Context.ItemManager.GetLastAfter(this);
             target?.Cancel();
         }
@@ -32,7 +31,7 @@ namespace BuckshoutApp.Items
         internal override void BeforeCancel()
         {
             Item target = Context.ItemManager.GetLastAfter(this);
-            if (target is not null) target.ItemState = ItemState.USING;
+            if (target is not null) target.State = ItemState.USING;
         }
 
     }

@@ -12,11 +12,12 @@ namespace BuckshoutApp.Items
         public override string Lore => "Алло, ну как там с патронами?";
         public override string Model => "phone";
 
-        internal override void BeforeUse(EventData e)
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
         {
-            e.special.Add("SOUND", "phone_beeps");
-            Context.EventManager.Trigger(Event.PLAY_SOUND, e);
-        }
+            {ItemEvent.USED, "phone/beeps"},
+            {ItemEvent.CANCELED, "phone/connection_lost"}
+        };
+
         public override void Effect(EventData e)
         {
             int countPatrons = Context.Rifle.Patrons.Count;
@@ -39,10 +40,6 @@ namespace BuckshoutApp.Items
                 "Извините....",
                 "..связь прервалась..." });
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);
-
-            e.special.Remove("SOUND");
-            e.special.Add("SOUND", "phone_connection_lost");
-            Context.EventManager.Trigger(Event.PLAY_SOUND, e);
         }
     }
 }

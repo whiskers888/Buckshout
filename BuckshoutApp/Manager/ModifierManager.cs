@@ -29,7 +29,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_HANDCUFFS => new(Context)
                 {
                     Name = "Оцепенение",
-                    Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход",
+                    Description = "Игрок находится в наручниках, поэтому пропускает свой следующий ход.",
                     Duration = 1,
                     State = [ModifierState.PLAYER_STUNNED],
                     TargetType = ModifierTargetType.PLAYER,
@@ -51,8 +51,8 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_CHURCH_CROSS => new(Context)
                 {
                     Name = "Крестный отец",
-                    Description = $" Возможно Всевышний поможет ему защититься от следующей пули",
-                    Duration = 1,
+                    Description = $" Возможно, Всевышний поможет Вам защититься от следующей пули.",
+                    Duration = 0,
                     State = [ModifierState.PLAYER_EVASION],
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "cross",
@@ -60,12 +60,22 @@ namespace BuckshoutApp.Manager
                 },
                 ModifierKey.PLAYER_COVER => throw new NotImplementedException(),
                 ModifierKey.PLAYER_DEFIBRILLATOR => throw new NotImplementedException(),
-                ModifierKey.PLAYER_CHAINED => throw new NotImplementedException(),
+                ModifierKey.PLAYER_CHAINED => new(Context)
+                {
+                    Name = "Скованные одной цепью",
+                    Description = "Вы будете получать урон всесте с тем, с кем Вас связали.",
+                    Duration = 1,
+                    State = [ModifierState.PLAYER_CHAINED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "link-variant",
+                    IsBuff = false,
+                },
+
                 // Эффекты предметов
                 ModifierKey.ITEM_CANNOT_BE_STOLEN => new(Context)
                 {
                     Name = "ПРЕДМЕТ 404",
-                    Description = "Этот предмет нельзя украсть",
+                    Description = "Этот предмет нельзя украсть.",
                     Duration = -1,
                     State = [ModifierState.ITEM_CANNOT_BE_STOLEN],
                     TargetType = ModifierTargetType.ITEM,
@@ -75,7 +85,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.ITEM_ADRENALINE => new(Context)
                 {
                     Name = "Жулик, не воруй",
-                    Description = "Предмет был украден, поэтому он пропадет на следующий ход",
+                    Description = "Предмет был украден, поэтому он пропадет на следующий ход.",
                     Duration = 1,
                     State = [ModifierState.ITEM_LOST_ON_TURN_ENDED],
                     TargetType = ModifierTargetType.ITEM,
@@ -86,7 +96,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.RIFLE_HACKSAW => new(Context)
                 {
                     Name = "Ножовка",
-                    Description = "Винтовка обрезана, будет нанесен двойной урон",
+                    Description = "Винтовка обрезана, при попадании будет нанесен двойной урон!",
                     Duration = -1,
                     State = [ModifierState.RIFLE_BONUS_DAMAGE],
                     TargetType = ModifierTargetType.RIFLE,

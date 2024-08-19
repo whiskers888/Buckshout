@@ -18,12 +18,10 @@ namespace BuckshoutApp.Modifiers
         public Modifier(GameContext context)
         {
             Context = context;
-            OnApplied?.Invoke();
         }
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = "";
-        public Player Target { get; set; }
         public string Description { get; set; } = "";
         // public Dictionary<ModifierFunction, object> Functions { get; set; } = [];
         public int Duration { get; set; } = 0;
@@ -31,29 +29,30 @@ namespace BuckshoutApp.Modifiers
         public bool IsBuff { get; set; } = false;
         public int Value { get; set; } = 0;
         public int StackCount { get; set; } = 0;
+
+        public Player Target { get; set; }
         public ModifierTargetType TargetType { get; set; }
         public List<ModifierState> State { get; set; } = [];
         public Action? OnApplied { get; set; }
+        public Action? OnRemoved { get; set; }
         public void Apply(Player target)
         {
             Target = target;
-            string id = "";
-            SetDuration(target);
+            SetDuration();
             OnApplied?.Invoke();
-            Target.AddModifier(this);
+            target.AddModifier(this);
         }
         public void Apply(Player initiator, Item item)
         {
             Target = initiator;
-            string id = "";
-            SetDuration(initiator);
+            SetDuration();
             OnApplied?.Invoke();
             item.AddModifier(this, initiator);
         }
         public void Apply(Player initiator, Rifle rifle)
         {
             Target = initiator;
-            SetDuration(initiator);
+            SetDuration();
             OnApplied?.Invoke();
             rifle.AddModifier(this, initiator);
         }
@@ -72,13 +71,16 @@ namespace BuckshoutApp.Modifiers
                     case ModifierTargetType.ITEM:
                         ((Item)entity).RemoveModifier(this, target); break;
                 }
+                OnRemoved?.Invoke();
             });
         }
         public void RemoveWhen(Event @event, Player target, object entity = null, Func<EventData, bool> checkState = null)
         {
-            Context.EventManager.Subscribe(@event, (e) =>
+            string id = "";
+            id = Context.EventManager.SubscribeUniq(@event, (e) =>
             {
                 if (checkState?.Invoke(e) != true) return;
+
                 switch (TargetType)
                 {
                     case ModifierTargetType.PLAYER:
@@ -90,28 +92,37 @@ namespace BuckshoutApp.Modifiers
                     case ModifierTargetType.ITEM:
                         ((Item)entity).RemoveModifier(this, target); break;
                 }
+                Context.EventManager.Unsubscribe(@event, id);
+                OnRemoved?.Invoke();
             });
         }
-        private void SetDuration(Player target)
+        private void SetDuration()
         {
             string id = "";
             if (Duration >= 0)
             {
-                id = Context.EventManager.SubscribeUniq(Manager.Events.Event.TURN_CHANGED, (e) =>
+                id = Context.EventManager.SubscribeUniq(Event.TURN_CHANGED, (e) =>
                 {
-                    if (e.target.Id == target.Id)
+                    if (e.target.Id == Target.Id)
                     {
                         if (Duration == 0)
                         {
                             Target.RemoveModifier(this);
-
-                            // Возможно здесь id будет пустой
-                            Context.EventManager.Unsubscribe(Manager.Events.Event.TURN_CHANGED, id);
+                            OnRemoved?.Invoke();
+                            Context.EventManager.Unsubscribe(Event.TURN_CHANGED, id);
                         }
                         Duration--;
                     }
                 });
             }
+        }
+
+        public string On(Event @event, Action<EventData> action)
+        {
+            return Context.EventManager.SubscribeUniq(@event, (e) =>
+            {
+                action(e);
+            });
         }
     }
 }

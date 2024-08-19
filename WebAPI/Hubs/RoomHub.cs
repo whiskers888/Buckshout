@@ -12,7 +12,7 @@ namespace Buckshout.Controllers
     {
         public override async Task<Task> OnConnectedAsync()
         {
-            var userConnection = await ApplicationContext.CacheManager.GetCache(Context.ConnectionId);
+            /*var userConnection = await ApplicationContext.CacheManager.GetCache(Context.ConnectionId);
             if (userConnection != null)
             {
                 var room = ApplicationContext.RoomManager.GetRoom(userConnection.roomName);
@@ -27,11 +27,11 @@ namespace Buckshout.Controllers
                     }
                 });
             }
-            else
+            else*/
             {
                 var data = GetCommon();
                 data.rooms = ApplicationContext.RoomManager.GetAllRoomsModel();
-                await CacheManager.SetCache(Context.ConnectionId);
+                // await CacheManager.SetCache(Context.ConnectionId);
                 await SendCaller(Event.CONNECTED, data);
             }
 
@@ -47,7 +47,7 @@ namespace Buckshout.Controllers
 
             GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
-                if (e == Event.SECRET_MESSAGE)
+                if (e == Event.SECRET_MESSAGE || e == Event.RIFLE_CHECKED)
                     await SendPlayer(data.initiator!.Id, e, new DataModel(data));
                 else
                     await Send(roomName, e, new DataModel(data));
@@ -63,7 +63,7 @@ namespace Buckshout.Controllers
         {
             if (GetGameContext(roomName).Status != GameStatus.PREPARING) return;
 
-            await CacheManager.UpdateCache(new UserConnection(Context.ConnectionId, roomName));
+            // await CacheManager.UpdateCache(new UserConnection(Context.ConnectionId, roomName));
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
             await SendCaller(Event.ROOM_JOINED, new

@@ -25,9 +25,12 @@ namespace BuckshoutApp.Manager
             Type stopwatch = typeof(Stopwatch);
             Type churchcross = typeof(ChurchCross);
 
+            Type useless = typeof(Useless);
+            Type chain = typeof(Chain);
+
             // Добавляем их в массив
-            RefAvaliableItems.AddRange([/*beer, adrenaline, handCuffs,
-                                        hackSaw,*/ cancel, stopwatch, /* phone, cigarettes, expiredMedicine,
+            RefAvaliableItems.AddRange([/*beer,
+                                        hackSaw, churchcross, */ cancel, handCuffs, chain, /* stopwatch, phone, cigarettes, expiredMedicine,
                                         magnifier, invertor, churchcross*/]);
         }
         public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
@@ -36,7 +39,7 @@ namespace BuckshoutApp.Manager
         public int MAX_TURN_DURATION { get; set; } = 60000;
 
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
-        public int INIT_PLAYER_HEALTH { get; set; } = 1;
+        public int INIT_PLAYER_HEALTH { get; set; } = 4;
 
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 

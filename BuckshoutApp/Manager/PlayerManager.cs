@@ -1,5 +1,6 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Items;
+using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Manager
@@ -20,6 +21,8 @@ namespace BuckshoutApp.Manager
         private readonly GameContext Context = context;
 
         public List<Player> Players { get; set; } = [];
+
+        public List<Player> AlivePlayers => Players.Where(it => !it.Is(ModifierState.PLAYER_DEAD)).ToList();
 
         public Player Get(string id) => Players.First(it => it.Id == id);
         public void AddPlayer(string id, string name)
@@ -55,7 +58,7 @@ namespace BuckshoutApp.Manager
             else if (Context.Mode == Mode.Pro)
                 Health = 2;
             else
-                Context.EventManager.Trigger(Events.Event.MESSAGE_RECEIVED, new EventData()
+                Context.EventManager.Trigger(Event.MESSAGE, new EventData()
                 {
                     target = this,
                     special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{id}" } }
@@ -69,6 +72,7 @@ namespace BuckshoutApp.Manager
         public string Team { get; set; }
         public int Avatar { get; set; }
         public PlayerStatus Status { get; set; }
+
         public void UseItem(string itemId, string targetId, string? targetItemId = null)
         {
             Player target = Context.PlayerManager.Get(targetId);
@@ -83,37 +87,42 @@ namespace BuckshoutApp.Manager
                 Inventory.Remove(item);
         }
 
-        public void ChangeHealth(ChangeHealthType direction, int count, Player initiator)
+        public void ChangeHealth(ChangeHealthType direction, int count, Player initiator, string? type = null)
         {
+            if (this.Is(ModifierState.PLAYER_DEAD)) return;
             EventData e = new()
             {
                 initiator = initiator,
                 target = this,
-                special = new Dictionary<string, object>() { { "VALUE", count } }
             };
+            e.special.Add("VALUE", count);
+            if (type != null)
+            {
+                e.special.Add("TYPE", type);
+            }
             switch (direction)
             {
                 case ChangeHealthType.Heal:
                     Health += count;
-                    Context.EventManager.Trigger(Events.Event.HEALTH_RESTORED, e);
+                    Context.EventManager.Trigger(Event.HEALTH_RESTORED, e);
                     break;
                 case ChangeHealthType.Damage:
                     Health -= count;
-                    Context.EventManager.Trigger(Events.Event.DAMAGE_TAKEN, e);
+                    Context.EventManager.Trigger(Event.DAMAGE_TAKEN, e);
                     break;
             }
             e.special.Clear();
             if (Health <= 0)
             {
                 Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DEAD).Apply(this);
-                Context.EventManager.Trigger(Events.Event.PLAYER_LOST, e);
+                Context.EventManager.Trigger(Event.PLAYER_LOST, e);
             }
         }
 
         public void AddItem(Item item)
         {
             Inventory.Add(item);
-            Context.EventManager.Trigger(Events.Event.ITEM_RECEIVED, new EventData()
+            Context.EventManager.Trigger(Event.ITEM_RECEIVED, new EventData()
             {
                 target = this,
                 initiator = this,
@@ -124,7 +133,7 @@ namespace BuckshoutApp.Manager
         {
             if (!Inventory.Contains(item)) return;
             Inventory.Remove(item);
-            Context.EventManager.Trigger(Events.Event.ITEM_REMOVED, new EventData()
+            Context.EventManager.Trigger(Event.ITEM_REMOVED, new EventData()
             {
                 target = this,
                 special = new Dictionary<string, object>() { { "ITEM", item } }
@@ -134,7 +143,7 @@ namespace BuckshoutApp.Manager
         public void AddModifier(Modifier modifier)
         {
             Modifiers.Add(modifier);
-            Context.EventManager.Trigger(Events.Event.MODIFIER_APPLIED, new EventData()
+            Context.EventManager.Trigger(Event.MODIFIER_APPLIED, new EventData()
             {
                 target = this,
                 special = { { "MODIFIER", modifier } }
@@ -143,7 +152,7 @@ namespace BuckshoutApp.Manager
         public void RemoveModifier(Modifier modifier)
         {
             Modifiers.Remove(modifier);
-            Context.EventManager.Trigger(Events.Event.MODIFIER_REMOVED, new EventData()
+            Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
             {
                 target = this,
                 special = { { "MODIFIER", modifier } }

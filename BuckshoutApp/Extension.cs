@@ -5,6 +5,7 @@ namespace BuckshoutApp
 {
     public static class Extension
     {
+
         public static T? Pop<T>(this IList<T> list)
         {
             if (list.Count < 1) return default;
@@ -25,6 +26,11 @@ namespace BuckshoutApp
                 list[k] = list[n];
                 list[n] = value;*/
             }
+        }
+        public static T RandomChoise<T>(this IList<T> list)
+        {
+            var random = new Random();
+            return list[random.Next(list.Count)];
         }
     }
     public static class TimerExtension
@@ -61,7 +67,7 @@ namespace BuckshoutApp
             timer.Enabled = true;
             timer.Start();
 
-            return timer as IDisposable;
+            return timer;
         }
         public static void ClearInterval(int timerId)
         {

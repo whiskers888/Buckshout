@@ -11,7 +11,8 @@ namespace Buckshout.Models
         public string Model { get; set; } = item.Model;
         public ItemTargetType TargetType { get; set; } = item.TargetType;
         public ItemTargetTeam TargetTeam { get; set; } = item.TargetTeam;
-        public ItemType Type { get; set; } = item.ItemType;
+        public ItemType Type { get; set; } = item.Type;
         public ItemBehavior[] Behavior { get; set; } = item.Behavior;
+        public Dictionary<ItemEvent, string> SoundSet { get; set; } = item.SoundSet;
     }
 }

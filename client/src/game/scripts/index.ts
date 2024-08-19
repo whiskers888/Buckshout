@@ -1,9 +1,13 @@
 import { connection, Event } from '@/api';
-import { Player, useGame } from '@/stores/game';
 import { useNotifier } from '@/stores/notifier';
-import { PlayerActivity, usePlayer } from '@/stores/player';
+import { PlayerActivity, useLocalPlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
 import { useRooms } from '@/stores/room';
+import { Player } from '../player/player';
+import { useGame } from '@/stores/game';
+import { useSound } from '@/stores/sound';
+import { Item, ItemEvent } from '../item/item';
+import { useItems } from '@/stores/items';
 
 interface EventData {
 	target?: Player;
@@ -38,18 +42,20 @@ export function init() {
 	const rooms = useRooms();
 	const game = useGame();
 	const rifle = useRifle();
-	const player = usePlayer();
+	const localPlayer = useLocalPlayer();
 	const notifier = useNotifier();
+	const sound = useSound();
+	const items = useItems();
 
 	on(Event.CONNECTED, e => {
 		rooms.items = e.rooms;
-		player.setConnectionId(connection.connectionId!);
+		localPlayer.setConnectionId(connection.connectionId!);
 	});
 	on(Event.DISCONNECTED, () => {
 		rooms.invokeLeave();
 	});
 
-	on(Event.MESSAGE_RECEIVED, e => {
+	on(Event.MESSAGE, e => {
 		notifier.info(e.special['MESSAGE']);
 	});
 	on(Event.SECRET_MESSAGE, e => {
@@ -62,8 +68,7 @@ export function init() {
 		} else notifier.info(e.special['MESSAGE']);
 	});
 	on(Event.PLAY_SOUND, e => {
-		const sound = new Audio(`/sounds/${e.special['SOUND']}.wav`);
-		sound.play();
+		sound.play(e.special['SOUND'], '');
 	});
 
 	on(Event.PLAYER_LOST, e => {
@@ -104,9 +109,9 @@ export function init() {
 		game.start();
 	});
 	on(Event.TURN_CHANGED, e => {
-		notifier.info(`Очередь игрока ${e.target.name}!`);
 		game.startTurn(e.target, e.special['TIME']);
-		player.setActivity(PlayerActivity.WAITING);
+		localPlayer.setActivity(PlayerActivity.WAITING);
+		localPlayer.isCurrent ? notifier.success(`Ваша очередь!`) : notifier.info(`Очередь игрока ${e.target.name}!`);
 	});
 	on(Event.TURN_SKIPPED, e => {
 		notifier.error(`Игрок ${e.target.name} пропускает ход!`);
@@ -122,16 +127,36 @@ export function init() {
 		game.removeItem(e.target, e.special['ITEM']);
 	});
 	on(Event.ITEM_USED, e => {
-		game.removeItem(e.initiator, e.special['ITEM']);
-		player.setActivity(PlayerActivity.DECIDES_CANCEL);
+		const initiator = game.playerById(e.initiator.id);
+		game.lastCaster = initiator;
+		const item = initiator.inventory.find(it => it.id === e.special['ITEM'].id);
+		if (!item) return;
+
+		game.removeItem(e.initiator, item);
+		localPlayer.setActivity(PlayerActivity.DECIDES_CANCEL);
+		sound.play(item.soundSet[ItemEvent.USED]);
+
+		let target;
+		if (e.initiator.id !== e.target?.id) target = game.playerById(e.target.id);
+
+		let targetItem;
+		if (target && e.special['TARGET_ITEM'])
+			targetItem = target.inventory.find(it => it.id === e.special['TARGET_ITEM'].id);
+		items.add(initiator, item, target, targetItem);
 	});
 	on(Event.ITEM_EFFECTED, e => {
-		player.setActivity(PlayerActivity.WAITING);
+		const item: Item = e.special['ITEM'];
+		localPlayer.setActivity(PlayerActivity.WAITING);
+		sound.play(item.soundSet[ItemEvent.EFFECTED]);
+		items.clear();
 	});
 	on(Event.ITEM_STOLEN, e => {
 		game.removeItem(e.target, e.special['TARGET_ITEM']);
 	});
-	on(Event.ITEM_CANCELED, e => {});
+	on(Event.ITEM_CANCELED, e => {
+		const item: Item = e.special['ITEM'];
+		sound.play(item.soundSet[ItemEvent.CANCELED]);
+	});
 
 	on(Event.ROUND_STARTED, e => {
 		game.setRound(e.special['ROUND']);
@@ -144,10 +169,14 @@ export function init() {
 		rifle.aim(e.target);
 	});
 	on(Event.RIFLE_SHOT, e => {
-		rifle.shoot(e.special['IS_CHARGED']);
+		rifle.shoot(e.special['IS_CHARGED'], e.special['IS_MISSING']);
 	});
 	on(Event.RIFLE_PULLED, e => {
 		rifle.pull(e.special['IS_CHARGED']);
+	});
+	on(Event.RIFLE_CHECKED, e => {
+		rifle.check(e.special['IS_CHARGED']);
+		localPlayer.setActivity(PlayerActivity.CHECKING_RIFLE);
 	});
 
 	on(Event.MODIFIER_APPLIED, e => {

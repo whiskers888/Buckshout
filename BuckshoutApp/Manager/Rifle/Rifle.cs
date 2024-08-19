@@ -56,7 +56,7 @@ namespace BuckshoutApp.Manager.Rifle
 
         public bool NextPatron()
         {
-            Patron patron = Patrons[^1]/*Patrons[Patrons.Count - 1]*/;
+            Patron patron = Patrons[^1];
             Patrons.Remove(patron);
             return patron.IsCharged;
         }
@@ -77,14 +77,17 @@ namespace BuckshoutApp.Manager.Rifle
                 return;
             }
 
-
             bool IsCharged = NextPatron();
             bool evasion = IsMissing(targetPlayer);
             if (IsCharged && targetPlayer == currentPlayer)
             {
                 if (!evasion)
+                {
                     targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, currentPlayer);
-                Context.QueueManager.Next();
+                    Context.QueueManager.Next();
+                }
+                else
+                    Context.QueueManager.Next(currentPlayer);
             }
             else if (IsCharged && targetPlayer != currentPlayer)
             {
@@ -98,9 +101,9 @@ namespace BuckshoutApp.Manager.Rifle
                 Context.QueueManager.Next(targetPlayer);
 
             e.special.Add("IS_CHARGED", IsCharged);
-            e.special.Add("IS_MISSING", evasion);
-            Context.EventManager.Trigger(Event.RIFLE_SHOT, e);
+            e.special.Add("IS_MISSING", IsCharged && evasion);
 
+            Context.EventManager.Trigger(Event.RIFLE_SHOT, e);
             Context.EventManager.Trigger(Event.RIFLE_PULLED, e);
         }
 
