@@ -5,7 +5,6 @@ using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-
     public class EventData
     {
         public string Id { get; } = Guid.NewGuid().ToString();
@@ -24,7 +23,7 @@ namespace BuckshoutApp.Items
         public virtual ItemBehavior[] Behavior { get; } = [ItemBehavior.NO_TARGET];
         public virtual ItemTargetType TargetType { get; } = ItemTargetType.NONE;
         public virtual ItemTargetTeam TargetTeam { get; } = ItemTargetTeam.NONE;
-        public ItemType Type { get; } = ItemType.DEFAULT;
+        public virtual ItemType Type { get; } = ItemType.DEFAULT;
         public List<Modifier> Modifiers { get; } = [];
         public ItemState State { get; set; } = ItemState.IN_BOX;
         public virtual Dictionary<ItemEvent, string> SoundSet { get; set; } = [];

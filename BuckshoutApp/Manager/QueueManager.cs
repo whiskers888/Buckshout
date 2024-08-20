@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Context;
+using BuckshoutApp.Items;
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Modifiers;
 
@@ -23,12 +24,34 @@ namespace BuckshoutApp.Manager
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
         public IDisposable? Timer { get; set; } = null;
+
+        public void CheckWinner()
+        {
+            if (Context.PlayerManager.AlivePlayers.Count == 1)
+            {
+                Context.EventManager.Trigger(Event.PLAYER_WON, new EventData()
+                {
+                    target = Context.PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
+                });
+            }
+            else if (Context.PlayerManager.AlivePlayers.Count == 0)
+            {
+                var e = new EventData();
+                e.special.Add("MESSAGE", "Ничья! Что-ж, за то никому не придется платить...");
+                Context.EventManager.Trigger(Event.MESSAGE, e);
+                Context.FinishGame();
+            }
+        }
         public void Next(Player player)
         {
             Timer?.Dispose();
+
+            CheckWinner();
             if (Context.Status == GameStatus.FINISHED) return;
+
             if (player.Is(ModifierState.PLAYER_DEAD))
             {
+                Current = player;
                 Next();
                 return;
             }

@@ -4,15 +4,12 @@ using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Chain : Item
+    public class Chain(GameContext context) : Item(context)
     {
-        public Chain(GameContext context) : base(context)
-        {
-        }
-
         public override string Name => "Цепь";
         public override string Description => "Связывает цель со случайным игроком (в том числе и вы).\n" +
                                               "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
+                                              "Эффект применяется к каждой из целей и наносит урон связанному игроку, при этом развеивается каждый из эффектов по отдельности, как только ход дойдет до игрока.\n" +
                                               "Не может примениться на уже связанного игрока.";
         public override string Model => "chain";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
@@ -25,7 +22,7 @@ namespace BuckshoutApp.Items
             {
                 Disallow(e, "Этот игрок уже связан!");
             }
-            if (Context.PlayerManager.AlivePlayers.Count < 2)
+            if (Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.target).Count() < 1)
             {
                 Disallow(e, "Не с кем связать!");
             }

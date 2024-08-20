@@ -12,13 +12,9 @@ namespace BuckshoutApp.Modifiers
         RIFLE,
         ITEM
     }
-    public class Modifier
+    public class Modifier(GameContext context)
     {
-        public GameContext Context { get; set; }
-        public Modifier(GameContext context)
-        {
-            Context = context;
-        }
+        public GameContext Context { get; set; } = context;
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = "";
@@ -74,23 +70,23 @@ namespace BuckshoutApp.Modifiers
                 OnRemoved?.Invoke();
             });
         }
-        public void RemoveWhen(Event @event, Player target, object entity = null, Func<EventData, bool> checkState = null)
+        public void RemoveWhen(Event @event, object entity = null, Func<EventData, bool> checkState = null)
         {
             string id = "";
             id = Context.EventManager.SubscribeUniq(@event, (e) =>
             {
-                if (checkState?.Invoke(e) != true) return;
+                if (checkState != null && checkState.Invoke(e) != true) return;
 
                 switch (TargetType)
                 {
                     case ModifierTargetType.PLAYER:
-                        target.RemoveModifier(this); break;
+                        Target.RemoveModifier(this); break;
 
                     case ModifierTargetType.RIFLE:
                         Context.Rifle.RemoveModifier(this); break;
 
                     case ModifierTargetType.ITEM:
-                        ((Item)entity).RemoveModifier(this, target); break;
+                        ((Item)entity).RemoveModifier(this, Target); break;
                 }
                 Context.EventManager.Unsubscribe(@event, id);
                 OnRemoved?.Invoke();
@@ -103,7 +99,7 @@ namespace BuckshoutApp.Modifiers
             {
                 id = Context.EventManager.SubscribeUniq(Event.TURN_CHANGED, (e) =>
                 {
-                    if (e.target.Id == Target.Id)
+                    if (e.target == Target)
                     {
                         if (Duration == 0)
                         {

@@ -4,10 +4,8 @@ using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Hacksaw : Item
+    public class Hacksaw(GameContext context) : Item(context)
     {
-        public Hacksaw(GameContext context) : base(context) { }
-
         public override string Name => "Ножовка";
         public override string Description => "Следующий выстрел дробовика нанесет 2 ед. урона.\n" +
                                                "Эффект не пропадет, если ход завершился без выстрела.\n" +

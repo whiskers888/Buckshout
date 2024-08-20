@@ -12,26 +12,40 @@ namespace BuckshoutApp.Manager
             Type adrenaline = typeof(Adrenaline);
             Type beer = typeof(Beer);
             Type cancel = typeof(Cancel);
-            Type hackSaw = typeof(Hacksaw);
+            Type hacksaw = typeof(Hacksaw);
             Type phone = typeof(Phone);
-            Type handCuffs = typeof(Handcuffs);
+            Type handcuffs = typeof(Handcuffs);
 
             Type cigarettes = typeof(Cigarettes);
-            Type expiredMedicine = typeof(ExpiredMedicine);
+            Type medicine = typeof(ExpiredMedicine);
             Type magnifier = typeof(Magnifier);
             Type invertor = typeof(Invertor);
 
-
             Type stopwatch = typeof(Stopwatch);
-            Type churchcross = typeof(ChurchCross);
+            Type cross = typeof(ChurchCross);
 
             Type useless = typeof(Useless);
             Type chain = typeof(Chain);
+            Type bloodpack = typeof(BloodPack);
 
             // Добавляем их в массив
-            RefAvaliableItems.AddRange([/*beer,
-                                        hackSaw, churchcross, */ cancel, handCuffs, chain, /* stopwatch, phone, cigarettes, expiredMedicine,
-                                        magnifier, invertor, churchcross*/]);
+            RefAvaliableItems.AddRange([
+                adrenaline,
+                beer,
+                // bloodpack,
+                cancel,
+                chain,
+                cross,
+                cigarettes,
+                hacksaw,
+                handcuffs,
+                invertor,
+                magnifier,
+                medicine,
+                phone,
+                stopwatch,
+                useless
+            ]);
         }
         public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
         public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 
@@ -39,14 +53,14 @@ namespace BuckshoutApp.Manager
         public int MAX_TURN_DURATION { get; set; } = 60000;
 
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
-        public int INIT_PLAYER_HEALTH { get; set; } = 4;
+        public int INIT_PLAYER_HEALTH { get; set; } = 6;
 
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 
         public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
         public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 
-        public int ITEMS_PER_ROUND { get; set; } = 8; // каждый раунд выдается столько итемов
+        public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
 
         public int FATIGUE_ROUND { get; set; } = 6; // начиная с этого раунда у игрока появляется усталость. предметы больше не выдаются

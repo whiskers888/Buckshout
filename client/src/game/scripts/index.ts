@@ -177,6 +177,9 @@ export function init() {
 	on(Event.RIFLE_CHECKED, e => {
 		rifle.check(e.special['IS_CHARGED']);
 		localPlayer.setActivity(PlayerActivity.CHECKING_RIFLE);
+		setTimeout(() => {
+			localPlayer.setActivity(PlayerActivity.WAITING);
+		}, e.special['DURATION']);
 	});
 
 	on(Event.MODIFIER_APPLIED, e => {

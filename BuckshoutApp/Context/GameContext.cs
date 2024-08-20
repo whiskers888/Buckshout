@@ -1,7 +1,6 @@
 ﻿using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Manager.Rifle;
-using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Context
 {
@@ -62,17 +61,6 @@ namespace BuckshoutApp.Context
             EventManager.Once(Event.PLAYER_WON, (e) =>
             {
                 FinishGame();
-            });
-
-            EventManager.Subscribe(Event.PLAYER_LOST, (e) =>
-            {
-                if (PlayerManager.AlivePlayers.Count == 1)
-                {
-                    EventManager.Trigger(Event.PLAYER_WON, new Items.EventData()
-                    {
-                        target = PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
-                    });
-                }
             });
         }
         public void StartRound()

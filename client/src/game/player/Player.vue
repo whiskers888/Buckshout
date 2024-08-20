@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGame } from '@/stores/game';
-import { useLocalPlayer } from '@/stores/player';
+import { PlayerActivity, useLocalPlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
 import type { Player } from './player';
 import { RifleStatus } from '../rifle/rifle';
@@ -39,11 +39,34 @@ const { player } = defineProps<{
 				</div>
 				<div style="max-width: 100%">
 					<div class="player-name">
-						<v-icon
-							v-if="player.isOwnedByUser"
-							:color="player.color"
-							icon="mdi-star"
-						/>
+						<v-tooltip
+							location="right"
+							text="Это Вы, единственный и неповторимый!"
+						>
+							<template v-slot:activator="{ props }">
+								<v-icon
+									v-if="player.isOwnedByUser"
+									v-bind="props"
+									:color="player.color"
+									icon="mdi-star"
+								/>
+							</template>
+						</v-tooltip>
+
+						<v-tooltip
+							location="right"
+							:text="player.isOwnedByUser ? 'И сейчас Ваш ход!' : 'Этот игрок сейчас ходит.'"
+						>
+							<template v-slot:activator="{ props }">
+								<v-icon
+									v-if="player.isCurrent"
+									v-bind="props"
+									:color="player.color"
+									icon="mdi-shoe-sneaker"
+								/>
+							</template>
+						</v-tooltip>
+
 						<span>{{ player.name }}</span>
 					</div>
 
@@ -65,7 +88,11 @@ const { player } = defineProps<{
 				</div>
 			</div>
 			<div
-				v-if="localPlayer.isCurrent"
+				v-if="
+					localPlayer.isCurrent &&
+					!player.is(ModifierState.PLAYER_DEAD) &&
+					localPlayer.activity !== PlayerActivity.DECIDES_CANCEL
+				"
 				class="player-actions"
 			>
 				<template v-if="localPlayer.canTargetPlayer(player)">
@@ -155,10 +182,10 @@ const { player } = defineProps<{
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	width: 409px;
-	padding: 20px;
+	width: 400px;
+	padding: 10px;
 	border: 3px solid;
-	margin: 10px;
+	margin: 8px;
 	border-radius: 10px;
 	max-width: 100%;
 	position: relative;
@@ -178,9 +205,7 @@ const { player } = defineProps<{
 }
 
 .player.dead {
-	opacity: 0.2;
-	user-select: none;
-	pointer-events: none;
+	opacity: 0.3;
 }
 
 .current {
@@ -237,7 +262,7 @@ const { player } = defineProps<{
 .player-modifiers {
 	display: flex;
 	gap: 6px;
-	padding: 10px;
+	padding: 6px;
 	border: 1px solid;
 	border-radius: 10px;
 	margin-top: 10px;
@@ -248,6 +273,6 @@ const { player } = defineProps<{
 	grid-template-rows: repeat(2, 1fr);
 	grid-template-columns: repeat(4, 1fr);
 	grid-gap: 2px;
-	padding: 10px 0;
+	margin-top: 6px;
 }
 </style>

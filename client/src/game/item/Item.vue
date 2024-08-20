@@ -13,7 +13,7 @@ const notifier = useNotifier();
 
 function onItemClick() {
 	if (rifle.status !== RifleStatus.READY) {
-		notifier.error('Винтовка еще не заряжена!');
+		notifier.error('Дробовик еще не заряжен!');
 		return;
 	}
 	if (localPlayer.activity === PlayerActivity.USING_ITEM) {
@@ -32,7 +32,7 @@ const { owner, item } = defineProps<{
 <template>
 	<div class="item-container">
 		<div
-			v-if="item"
+			v-if="item && !owner.is(ModifierState.PLAYER_DEAD)"
 			:class="[
 				'item',
 				{
@@ -78,7 +78,7 @@ const { owner, item } = defineProps<{
 				</div>
 				<div v-else>
 					<h3>Неизвестно</h3>
-					<p class="item-tooltip-description">Этот предмет скрыт от вашего взора.</p>
+					<p class="item-tooltip-description">Этот предмет скрыт от Вашего взора.</p>
 				</div>
 			</v-tooltip>
 		</div>
@@ -94,7 +94,7 @@ const { owner, item } = defineProps<{
 	border: 1px solid;
 	border-radius: 6px;
 	overflow: hidden;
-	height: 80px;
+	height: 60px;
 }
 .item {
 	display: flex;

@@ -61,11 +61,6 @@ export const useLocalPlayer = defineStore('player', {
 			if (act === PlayerActivity.WAITING && this.isCurrent) {
 				this.activity = PlayerActivity.JUST_TURN;
 			} else this.activity = act;
-			if (act === PlayerActivity.CHECKING_RIFLE) {
-				setTimeout(() => {
-					this.setActivity(PlayerActivity.WAITING);
-				}, 3000);
-			}
 		},
 		cancelUse() {
 			this.setActivity(PlayerActivity.WAITING);

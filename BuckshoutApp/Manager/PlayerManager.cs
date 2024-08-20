@@ -116,6 +116,7 @@ namespace BuckshoutApp.Manager
             {
                 Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DEAD).Apply(this);
                 Context.EventManager.Trigger(Event.PLAYER_LOST, e);
+                Context.QueueManager.Next();
             }
         }
 

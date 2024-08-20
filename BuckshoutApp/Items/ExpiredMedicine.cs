@@ -2,14 +2,11 @@
 
 namespace BuckshoutApp.Items
 {
-    public class ExpiredMedicine : Item
+    public class ExpiredMedicine(GameContext context) : Item(context)
     {
-        public ExpiredMedicine(GameContext context) : base(context)
-        {
-        }
-
         public override string Name => "Просроченные таблетки";
         public override string Description => $"С шансом {HEAL_CHANCE}% восстанавливает {HEAL_AMOUNT} или отнимет {DAMAGE_AMOUNT} ед. здоровья.";
+        public override string Lore => "Бесплатная медецина...";
         public override string Model => "expired_medicine";
 
         public int HEAL_CHANCE = 50;

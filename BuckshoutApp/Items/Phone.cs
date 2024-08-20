@@ -1,12 +1,10 @@
 ﻿using BuckshoutApp.Context;
 using BuckshoutApp.Manager.Events;
+
 namespace BuckshoutApp.Items
 {
-    public class Phone : Item
+    public class Phone(GameContext context) : Item(context)
     {
-        public Phone(GameContext context) : base(context)
-        {
-        }
         public override string Name => "Телефон";
         public override string Description => "Сообщает Вам, заряжен ли случайный патрон (счет идет от текущего).";
         public override string Lore => "Алло, ну как там с патронами?";

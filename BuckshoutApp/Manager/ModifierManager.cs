@@ -41,7 +41,7 @@ namespace BuckshoutApp.Manager
                 {
                     Name = "Дедлайн",
                     /*StackCount = 1,*/
-                    Description = $"Время хода сокращено в 2 раза.",
+                    Description = "Время хода сокращено в 2 раза.",
                     Duration = 0,
                     State = [ModifierState.PLAYER_TURN_TIME_LIMITED],
                     TargetType = ModifierTargetType.PLAYER,
@@ -51,7 +51,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_CHURCH_CROSS => new(Context)
                 {
                     Name = "Крестный отец",
-                    Description = $" Возможно, Всевышний поможет Вам защититься от следующей пули.",
+                    Description = "Возможно, Всевышний поможет Вам защититься от следующей пули.",
                     Duration = 0,
                     State = [ModifierState.PLAYER_EVASION],
                     TargetType = ModifierTargetType.PLAYER,
@@ -60,11 +60,22 @@ namespace BuckshoutApp.Manager
                 },
                 ModifierKey.PLAYER_COVER => throw new NotImplementedException(),
                 ModifierKey.PLAYER_DEFIBRILLATOR => throw new NotImplementedException(),
+                ModifierKey.PLAYER_BLOOD_PACK => new(Context)
+                {
+                    Name = "В ожидании донора",
+                    Description = "Как только прольется чья-то кровь, вы восстановите себе здоровье.",
+                    Duration = -1,
+                    State = [],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "blood-bag",
+                    IsBuff = true,
+                },
+
                 ModifierKey.PLAYER_CHAINED => new(Context)
                 {
                     Name = "Скованные одной цепью",
                     Description = "Вы будете получать урон всесте с тем, с кем Вас связали.",
-                    Duration = 1,
+                    Duration = 0,
                     State = [ModifierState.PLAYER_CHAINED],
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "link-variant",
@@ -92,11 +103,11 @@ namespace BuckshoutApp.Manager
                     Icon = "needle-off",
                     IsBuff = false,
                 },
-                // Эффекты винтовки
+                // Эффекты дробовика
                 ModifierKey.RIFLE_HACKSAW => new(Context)
                 {
                     Name = "Ножовка",
-                    Description = "Винтовка обрезана, при попадании будет нанесен двойной урон!",
+                    Description = "Дробовик обрезан, при попадании будет нанесен двойной урон!",
                     Duration = -1,
                     State = [ModifierState.RIFLE_BONUS_DAMAGE],
                     TargetType = ModifierTargetType.RIFLE,

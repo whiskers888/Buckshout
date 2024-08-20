@@ -10,6 +10,7 @@
         PLAYER_COVER,
         PLAYER_DEFIBRILLATOR,
         PLAYER_CHAINED,
+        PLAYER_BLOOD_PACK,
 
         RIFLE_HACKSAW,
 

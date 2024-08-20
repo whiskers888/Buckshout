@@ -8,15 +8,7 @@ const localPlayer = useLocalPlayer();
 </script>
 
 <template>
-	<div
-		:class="[
-			'rifle-container',
-			{
-				'rifle-buckshot-kickback':
-					rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED,
-			},
-		]"
-	>
+	<div class="rifle-container">
 		<div class="rifle-modifiers">
 			<v-tooltip
 				v-for="modifier in rifle.modifiers"
@@ -56,7 +48,13 @@ const localPlayer = useLocalPlayer();
 			</div>
 			<img
 				:style="{ opacity: rifle.status == RifleStatus.LOADING ? 0.4 : 1 }"
-				class="rifle-model"
+				:class="[
+					'rifle-model',
+					{
+						'rifle-buckshot-kickback':
+							rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED,
+					},
+				]"
 				src="/models/rifle/rifle.png"
 			/>
 
@@ -91,7 +89,6 @@ const localPlayer = useLocalPlayer();
 
 <style scoped>
 .rifle-container {
-	transition: all 0.3s linear;
 	max-width: 40%;
 	height: 0;
 }
@@ -99,11 +96,13 @@ const localPlayer = useLocalPlayer();
 .rifle-model-container {
 	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
 	position: relative;
+	transition: all 1s linear;
 }
 
 .rifle-model {
 	width: 500px;
 	max-width: 100%;
+	transition: all 0.1s linear;
 }
 
 .rifle-buckshot-smoke {
@@ -124,7 +123,7 @@ const localPlayer = useLocalPlayer();
 }
 
 .rifle-buckshot-kickback {
-	rotate: 2deg;
+	rotate: -2deg;
 }
 
 .rifle-bullet {

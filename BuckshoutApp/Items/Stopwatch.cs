@@ -3,15 +3,11 @@ using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Stopwatch : Item
+    public class Stopwatch(GameContext context) : Item(context)
     {
-        public Stopwatch(GameContext context) : base(context)
-        {
-        }
-
         public override string Name => "Секундомер";
         public override string Description => $"Время хода всех противников уменьшается в {TURN_TIME_DIVIDER} раза." +
-                                               "Действует до вашего следующего хода.\n" +
+                                               "Действует до Вашего следующего хода.\n" +
                                                "Полностью сочетается с другими секундомерами.";
         public override string Model => "stopwatch";
         public int TURN_TIME_DIVIDER = 2;

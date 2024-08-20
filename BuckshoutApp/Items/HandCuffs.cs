@@ -3,14 +3,11 @@ using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Handcuffs : Item
+    public class Handcuffs(GameContext context) : Item(context)
     {
-        public Handcuffs(GameContext context) : base(context)
-        {
-        }
-
         public override string Name => "Наручники";
-        public override string Description => "Выбранный противник пропускает свой следующий ход.";
+        public override string Description => "Выбранный противник пропускает свой следующий ход.\n" +
+                                              "Нельзя применить несколько раз подряд на одного и того же игрока.";
         public override string Model => "handcuffs";
         public override ItemBehavior[] Behavior { get; } = { ItemBehavior.UNIT_TARGET };
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
