@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Context;
+using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Modifiers;
 
@@ -9,7 +10,7 @@ namespace BuckshoutApp.Items
         public override string Name => "Цепь";
         public override string Description => "Связывает цель со случайным игроком (в том числе и вы).\n" +
                                               "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
-                                              "Эффект применяется к каждой из целей отдельно, и наносит урон связанному игроку, развеевается, как только начнется ход игрока.\n" +
+                                              "Эффект применяется к каждой из целей отдельно, и наносит урон связанному игроку, развеевается после попытки выстрела в игрока.\n" +
                                               "Не может примениться на уже связанного игрока.";
         public override string Lore => "Да что ты как с цепи сорвался!?";
         public override string Model => "chain";
@@ -29,18 +30,11 @@ namespace BuckshoutApp.Items
             }
         }
 
-        public override void Effect(EventData e)
+        private void ApplyModifiers(Player target, Player victim)
         {
-            var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.target).ToList().RandomChoise();
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHAINED);
-            var modifier2 = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHAINED);
-            modifier.Description = $"Если Вы получите урон, игрок {target.Name} тоже пострадает.";
-            modifier2.Description = $"Если Вы получите урон, игрок {e.target.Name} тоже пострадает.";
-            modifier.Apply(e.target);
-            modifier2.Apply(target);
-
-            e.special["MESSAGE"] = $"Игроки {e.target.Name} и {target.Name} теперь связаны!";
-            Context.EventManager.Trigger(Event.MESSAGE, e);
+            modifier.Description = $"Если этот игрок получит урон, игрок {victim.Name} тоже пострадает.";
+            modifier.Apply(target);
 
             var id = modifier.On(Event.DAMAGE_TAKEN, damageE =>
             {
@@ -48,32 +42,31 @@ namespace BuckshoutApp.Items
                 {
                     if (value == "CHAIN") return;
                 }
-                if (damageE.target == e.target)
+                if (damageE.target == target)
                 {
-                    target.ChangeHealth(Manager.ChangeHealthType.Damage, (int)damageE.special["VALUE"], damageE.target, "CHAIN");
+                    victim.ChangeHealth(Manager.ChangeHealthType.Damage, (int)damageE.special["VALUE"], target, "CHAIN");
                 }
             });
             modifier.OnRemoved = () =>
             {
                 Context.EventManager.Unsubscribe(Event.DAMAGE_TAKEN, id);
             };
-
-            var id2 = Context.EventManager.SubscribeUniq(Event.DAMAGE_TAKEN, damageE =>
+            modifier.RemoveWhen(Event.RIFLE_SHOT, null, (shotE) =>
             {
-                if (damageE.special.TryGetValue("TYPE", out object? value))
-                {
-                    if (value == "CHAIN") return;
-                }
-                else if (damageE.target == target)
-                {
-                    e.target.ChangeHealth(Manager.ChangeHealthType.Damage, (int)damageE.special["VALUE"], damageE.target, "CHAIN");
-                };
+                if (shotE.target == target) return true;
+                return false;
             });
+        }
 
-            modifier2.OnRemoved = () =>
-            {
-                Context.EventManager.Unsubscribe(Event.DAMAGE_TAKEN, id2);
-            };
+        public override void Effect(EventData e)
+        {
+            var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.target).ToList().RandomChoise();
+
+            ApplyModifiers(e.target, target);
+            ApplyModifiers(target, e.target);
+
+            e.special["MESSAGE"] = $"Игроки {e.target.Name} и {target.Name} теперь связаны!";
+            Context.EventManager.Trigger(Event.MESSAGE, e);
         }
     }
 }

@@ -45,15 +45,10 @@ const { owner, item } = defineProps<{
 		>
 			<v-tooltip location="right">
 				<template v-slot:activator="{ props }">
-					<img
+					<v-icon
 						v-bind="props"
-						class="item-model"
-						:src="
-							!item.is(ModifierState.ITEM_INVISIBLE)
-								? `/models/items/${item.model}.png`
-								: '/models/items/unknown.png'
-						"
-						:alt="!item.is(ModifierState.ITEM_INVISIBLE) ? item.name : 'Неизвестно'"
+						class="item-info"
+						icon="mdi-information"
 					/>
 				</template>
 				<div
@@ -81,6 +76,15 @@ const { owner, item } = defineProps<{
 					<p class="item-tooltip-description">Этот предмет скрыт от Вашего взора.</p>
 				</div>
 			</v-tooltip>
+			<img
+				class="item-model"
+				:src="
+					!item.is(ModifierState.ITEM_INVISIBLE)
+						? `/models/items/${item.model}.png`
+						: '/models/items/unknown.png'
+				"
+				:alt="!item.is(ModifierState.ITEM_INVISIBLE) ? item.name : 'Неизвестно'"
+			/>
 		</div>
 	</div>
 </template>
@@ -95,6 +99,7 @@ const { owner, item } = defineProps<{
 	border-radius: 6px;
 	overflow: hidden;
 	height: 60px;
+	position: relative;
 }
 .item {
 	display: flex;
@@ -108,6 +113,13 @@ const { owner, item } = defineProps<{
 .item-model {
 	max-width: 100%;
 	max-height: 100%;
+}
+
+.item-info {
+	position: absolute;
+	top: 0;
+	right: 0;
+	color: rgb(146, 162, 177) !important;
 }
 
 .item-tooltip {
@@ -133,6 +145,7 @@ const { owner, item } = defineProps<{
 	border-top: 1px solid;
 	font-style: italic;
 	padding: 8px 0;
+	font-size: 12px;
 }
 
 /*  */

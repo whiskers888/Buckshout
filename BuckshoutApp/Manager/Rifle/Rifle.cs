@@ -83,7 +83,7 @@ namespace BuckshoutApp.Manager.Rifle
             {
                 if (!evasion)
                 {
-                    targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, currentPlayer);
+                    targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, currentPlayer, "RIFLE");
                     Context.QueueManager.Next();
                 }
                 else
@@ -92,7 +92,7 @@ namespace BuckshoutApp.Manager.Rifle
             else if (IsCharged && targetPlayer != currentPlayer)
             {
                 if (!evasion)
-                    targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, targetPlayer);
+                    targetPlayer.ChangeHealth(ChangeHealthType.Damage, Damage, targetPlayer, "RIFLE");
                 Context.QueueManager.Next(targetPlayer);
             }
             else if (!IsCharged && targetPlayer == currentPlayer)
@@ -112,7 +112,7 @@ namespace BuckshoutApp.Manager.Rifle
             if (target.Is(ModifierState.PLAYER_EVASION))
             {
                 int chance = Context.Random.Next(0, 100);
-                if (chance > target.GetModifier(ModifierState.PLAYER_EVASION).Value) return true;
+                if (target.GetModifier(ModifierState.PLAYER_EVASION).Value >= chance) return true;
             }
             return false;
         }
@@ -127,11 +127,11 @@ namespace BuckshoutApp.Manager.Rifle
         }
         public void RemoveModifier(Modifier modifier)
         {
-            Modifiers.Remove(modifier);
-            Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
-            {
-                special = { { "MODIFIER", modifier } }
-            });
+            if (Modifiers.Remove(modifier))
+                Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
+                {
+                    special = { { "MODIFIER", modifier } }
+                });
         }
         public bool Is(ModifierState state)
         {

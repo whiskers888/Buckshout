@@ -30,6 +30,7 @@ namespace BuckshoutApp.Modifiers
         public List<ModifierState> State { get; set; } = [];
         public Action? OnApplied { get; set; }
         public Action? OnRemoved { get; set; }
+        public bool Removed { get; private set; } = false;
         public void Apply(Player target)
         {
             Target = target;
@@ -51,25 +52,26 @@ namespace BuckshoutApp.Modifiers
             OnApplied?.Invoke();
             rifle.AddModifier(this, initiator);
         }
-        public void Remove(Event @event, Player target, object entity = null)
+        public void Remove(Event @event, Item item = null)
         {
             Context.EventManager.Once(@event, (e) =>
             {
                 switch (TargetType)
                 {
                     case ModifierTargetType.PLAYER:
-                        target.RemoveModifier(this); break;
+                        Target.RemoveModifier(this); break;
 
                     case ModifierTargetType.RIFLE:
                         Context.Rifle.RemoveModifier(this); break;
 
                     case ModifierTargetType.ITEM:
-                        ((Item)entity).RemoveModifier(this, target); break;
+                        item.RemoveModifier(this, Target); break;
                 }
+                Removed = true;
                 OnRemoved?.Invoke();
             });
         }
-        public void RemoveWhen(Event @event, object entity = null, Func<EventData, bool> checkState = null)
+        public void RemoveWhen(Event @event, Item item = null, Func<EventData, bool> checkState = null)
         {
             string id = "";
             id = Context.EventManager.SubscribeUniq(@event, (e) =>
@@ -85,9 +87,10 @@ namespace BuckshoutApp.Modifiers
                         Context.Rifle.RemoveModifier(this); break;
 
                     case ModifierTargetType.ITEM:
-                        ((Item)entity).RemoveModifier(this, Target); break;
+                        item.RemoveModifier(this, Target); break;
                 }
                 Context.EventManager.Unsubscribe(@event, id);
+                Removed = true;
                 OnRemoved?.Invoke();
             });
         }

@@ -33,6 +33,7 @@ const { player } = defineProps<{
 			<div class="player-info">
 				<div class="player-avatar">
 					<img
+						:id="`Player-${player.id}`"
 						:src="`https://api.multiavatar.com/${player.avatar}.png`"
 						alt="?"
 					/>

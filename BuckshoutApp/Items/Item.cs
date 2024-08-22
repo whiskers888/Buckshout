@@ -11,6 +11,8 @@ namespace BuckshoutApp.Items
         public Player? initiator { get; set; }
         public Player? target { get; set; }
         public Dictionary<string, object> special { get; set; } = [];
+
+        public bool Prevent { get; set; } = false; // для случаев, когда нужно предотвратить событие, логика пока пишется индивидуально
     }
     public class Item(GameContext context)
     {
@@ -38,7 +40,6 @@ namespace BuckshoutApp.Items
             State = ItemState.USING;
             e.special.Add("ITEM", this);
             BeforeUse(e);
-            Console.WriteLine($"{e.initiator?.Name} применяет {Name} на {e.target?.Name}");
             if (State == ItemState.NOT_ALLOWED)
             {
                 State = ItemState.IN_HAND;
@@ -100,12 +101,12 @@ namespace BuckshoutApp.Items
         }
         public void RemoveModifier(Modifier modifier, Player target)
         {
-            Modifiers.Remove(modifier);
-            Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
-            {
-                target = target,
-                special = { { "MODIFIER", modifier }, { "ITEM", this } }
-            });
+            if (Modifiers.Remove(modifier))
+                Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
+                {
+                    target = target,
+                    special = { { "MODIFIER", modifier }, { "ITEM", this } }
+                });
         }
         public bool Is(ModifierState state)
         {

@@ -55,8 +55,8 @@
         TRAP_SET,
         TRAP_TRIGGERED,
 
+        BEFORE_DAMAGE_TAKE,
         DAMAGE_TAKEN,
         HEALTH_RESTORED,
-
     }
 }

@@ -41,7 +41,7 @@ namespace BuckshoutApp.Manager
                 {
                     Name = "Дедлайн",
                     /*StackCount = 1,*/
-                    Description = "Время хода сокращено в 2 раза.",
+                    Description = "Время хода этого игрока сокращено в 2 раза.",
                     Duration = 0,
                     State = [ModifierState.PLAYER_TURN_TIME_LIMITED],
                     TargetType = ModifierTargetType.PLAYER,
@@ -51,7 +51,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_CHURCH_CROSS => new(Context)
                 {
                     Name = "Вера",
-                    Description = "Возможно, Всевышний поможет Вам защититься от следующей пули.",
+                    Description = "Возможно, Всевышний поможет этому игроку защититься от следующей пули.",
                     Duration = 0,
                     State = [ModifierState.PLAYER_EVASION],
                     TargetType = ModifierTargetType.PLAYER,
@@ -63,22 +63,31 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_BLOOD_PACK => new(Context)
                 {
                     Name = "В ожидании донора",
-                    Description = "Как только прольется чья-то кровь, вы восстановите себе здоровье.",
+                    Description = "Как только прольется чья-то кровь, этот игрок восстановит себе здоровье.",
                     Duration = -1,
                     State = [],
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "blood-bag",
                     IsBuff = true,
                 },
-
                 ModifierKey.PLAYER_CHAINED => new(Context)
                 {
                     Name = "Скованные одной цепью",
-                    Description = "Если Вы получите урон, связанный с Вами игрок тоже пострадает.",
-                    Duration = 0,
+                    Description = "OVERRIDE",
+                    Duration = -1,
                     State = [ModifierState.PLAYER_CHAINED],
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "link-variant",
+                    IsBuff = false,
+                },
+                ModifierKey.PLAYER_DOLLAR => new(Context)
+                {
+                    Name = "Подкуплен",
+                    Description = "OVERRIDE",
+                    Duration = -1,
+                    State = [ModifierState.PLAYER_CORRUPTED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "currency-usd",
                     IsBuff = false,
                 },
 

@@ -26,7 +26,7 @@ namespace BuckshoutApp.Items
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.RIFLE_HACKSAW);
             modifier.Apply(e.target, Context.Rifle);
-            modifier.Remove(Event.RIFLE_SHOT, e.target);
+            modifier.Remove(Event.RIFLE_SHOT);
         }
     }
 }

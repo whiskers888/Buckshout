@@ -84,8 +84,9 @@ namespace BuckshoutApp.Manager.Events
         }
         public void Unsubscribe(Event e, string id)
         {
-            Tuple<string, Action<EventData>> uniqEvent = UniqEvents[e].FirstOrDefault(it => it.Item1 == id);
-            UniqEvents[e].Remove(uniqEvent);
+            if (!UniqEvents.TryGetValue(e, out List<Tuple<string, Action<EventData>>>? value)) return;
+            Tuple<string, Action<EventData>> uniqEvent = value.FirstOrDefault(it => it.Item1 == id);
+            value.Remove(uniqEvent);
         }
     }
 }

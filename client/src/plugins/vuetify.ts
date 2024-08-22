@@ -36,7 +36,7 @@ export default createVuetify({
 	},
 	defaults: {
 		VTooltip: {
-			// openOnClick: true
+			openOnClick: true,
 		},
 		VIcon: {
 			color: 'secondary',

@@ -100,6 +100,8 @@ namespace BuckshoutApp.Manager
             {
                 e.special.Add("TYPE", type);
             }
+            Context.EventManager.Trigger(Event.BEFORE_DAMAGE_TAKE, e);
+            if (e.Prevent) return;
             switch (direction)
             {
                 case ChangeHealthType.Heal:
@@ -152,12 +154,12 @@ namespace BuckshoutApp.Manager
         }
         public void RemoveModifier(Modifier modifier)
         {
-            Modifiers.Remove(modifier);
-            Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
-            {
-                target = this,
-                special = { { "MODIFIER", modifier } }
-            });
+            if (Modifiers.Remove(modifier))
+                Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
+                {
+                    target = this,
+                    special = { { "MODIFIER", modifier } }
+                });
         }
         public void ClearModifiers()
         {
