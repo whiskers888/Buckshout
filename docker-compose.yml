@@ -1,4 +1,4 @@
-﻿version: '3.8'
+﻿version: "3.8"
 
 services:
   buckshout.redis:
@@ -6,9 +6,33 @@ services:
     restart: always
     ports:
       - "6379:6379"
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/WebAPI/Dockerfile
+    restart: always
+    working_dir: /app/backend/WebAPI
+    volumes:
+      - ./backend:/app/backend
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    command: dotnet /app/publish/Buckshout.dll
+
+  # client:
+  #   build:
+  #     context: .
+  #     dockerfile: ./client/Dockerfile
+  #   restart: always
+  #   working_dir: /app/client
+  #   volumes:
+  #     - ./client:/app/client
+  #   ports:
+  #     - "3000:3000"
+  #   command: npm run dev
   # backend:
   #   build:
-  #     context: ./backend/WebAPI
+  #     context: ./WebAPI
   #     dockerfile: Dockerfile
   #   restart: always
   #   working_dir: /app/backend/WebAPI
@@ -30,4 +54,3 @@ services:
   #   ports:
   #     - "3000:3000"
   #   command: sh -c "npm start"
-
