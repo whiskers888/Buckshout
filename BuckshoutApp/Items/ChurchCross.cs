@@ -9,7 +9,14 @@ namespace BuckshoutApp.Items
         public override string Name => "Крестик";
         public override string Description => $"{CHANCE_EVASION}% шанс увернуться от заряженного патрона {QUANTITY_EVASION} раз до своего следующего хода.\n" +
                                               "Увернувшись, при выстреле в самого себя, Вы сохраните право хода.";
+
+        public override string Lore => "Перед дулом дробовика атеистов не бывает...";
         public override string Model => "church_cross";
+
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.EFFECTED, "cross/hallelujah"},
+        };
 
         public int CHANCE_EVASION = 50;
         public int QUANTITY_EVASION = 1;

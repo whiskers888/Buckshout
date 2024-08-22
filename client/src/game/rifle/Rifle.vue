@@ -2,38 +2,41 @@
 import { useRifle } from '@/stores/rifle';
 import { RiflePatron, RifleStatus } from './rifle';
 import { PlayerActivity, useLocalPlayer } from '@/stores/player';
+import { useGame } from '@/stores/game';
+import { ModifierState } from '../modifier/modifier';
 
 const rifle = useRifle();
+const game = useGame();
 const localPlayer = useLocalPlayer();
 </script>
 
 <template>
 	<div class="rifle-container">
-		<div class="rifle-modifiers">
-			<v-tooltip
-				v-for="modifier in rifle.modifiers"
-				:key="modifier.name"
-				location="bottom"
-			>
-				<template v-slot:activator="{ props }">
-					<v-icon
-						v-bind="props"
-						:style="{
-							border: `1px solid ${modifier.isBuff ? '#0f0' : '#f00'}`,
-							borderRadius: '50%',
-							padding: '12px',
-							fontSize: '18px',
-						}"
-						:icon="`mdi-${modifier.icon}`"
-					/>
-				</template>
-				<div class="modifier-tooltip">
-					<h3>{{ modifier.name }}</h3>
-					<p class="rifle-tooltip-description">{{ modifier.description }}</p>
-				</div>
-			</v-tooltip>
-		</div>
 		<div class="rifle-model-container">
+			<div class="rifle-modifiers">
+				<v-tooltip
+					v-for="modifier in rifle.modifiers"
+					:key="modifier.name"
+					location="bottom"
+				>
+					<template v-slot:activator="{ props }">
+						<v-icon
+							v-bind="props"
+							:style="{
+								border: `1px solid ${modifier.isBuff ? '#0f0' : '#f00'}`,
+								borderRadius: '50%',
+								padding: '12px',
+								fontSize: '18px',
+							}"
+							:icon="`mdi-${modifier.icon}`"
+						/>
+					</template>
+					<div class="modifier-tooltip">
+						<h3>{{ modifier.name }}</h3>
+						<p class="rifle-tooltip-description">{{ modifier.description }}</p>
+					</div>
+				</v-tooltip>
+			</div>
 			<div v-if="rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED">
 				<img
 					class="rifle-buckshot-smoke"
@@ -55,8 +58,38 @@ const localPlayer = useLocalPlayer();
 							rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED,
 					},
 				]"
-				src="/models/rifle/rifle.png"
+				:src="
+					rifle.is(ModifierState.RIFLE_BONUS_DAMAGE)
+						? '/models/rifle/rifle_hacksawed.png'
+						: '/models/rifle/rifle.png'
+				"
 			/>
+			<div>
+				<v-tooltip
+					location="bottom"
+					text="Патроны заряжаются в случайном порядке, их кол-во скрыто во время раунда!"
+				>
+					<template v-slot:activator="{ props }">
+						<div
+							class="flex"
+							v-bind="props"
+						>
+							<v-icon
+								icon="mdi-bullet"
+								v-for="patron in game.settings.MAX_PATRONS_IN_RIFLE"
+								:color="
+									patron <= rifle.patrons.sequence.length
+										? rifle.patrons.sequence[patron - 1]
+											? '#b60202'
+											: '#4949a3'
+										: '#3b3b3b'
+								"
+								:key="patron"
+							/>
+						</div>
+					</template>
+				</v-tooltip>
+			</div>
 
 			<div v-if="rifle.status == RifleStatus.PULLING">
 				<img
@@ -94,7 +127,7 @@ const localPlayer = useLocalPlayer();
 }
 
 .rifle-model-container {
-	transform: scale(-1, 1) translateY(v-bind('rifle.offset'));
+	transform: translateY(v-bind('rifle.offset'));
 	position: relative;
 	transition: all 1s linear;
 }
@@ -108,31 +141,27 @@ const localPlayer = useLocalPlayer();
 .rifle-buckshot-smoke {
 	position: absolute;
 	width: 30%;
-	left: 85%;
+	left: -15%;
 	top: -25%;
-	transform: scale(-1, 1);
 }
 
 .rifle-miss {
 	position: absolute;
 	color: #f00;
-	transform: scale(-1, 1);
-	left: 85%;
+	left: 0;
 	font-weight: bold;
 	animation: fly 2s infinite;
 }
 
 .rifle-buckshot-kickback {
-	rotate: -2deg;
+	rotate: 2deg;
 }
 
 .rifle-bullet {
 	position: absolute;
-	width: 7%;
-	rotate: 35deg;
-	left: 41%;
+	width: 8%;
+	left: 52%;
 	top: 18%;
-	transform: rotate3d(-0.3, 1, 0, 30deg);
 }
 
 .rifle-bullet.falling {
@@ -141,20 +170,20 @@ const localPlayer = useLocalPlayer();
 
 @-webkit-keyframes fly {
 	100% {
-		transform: translate3d(-10px, -100px, 0) scale(-1, 1);
+		transform: translate3d(10px, -100px, 0);
 		opacity: 0;
 	}
 }
 
 @-webkit-keyframes fall {
 	30% {
-		transform: translate3d(0, -10px, 0);
+		transform: translate3d(-6px, -10px, 0);
 	}
-	80% {
+	60% {
 		opacity: 1;
 	}
 	100% {
-		transform: translate3d(50px, 100px, 0);
+		transform: translate3d(20px, 120px, 0);
 		opacity: 0;
 	}
 }

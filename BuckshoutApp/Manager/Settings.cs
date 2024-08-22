@@ -11,7 +11,7 @@ namespace BuckshoutApp.Manager
             // Описываем ссылки на классы
             Type adrenaline = typeof(Adrenaline);
             Type beer = typeof(Beer);
-            Type cancel = typeof(Cancel);
+            Type stamp = typeof(Stamp);
             Type hacksaw = typeof(Hacksaw);
             Type phone = typeof(Phone);
             Type handcuffs = typeof(Handcuffs);
@@ -33,7 +33,6 @@ namespace BuckshoutApp.Manager
                 adrenaline,
                 beer,
                 // bloodpack,
-                cancel,
                 chain,
                 cross,
                 cigarettes,
@@ -43,6 +42,7 @@ namespace BuckshoutApp.Manager
                 magnifier,
                 medicine,
                 phone,
+                stamp,
                 stopwatch,
                 useless
             ]);

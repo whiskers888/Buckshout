@@ -33,7 +33,7 @@ export const useRifle = defineStore('rifle', {
 
 			const index = game.players.findIndex(it => it === player);
 
-			this.position = index * 350;
+			this.position = index * 265;
 			this.target = player;
 		},
 		shoot(isCharged: boolean, isMissing: boolean) {

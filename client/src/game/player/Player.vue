@@ -246,6 +246,7 @@ const { player } = defineProps<{
 
 .player-avatar img {
 	width: 100%;
+	border-radius: 50%;
 }
 
 .player-name {

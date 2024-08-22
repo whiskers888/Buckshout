@@ -25,7 +25,6 @@ namespace BuckshoutApp.Modifiers
         public bool IsBuff { get; set; } = false;
         public int Value { get; set; } = 0;
         public int StackCount { get; set; } = 0;
-
         public Player Target { get; set; }
         public ModifierTargetType TargetType { get; set; }
         public List<ModifierState> State { get; set; } = [];

@@ -50,7 +50,7 @@ namespace BuckshoutApp.Manager
                 },
                 ModifierKey.PLAYER_CHURCH_CROSS => new(Context)
                 {
-                    Name = "Крестный отец",
+                    Name = "Вера",
                     Description = "Возможно, Всевышний поможет Вам защититься от следующей пули.",
                     Duration = 0,
                     State = [ModifierState.PLAYER_EVASION],
@@ -74,7 +74,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_CHAINED => new(Context)
                 {
                     Name = "Скованные одной цепью",
-                    Description = "Вы будете получать урон всесте с тем, с кем Вас связали.",
+                    Description = "Если Вы получите урон, связанный с Вами игрок тоже пострадает.",
                     Duration = 0,
                     State = [ModifierState.PLAYER_CHAINED],
                     TargetType = ModifierTargetType.PLAYER,

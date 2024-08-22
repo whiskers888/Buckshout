@@ -111,7 +111,10 @@ export function init() {
 	on(Event.TURN_CHANGED, e => {
 		game.startTurn(e.target, e.special['TIME']);
 		localPlayer.setActivity(PlayerActivity.WAITING);
-		localPlayer.isCurrent ? notifier.success(`Ваша очередь!`) : notifier.info(`Очередь игрока ${e.target.name}!`);
+		if (localPlayer.isCurrent) {
+			notifier.success(`Ваша очередь!`);
+			sound.play('turn_start', '');
+		} else notifier.info(`Очередь игрока ${e.target.name}!`);
 	});
 	on(Event.TURN_SKIPPED, e => {
 		notifier.error(`Игрок ${e.target.name} пропускает ход!`);

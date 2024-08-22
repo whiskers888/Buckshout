@@ -10,6 +10,12 @@ namespace BuckshoutApp.Items
                                                "Действует до Вашего следующего хода.\n" +
                                                "Полностью сочетается с другими секундомерами.";
         public override string Model => "stopwatch";
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "stopwatch/mechanism"},
+            {ItemEvent.EFFECTED, "stopwatch/tick"}
+        };
+
         public int TURN_TIME_DIVIDER = 2;
 
         public override void Effect(EventData e)

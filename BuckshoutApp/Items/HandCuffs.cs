@@ -13,6 +13,12 @@ namespace BuckshoutApp.Items
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
         public override ItemTargetTeam TargetTeam => ItemTargetTeam.ENEMY;
 
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "handcuffs/shackling"},
+            {ItemEvent.CANCELED, "handcuffs/break"}
+        };
+
         internal override void BeforeUse(EventData e)
         {
             if (e.target.Is(ModifierState.PLAYER_STUNNED))

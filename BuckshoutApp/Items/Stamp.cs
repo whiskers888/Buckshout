@@ -2,19 +2,24 @@
 
 namespace BuckshoutApp.Items
 {
-    public class Cancel(GameContext context) : Item(context)
+    public class Stamp(GameContext context) : Item(context)
     {
         public override string Name => "Печать \"Переделать\"";
 
-        public override string Description => "Можно применить в течение " + context.Settings.ITEM_CHANNELING_TIME / 1000 + " сек. после того, как любой игрок попытался использовать предмет.\n" +
+        public override string Description => "Можно применить только в течение " + context.Settings.ITEM_CHANNELING_TIME / 1000 + " сек. после того, как любой игрок попытался использовать предмет.\n" +
                                               "Отменяет эффект этого предмета.\n" +
                                               "Действие печати также можно отменить другой печатью, это приведет к тому, что действие предыдущего предмета не отменится.";
 
         public override string Lore => "Все х**ня, переделать!";
 
-        public override string Model => "cancel";
+        public override string Model => "stamp";
 
         public override ItemBehavior[] Behavior => [ItemBehavior.NO_TARGET, ItemBehavior.CUSTOM];
+
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "stamp/stamp"},
+        };
 
         internal override void BeforeUse(EventData e)
         {

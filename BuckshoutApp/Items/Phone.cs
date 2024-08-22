@@ -23,10 +23,10 @@ namespace BuckshoutApp.Items
             bool isCharged = Context.Rifle.Patrons[indexRndPatron].IsCharged;
             e.special.Add("MESSAGE", new string[] {
             "Привет...." ,
-            "..Это твой бекендер....",
-            "..Тут такой п*.....",
-            $"..В общем {countPatrons - indexRndPatron} патрон... ",
-            isCharged ? " заряжен" : " не заряжен",
+            "..Это я, твой *пшшшшш*....",
+            "..Тут такой пи*пшшшшш*.....",
+            $"..В общем, {countPatrons - indexRndPatron} патрон... ",
+            isCharged ? "заряжен" : "холостой",
             "..вроде...",
             "...Удачи!"
             });

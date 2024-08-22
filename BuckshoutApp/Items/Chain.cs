@@ -9,8 +9,9 @@ namespace BuckshoutApp.Items
         public override string Name => "Цепь";
         public override string Description => "Связывает цель со случайным игроком (в том числе и вы).\n" +
                                               "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
-                                              "Эффект применяется к каждой из целей и наносит урон связанному игроку, при этом развеивается каждый из эффектов по отдельности, как только ход дойдет до игрока.\n" +
+                                              "Эффект применяется к каждой из целей отдельно, и наносит урон связанному игроку, развеевается, как только начнется ход игрока.\n" +
                                               "Не может примениться на уже связанного игрока.";
+        public override string Lore => "Да что ты как с цепи сорвался!?";
         public override string Model => "chain";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
@@ -33,6 +34,8 @@ namespace BuckshoutApp.Items
             var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.target).ToList().RandomChoise();
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHAINED);
             var modifier2 = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHAINED);
+            modifier.Description = $"Если Вы получите урон, игрок {target.Name} тоже пострадает.";
+            modifier2.Description = $"Если Вы получите урон, игрок {e.target.Name} тоже пострадает.";
             modifier.Apply(e.target);
             modifier2.Apply(target);
 

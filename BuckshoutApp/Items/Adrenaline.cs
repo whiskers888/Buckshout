@@ -14,10 +14,18 @@ namespace BuckshoutApp.Items
         public override string Description => "Вы забираете выбранный предмет себе.\n" +
                                             "Запрещено применять на: Адреналин, Глина.\n" +
                                             "Украденный предмет исчезнет в конце хода, если его не использовать.";
+        public override string Lore => "Не пойман - не вор.";
         public override string Model => "adrenaline";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override ItemTargetType TargetType => ItemTargetType.ITEM;
         public override ItemTargetTeam TargetTeam => ItemTargetTeam.ENEMY;
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "adrenaline/heartbeat"},
+            {ItemEvent.EFFECTED, "adrenaline/steal"},
+            {ItemEvent.CANCELED, "adrenaline/slap"}
+        };
+
         internal override void BeforeUse(EventData e)
         {
             Item item = (Item)e.special["TARGET_ITEM"];

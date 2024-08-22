@@ -42,32 +42,6 @@ const items = useItems();
 						{{ game.turn.time / 1000 }} сек.
 					</p>
 				</div>
-				<div>
-					<v-tooltip
-						location="bottom"
-						text="Патроны заряжаются в случайном порядке, их кол-во скрыто во время раунда!"
-					>
-						<template v-slot:activator="{ props }">
-							<div
-								class="flex"
-								v-bind="props"
-							>
-								<v-icon
-									icon="mdi-bullet"
-									v-for="patron in game.settings.MAX_PATRONS_IN_RIFLE"
-									:color="
-										patron <= rifle.patrons.sequence.length
-											? rifle.patrons.sequence[patron - 1]
-												? '#b60202'
-												: '#4949a3'
-											: '#3b3b3b'
-									"
-									:key="patron"
-								/>
-							</div>
-						</template>
-					</v-tooltip>
-				</div>
 			</div>
 			<div class="flex">
 				<div
