@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { Player } from './player';
+
+import Item from '@/game/item/Item.vue';
+import { ModifierState } from '@/game/modifier/modifier';
+import { RifleStatus } from '@/game/rifle/rifle';
 import { useGame } from '@/stores/game';
 import { PlayerActivity, useLocalPlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
-import type { Player } from './player';
-import { RifleStatus } from '../rifle/rifle';
-import Item from '../item/Item.vue';
-import { ModifierState } from '../modifier/modifier';
 
 const game = useGame();
 const localPlayer = useLocalPlayer();

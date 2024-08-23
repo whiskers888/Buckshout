@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useRooms } from '@/stores/room';
 import { ref } from 'vue';
 import type { VForm } from 'vuetify/components';
+
+import { useRooms } from '@/stores/room';
 
 const required = [(value: string) => !!value || 'Это обязательное поле'];
 

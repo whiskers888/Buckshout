@@ -1,7 +1,9 @@
+import { defineStore } from 'pinia';
+
+import { useGame } from './game';
+
 import type { Item } from '@/game/item/item';
 import type { Player } from '@/game/player/player';
-import { defineStore } from 'pinia';
-import { useGame } from './game';
 
 export interface ChainItem {
 	initiator: Player;

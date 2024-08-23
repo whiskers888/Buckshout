@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useRifle } from '@/stores/rifle';
 import { RiflePatron, RifleStatus } from './rifle';
-import { PlayerActivity, useLocalPlayer } from '@/stores/player';
+
+import { ModifierState } from '@/game/modifier/modifier';
 import { useGame } from '@/stores/game';
-import { ModifierState } from '../modifier/modifier';
+import { PlayerActivity, useLocalPlayer } from '@/stores/player';
+import { useRifle } from '@/stores/rifle';
 
 const rifle = useRifle();
 const game = useGame();

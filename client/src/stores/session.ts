@@ -1,5 +1,6 @@
-import { useRedirect } from '@/shared/hooks/useRedirect';
 import { defineStore } from 'pinia';
+
+import { useRedirect } from '@/shared/hooks/useRedirect';
 
 interface Session {
 	login: string;

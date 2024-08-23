@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { PlayerActivity, useLocalPlayer } from '@/stores/player';
-import type { Player } from '../player/player';
-import { ItemBehavior, type Item } from './item';
-import { ModifierState } from '../modifier/modifier';
-import { useRifle } from '@/stores/rifle';
-import { RifleStatus } from '../rifle/rifle';
+import { type Item, ItemBehavior } from './item';
+
+import { ModifierState } from '@/game/modifier/modifier';
+import type { Player } from '@/game/player/player';
+import { RifleStatus } from '@/game/rifle/rifle';
 import { useNotifier } from '@/stores/notifier';
+import { PlayerActivity, useLocalPlayer } from '@/stores/player';
+import { useRifle } from '@/stores/rifle';
 
 const localPlayer = useLocalPlayer();
 const rifle = useRifle();

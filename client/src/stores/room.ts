@@ -1,18 +1,26 @@
-import { Action, connection } from '@/api';
 import { defineStore } from 'pinia';
+
+import { useGame } from './game';
 import { useSession } from './session';
+
+import { Action, connection } from '@/api';
+import type { Game } from '@/game/game';
 import { useRedirect } from '@/shared/hooks/useRedirect';
-import { useGame, type Game } from './game';
 
 interface Room {
 	name: string;
 	game: Game;
 }
 
+interface RoomState {
+	current: Room | null;
+	items: Room[];
+}
+
 export const useRooms = defineStore('room', {
-	state: () => ({
-		current: null as Room | null,
-		items: [] as Room[],
+	state: (): RoomState => ({
+		current: null,
+		items: [],
 	}),
 
 	actions: {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useSession } from '@/stores/session';
 import { ref } from 'vue';
 import type { VForm } from 'vuetify/components';
+
+import { useSession } from '@/stores/session';
 
 const required = [(value: string) => !!value || 'Это обязательное поле'];
 

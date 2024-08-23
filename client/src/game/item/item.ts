@@ -1,4 +1,4 @@
-import { Modifier, type ModifierState } from '../modifier/modifier';
+import { Modifier, type ModifierState } from '@/game/modifier/modifier';
 
 export enum ItemBehavior {
 	NO_TARGET,

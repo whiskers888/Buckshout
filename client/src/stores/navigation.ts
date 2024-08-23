@@ -1,5 +1,6 @@
-import { routes } from '@/router';
 import { defineStore } from 'pinia';
+
+import { routes } from '@/router';
 
 type RouteView = (typeof routes)[number]['name'];
 const find = <V extends RouteView>(id: V): TypeSafeRouteFind<typeof routes, V> => {

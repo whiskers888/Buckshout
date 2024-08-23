@@ -1,5 +1,5 @@
-import type { Modifier } from '../modifier/modifier';
-import type { Player } from '../player/player';
+import type { Modifier } from '@/game/modifier/modifier';
+import type { Player } from '@/game/player/player';
 
 export enum RifleStatus {
 	NOT_LOADED,

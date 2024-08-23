@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { useRifle } from '@/stores/rifle';
-import { useRooms } from '@/stores/room';
-import { PlayerActivity, useLocalPlayer } from '@/stores/player';
-import { useGame } from '@/stores/game';
 import { GameStatus } from './game';
-import { useItems } from '@/stores/items';
 import { ModifierState } from './modifier/modifier';
+
+import { useGame } from '@/stores/game';
+import { useItems } from '@/stores/items';
+import { PlayerActivity, useLocalPlayer } from '@/stores/player';
+import { useRooms } from '@/stores/room';
 
 const rooms = useRooms();
 const game = useGame();
-const rifle = useRifle();
 const localPlayer = useLocalPlayer();
 const items = useItems();
 </script>

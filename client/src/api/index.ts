@@ -1,6 +1,7 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import { Event } from './event';
+
 import { Action } from './action';
+import { Event } from './event';
 export { Event, Action };
 
 export const connection = new HubConnectionBuilder()

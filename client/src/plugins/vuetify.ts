@@ -1,8 +1,8 @@
 import '@mdi/font/css/materialdesignicons.css';
 import 'vuetify/styles';
+import { type ThemeDefinition, createVuetify } from 'vuetify';
 import { ru } from 'vuetify/locale';
 
-import { createVuetify, type ThemeDefinition } from 'vuetify';
 
 const themeSettings: ThemeDefinition = {
 	colors: {

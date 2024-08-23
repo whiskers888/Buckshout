@@ -1,19 +1,18 @@
-import { connection, Event } from '@/api';
+import { Event, connection } from '@/api';
+import { Item, ItemEvent } from '@/game/item/item';
+import { useGame } from '@/stores/game';
+import { useItems } from '@/stores/items';
 import { useNotifier } from '@/stores/notifier';
 import { PlayerActivity, useLocalPlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
 import { useRooms } from '@/stores/room';
-import { Player } from '../player/player';
-import { useGame } from '@/stores/game';
 import { useSound } from '@/stores/sound';
-import { Item, ItemEvent } from '../item/item';
-import { useItems } from '@/stores/items';
 
-interface EventData {
-	target?: Player;
-	initiator?: Player;
-	special: any;
-}
+// interface EventData {
+// 	target?: Player;
+// 	initiator?: Player;
+// 	special: any;
+// }
 
 function on(e: Event, callback: (data: any) => void) {
 	connection.on(e, ans => {
@@ -26,11 +25,11 @@ function on(e: Event, callback: (data: any) => void) {
 	});
 }
 
-function off(events: Event[]) {
-	events.forEach(e => {
-		connection.off(e);
-	});
-}
+// function off(events: Event[]) {
+// 	events.forEach(e => {
+// 		connection.off(e);
+// 	});
+// }
 
 window.onbeforeunload = function () {
 	const rooms = useRooms();

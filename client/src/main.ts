@@ -1,15 +1,15 @@
 import '@/assets/styles/root.css';
 
-import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import vuetify from '@/plugins/vuetify';
+import { createApp } from 'vue';
 
-import App from '@/App.vue';
-import router from '@/router';
-import { useSession } from '@/stores/session';
 import { connection } from '@/api';
+import App from '@/App.vue';
 import { init } from '@/game/scripts';
+import vuetify from '@/plugins/vuetify';
+import router from '@/router';
 import { useRooms } from '@/stores/room';
+import { useSession } from '@/stores/session';
 
 const app = createApp(App);
 

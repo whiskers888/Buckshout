@@ -1,10 +1,10 @@
-import { fileURLToPath, URL } from 'node:url';
+import { URL, fileURLToPath } from 'node:url';
 
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import vuetify from 'vite-plugin-vuetify';
-import vueDevTools from 'vite-plugin-vue-devtools';
 import { templateCompilerOptions } from '@tresjs/core';
+import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite';
+import vueDevTools from 'vite-plugin-vue-devtools';
+import vuetify from 'vite-plugin-vuetify';
 
 export default defineConfig({
 	plugins: [

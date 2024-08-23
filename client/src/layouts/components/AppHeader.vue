@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useNavigation } from '@/stores/navigation';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTheme } from 'vuetify';
+
+import { useNavigation } from '@/stores/navigation';
 
 const theme = useTheme();
 const route = useRoute();

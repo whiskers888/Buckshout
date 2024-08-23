@@ -1,5 +1,6 @@
-import router, { routes } from '@/router';
 import type { RouteParamsRaw, RouteRecordSingleViewWithChildren } from 'vue-router';
+
+import router, { routes } from '@/router';
 
 type Routes = typeof routes;
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useNavigation } from '@/stores/navigation';
 import { storeToRefs } from 'pinia';
 import type { RouteMeta, RouteRecordSingleViewWithChildren } from 'vue-router';
+
+import { useNavigation } from '@/stores/navigation';
 
 const navigation = useNavigation();
 const { items, paths, isOpened } = storeToRefs(navigation);

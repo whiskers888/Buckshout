@@ -1,9 +1,11 @@
-import type { Player } from '@/game/player/player';
-import { RiflePatron, RifleStatus, type Rifle } from '@/game/rifle/rifle';
 import { defineStore } from 'pinia';
+
 import { useGame } from './game';
-import { Modifier, type ModifierState } from '@/game/modifier/modifier';
 import { useSound } from './sound';
+
+import { Modifier, type ModifierState } from '@/game/modifier/modifier';
+import type { Player } from '@/game/player/player';
+import { type Rifle, RiflePatron, RifleStatus } from '@/game/rifle/rifle';
 
 export const useRifle = defineStore('rifle', {
 	state: (): Rifle => ({

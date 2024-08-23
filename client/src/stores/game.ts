@@ -1,11 +1,13 @@
-import { Action, connection } from '@/api';
 import { defineStore } from 'pinia';
-import { useRooms } from './room';
+
 import { useRifle } from './rifle';
-import { GameSettings, GameStatus, type Game } from '@/game/game';
-import { Player } from '@/game/player/player';
+import { useRooms } from './room';
+
+import { Action, connection } from '@/api';
+import { type Game, GameSettings, GameStatus } from '@/game/game';
 import type { Item } from '@/game/item/item';
-import { ModifierTargetType, type Modifier } from '@/game/modifier/modifier';
+import { type Modifier, ModifierTargetType } from '@/game/modifier/modifier';
+import { Player } from '@/game/player/player';
 
 export const useGame = defineStore('game', {
 	state: (): Game => ({

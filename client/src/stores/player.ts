@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
-import { useNotifier } from './notifier';
-import { ItemBehavior, UnitTargetTeam, UnitTargetType, type Item } from '@/game/item/item';
+
 import { useGame } from './game';
-import type { Player } from '@/game/player/player';
+import { useNotifier } from './notifier';
+
+import { type Item, ItemBehavior, UnitTargetTeam, UnitTargetType } from '@/game/item/item';
 import { ModifierState } from '@/game/modifier/modifier';
+import type { Player } from '@/game/player/player';
 
 export enum PlayerActivity {
 	WAITING,

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useRooms } from '@/stores/room';
 import { onBeforeRouteLeave } from 'vue-router';
+
 import Game from '@/game/Game.vue';
+import { useRooms } from '@/stores/room';
 
 const rooms = useRooms();
 

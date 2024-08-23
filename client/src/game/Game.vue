@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Player from './player/Player.vue';
 import Rifle from './rifle/Rifle.vue';
+import Toolbar from './Toolbar.vue';
+
 import { useGame } from '@/stores/game';
 
-import Toolbar from './Toolbar.vue';
 
 const game = useGame();
 </script>

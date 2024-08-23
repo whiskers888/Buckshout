@@ -26,8 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { useNotifier } from '@/stores/notifier';
 import { storeToRefs } from 'pinia';
+
+import { useNotifier } from '@/stores/notifier';
 
 const notifier = useNotifier();
 const { notifications } = storeToRefs(notifier);
