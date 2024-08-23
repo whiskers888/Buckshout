@@ -6,8 +6,10 @@ namespace BuckshoutApp.Items
     public class Handcuffs(GameContext context) : Item(context)
     {
         public override string Name => "Наручники";
-        public override string Description => "Выбранный противник пропускает свой следующий ход.\n" +
-                                              "Нельзя применить несколько раз подряд на одного и того же игрока.";
+        public override string Description => "Сковывет выбранного противника, из-за чего тот пропускает свой следующий ход.\n" +
+                                              "Он не сможет выстрелить или использовать предметы, но все эффекты, касающиеся наступления его хода сработают.\n" +
+                                              "Нельзя применить, если игрок уже скован, пока он не походит.";
+        public override string Lore => "И постарайтесь НЕ потерять ключ.";
         public override string Model => "handcuffs";
         public override ItemBehavior[] Behavior { get; } = { ItemBehavior.UNIT_TARGET };
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
@@ -21,7 +23,7 @@ namespace BuckshoutApp.Items
 
         internal override void BeforeUse(EventData e)
         {
-            if (e.target.Is(ModifierState.PLAYER_STUNNED))
+            if (e.Target.Is(ModifierState.PLAYER_STUNNED))
             {
                 Disallow(e, "Этот игрок уже пропускает ход!");
             }
@@ -29,7 +31,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_HANDCUFFS).Apply(e.target);
+            Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_HANDCUFFS).Apply(e.Target);
         }
     }
 }

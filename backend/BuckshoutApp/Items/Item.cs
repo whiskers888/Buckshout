@@ -8,9 +8,9 @@ namespace BuckshoutApp.Items
     public class EventData
     {
         public string Id { get; } = Guid.NewGuid().ToString();
-        public Player? initiator { get; set; }
-        public Player? target { get; set; }
-        public Dictionary<string, object> special { get; set; } = [];
+        public Player? Initiator { get; set; }
+        public Player? Target { get; set; }
+        public Dictionary<string, object> Special { get; set; } = [];
 
         public bool Prevent { get; set; } = false; // для случаев, когда нужно предотвратить событие, логика пока пишется индивидуально
     }
@@ -38,7 +38,7 @@ namespace BuckshoutApp.Items
         public bool Use(EventData e)
         {
             State = ItemState.USING;
-            e.special.Add("ITEM", this);
+            e.Special.Add("ITEM", this);
             BeforeUse(e);
             if (State == ItemState.NOT_ALLOWED)
             {
@@ -74,7 +74,7 @@ namespace BuckshoutApp.Items
         public void Disallow(EventData e, string msg)
         {
             State = ItemState.NOT_ALLOWED;
-            e.special.Add("MESSAGE", msg);
+            e.Special.Add("MESSAGE", msg);
             Context.EventManager.Trigger(Event.MESSAGE, e);
         }
         public void Cancel()
@@ -83,7 +83,7 @@ namespace BuckshoutApp.Items
                 Event.ITEM_CANCELED,
                 new EventData()
                 {
-                    special = new Dictionary<string, object>() { { "ITEM", this } }
+                    Special = new Dictionary<string, object>() { { "ITEM", this } }
                 });
             BeforeCancel();
             Console.WriteLine($"{Name} был отменен");
@@ -95,8 +95,8 @@ namespace BuckshoutApp.Items
             Modifiers.Add(modifier);
             Context.EventManager.Trigger(Event.MODIFIER_APPLIED, new EventData()
             {
-                target = initiator,
-                special = { { "MODIFIER", modifier }, { "ITEM", this } }
+                Target = initiator,
+                Special = { { "MODIFIER", modifier }, { "ITEM", this } }
             });
         }
         public void RemoveModifier(Modifier modifier, Player target)
@@ -104,8 +104,8 @@ namespace BuckshoutApp.Items
             if (Modifiers.Remove(modifier))
                 Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
                 {
-                    target = target,
-                    special = { { "MODIFIER", modifier }, { "ITEM", this } }
+                    Target = target,
+                    Special = { { "MODIFIER", modifier }, { "ITEM", this } }
                 });
         }
         public bool Is(ModifierState state)

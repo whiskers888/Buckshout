@@ -13,6 +13,7 @@ namespace BuckshoutApp.Items
                                               "Вы можете подкупить несколько разных игроков одновременно, но защита сработает на первый же выстрел у всех сразу.\n" +
                                               "Нельзя применить на игрока, которого уже кто-то подкупил.\n" +
                                               "Также, одним экземпляром этого предмета можно подкупить каждого игрока лишь раз, если не осталось игроков для подкупа, предмет исчезнет.\n";
+        public override string Lore => "isgreedgood?";
         public override string Model => "dollar";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
@@ -28,11 +29,11 @@ namespace BuckshoutApp.Items
 
         internal override void BeforeUse(EventData e)
         {
-            if (Corrupted.Contains(e.target))
+            if (Corrupted.Contains(e.Target))
             {
                 Disallow(e, "Этот игрок уже был подкуплен этим предметом!");
             }
-            if (e.target.Is(ModifierState.PLAYER_CORRUPTED))
+            if (e.Target.Is(ModifierState.PLAYER_CORRUPTED))
             {
                 Disallow(e, "Этот игрок уже подкуплен!");
             }
@@ -41,29 +42,29 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DOLLAR);
-            modifier.Description = $"Когда в игрока {e.initiator.Name} будут стрелять, этот игрок примет выстрел на себя.";
-            modifier.Apply(e.target);
+            modifier.Description = $"Когда в игрока {e.Initiator.Name} будут стрелять, этот игрок примет выстрел на себя.";
+            modifier.Apply(e.Target);
 
             modifier.RemoveWhen(Event.BEFORE_DAMAGE_TAKE, null, (damegeE) =>
             {
                 if (modifier.Removed) return true;
-                if (damegeE.target == e.initiator && damegeE.special["TYPE"] == "RIFLE")
+                if (damegeE.Target == e.Initiator && damegeE.Special["TYPE"] == "RIFLE")
                 {
                     damegeE.Prevent = true;
-                    e.target.ChangeHealth(ChangeHealthType.Damage, (int)damegeE.special["VALUE"], e.initiator, "DOLLAR");
+                    e.Target.ChangeHealth(ChangeHealthType.Damage, (int)damegeE.Special["VALUE"], e.Initiator, "DOLLAR");
                     return true;
                 }
                 return false;
             });
             modifier.RemoveWhen(Event.RIFLE_SHOT, null, (shotE) =>
             {
-                if (shotE.target == e.initiator) return true;
+                if (shotE.Target == e.Initiator) return true;
                 return false;
             });
 
-            Corrupted.Add(e.target);
+            Corrupted.Add(e.Target);
             if (Corrupted.Count < Context.PlayerManager.Players.Count)
-                e.target.AddItem(this);
+                e.Target.AddItem(this);
         }
     }
 }

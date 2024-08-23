@@ -19,7 +19,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            e.special.Add("IS_CHARGED", Context.Rifle.NextPatron());
+            e.Special.Add("IS_CHARGED", Context.Rifle.NextPatron());
             Context.EventManager.Trigger(Event.RIFLE_PULLED, e);
         }
     }

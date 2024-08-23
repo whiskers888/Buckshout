@@ -10,11 +10,11 @@ namespace Buckshout.Models
             Special = [];
             if (e == null) return;
 
-            if (e.target is not null)
-                Target = new PlayerModel(e.target);
-            if (e.initiator is not null)
-                Initiator = new PlayerModel(e.initiator);
-            foreach (var kv in e.special)
+            if (e.Target is not null)
+                Target = new PlayerModel(e.Target);
+            if (e.Initiator is not null)
+                Initiator = new PlayerModel(e.Initiator);
+            foreach (var kv in e.Special)
             {
                 if (kv.Value is Item item)
                     Special.Add(kv.Key, new ItemModel(item));

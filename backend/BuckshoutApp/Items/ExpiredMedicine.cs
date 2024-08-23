@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Context;
+using BuckshoutApp.Manager.Events;
 
 namespace BuckshoutApp.Items
 {
@@ -9,6 +10,11 @@ namespace BuckshoutApp.Items
         public override string Lore => "Бесплатная медецина...";
         public override string Model => "expired_medicine";
 
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "medicine/unpack" },
+        };
+
         public int HEAL_CHANCE = 50;
         public int HEAL_AMOUNT = 2;
         public int DAMAGE_AMOUNT = 1;
@@ -16,10 +22,18 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             int healOrDamage = Context.Random.Next(0, 100);
-            if (healOrDamage >= HEAL_CHANCE)
-                e.initiator.ChangeHealth(Manager.ChangeHealthType.Heal, HEAL_AMOUNT, e.initiator);
+            if (HEAL_CHANCE >= healOrDamage)
+            {
+                e.Special["SOUND"] = "items/medicine/heal";
+                e.Initiator.ChangeHealth(Manager.ChangeHealthType.Heal, HEAL_AMOUNT, e.Initiator);
+            }
             else
-                e.initiator.ChangeHealth(Manager.ChangeHealthType.Damage, DAMAGE_AMOUNT, e.initiator);
+            {
+                e.Special["SOUND"] = "items/medicine/damage";
+                e.Initiator.ChangeHealth(Manager.ChangeHealthType.Damage, DAMAGE_AMOUNT, e.Initiator);
+            }
+
+            Context.EventManager.Trigger(Event.PLAY_SOUND, e);
         }
     }
 }

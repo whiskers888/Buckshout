@@ -6,21 +6,25 @@ namespace BuckshoutApp.Items
     public class Useless(GameContext context) : Item(context)
     {
         public override string Name => "Бесполезный предмет";
-        public override string Description => "Он действительно бесполезный, и не делает ровным счетом ничего!\n" +
+        public override string Description => "Он действительно бесполезный, и не делает ровным счетом НИЧЕГО!\n" +
                                               "Вам просто не повезло его получить...\n" +
                                               "[Но ходят слухи, что вы узнаете истинную суть предмета, лишь забив ими весь свой инвентарь...]";
         public override string Lore => "Бесполезный предмет - верх запаян, а дна нет!";
         public override string Model => "useless";
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "useless/break"},
+        };
 
         public override void Effect(EventData e)
         {
-            var count = e.initiator.Inventory.Where(it => it.Name == Name).Count() + 1;
+            var count = e.Initiator.Inventory.Where(it => it.Name == Name).Count() + 1;
             if (count == Context.Settings.MAX_INVENTORY_SLOTS)
-                e.special.Add("MESSAGE", "Ничего не произошло! Как, собственно, и всегда! Надеюсь, теперь Вам понятна истинная бесполезность этого предмета...");
+                e.Special.Add("MESSAGE", "НИЧЕГО не произошло! Как, собственно, и всегда! Надеюсь, теперь Вам понятна истинная БЕСОЛЕЗНОСТЬ этого предмета?!");
             else if (count >= Context.Settings.MAX_INVENTORY_SLOTS / 2)
-                e.special.Add("MESSAGE", $"Ничего не произошло, но что, если бы их было на {Context.Settings.MAX_INVENTORY_SLOTS - count} шт. больше?..");
+                e.Special.Add("MESSAGE", $"Ничего не произошло, но что, если бы их было на {Context.Settings.MAX_INVENTORY_SLOTS - count} шт. больше?..");
             else
-                e.special.Add("MESSAGE", "Ничего не произошло...");
+                e.Special.Add("MESSAGE", "Ничего не произошло...");
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);
         }
     }

@@ -116,13 +116,12 @@ namespace BuckshoutApp.Manager
                 ModifierKey.RIFLE_HACKSAW => new(Context)
                 {
                     Name = "Ножовка",
-                    Description = "Дробовик обрезан, при попадании будет нанесен двойной урон!",
+                    Description = "Дробовик обрезан, при попадании будет нанесено больше урона!",
                     Duration = -1,
                     State = [ModifierState.RIFLE_BONUS_DAMAGE],
                     TargetType = ModifierTargetType.RIFLE,
                     Icon = "hand-saw",
                     IsBuff = true,
-                    Value = 2
                 },
                 _ => throw new NotImplementedException(),
             };

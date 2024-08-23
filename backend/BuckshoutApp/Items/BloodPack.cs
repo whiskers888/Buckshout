@@ -19,19 +19,19 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            e.special.Add("MESSAGE", "[DEV] СКРЫТИЕ МОДИФИКАТОРОВ НЕ РЕАЛИЗОВАНО!");
+            e.Special.Add("MESSAGE", "[DEV] СКРЫТИЕ МОДИФИКАТОРОВ НЕ РЕАЛИЗОВАНО!");
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);
 
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_BLOOD_PACK);
-            modifier.Apply(e.initiator);
+            modifier.Apply(e.Initiator);
 
             Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
             {
                 modifier.RemoveWhen(Event.DAMAGE_TAKEN, null, (damageE) =>
                 {
-                    if (damageE.target != e.initiator)
+                    if (damageE.Target != e.Initiator)
                     {
-                        e.initiator.ChangeHealth(ChangeHealthType.Heal, (int)damageE.special["VALUE"], e.initiator);
+                        e.Initiator.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
                         return true;
                     }
                     return false;

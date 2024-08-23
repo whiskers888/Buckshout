@@ -17,7 +17,7 @@ namespace BuckshoutApp.Manager
 
             Context.EventManager.Subscribe(Event.PLAYER_LOST, (e) =>
             {
-                if (e.target == Current)
+                if (e.Target == Current)
                     Next();
             });
         }
@@ -31,13 +31,13 @@ namespace BuckshoutApp.Manager
             {
                 Context.EventManager.Trigger(Event.PLAYER_WON, new EventData()
                 {
-                    target = Context.PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
+                    Target = Context.PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
                 });
             }
             else if (Context.PlayerManager.AlivePlayers.Count == 0)
             {
                 var e = new EventData();
-                e.special.Add("MESSAGE", "Ничья! Что-ж, за то никому не придется платить...");
+                e.Special.Add("MESSAGE", "Ничья! Что-ж, за то никому не придется платить...");
                 Context.EventManager.Trigger(Event.MESSAGE, e);
                 Context.FinishGame();
             }
@@ -66,8 +66,8 @@ namespace BuckshoutApp.Manager
             }
             Context.EventManager.Trigger(Event.TURN_CHANGED, new Items.EventData()
             {
-                target = player,
-                special = new Dictionary<string, object>
+                Target = player,
+                Special = new Dictionary<string, object>
                 {
                     { "TIME", turnDuration }
                 }
@@ -77,7 +77,7 @@ namespace BuckshoutApp.Manager
             {
                 Context.EventManager.Trigger(Event.TURN_SKIPPED, new Items.EventData()
                 {
-                    target = player,
+                    Target = player,
                 });
                 int currentPlayerIndex = Queue.IndexOf(Current);
 
@@ -97,7 +97,7 @@ namespace BuckshoutApp.Manager
                     if (Context.Status == GameStatus.FINISHED) return;
                     Context.EventManager.Trigger(Event.TURN_EXPIRED, new Items.EventData()
                     {
-                        target = player
+                        Target = player
                     });
                     Next();
                 }, turnDuration);

@@ -101,7 +101,7 @@ namespace BuckshoutApp.Modifiers
             {
                 id = Context.EventManager.SubscribeUniq(Event.TURN_CHANGED, (e) =>
                 {
-                    if (e.target == Target)
+                    if (e.Target == Target)
                     {
                         if (Duration == 0)
                         {

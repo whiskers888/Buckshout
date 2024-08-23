@@ -21,7 +21,7 @@ namespace BuckshoutApp.Items
             int countPatrons = Context.Rifle.Patrons.Count;
             int indexRndPatron = Context.Random.Next(0, countPatrons - 1);
             bool isCharged = Context.Rifle.Patrons[indexRndPatron].IsCharged;
-            e.special.Add("MESSAGE", new string[] {
+            e.Special.Add("MESSAGE", new string[] {
             "Привет...." ,
             "..Это я, твой *пшшшшш*....",
             "..Тут такой пи*пшшшшш*.....",
@@ -34,7 +34,7 @@ namespace BuckshoutApp.Items
         }
         internal override void OnCanceled(EventData e)
         {
-            e.special.Add("MESSAGE", new string[] {
+            e.Special.Add("MESSAGE", new string[] {
                 "Извините....",
                 "..связь прервалась..." });
             Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);

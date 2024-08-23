@@ -161,6 +161,7 @@ export function init() {
 	});
 
 	on(Event.ROUND_STARTED, e => {
+		notifier.success(`Начался ${e.special['ROUND']} раунд!`);
 		game.setRound(e.special['ROUND']);
 	});
 

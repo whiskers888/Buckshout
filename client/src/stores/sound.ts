@@ -15,3 +15,8 @@ export const useSound = defineStore('sound', {
 		},
 	},
 });
+
+/*
+BloodPack
+Useless
+*/

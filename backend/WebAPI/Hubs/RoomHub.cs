@@ -48,7 +48,7 @@ namespace Buckshout.Controllers
             GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
                 if (e == Event.SECRET_MESSAGE || e == Event.RIFLE_CHECKED)
-                    await SendPlayer(data.initiator!.Id, e, new DataModel(data));
+                    await SendPlayer(data.Initiator!.Id, e, new DataModel(data));
                 else
                     await Send(roomName, e, new DataModel(data));
             });
@@ -117,7 +117,7 @@ namespace Buckshout.Controllers
 
             gameContext.EventManager.Trigger(Event.GAME_STARTED, new EventData
             {
-                special = new Dictionary<string, object>
+                Special = new Dictionary<string, object>
                 {
                     { "GAME", new GameModel(gameContext) }
                 }
@@ -134,8 +134,8 @@ namespace Buckshout.Controllers
 
             gameContext.EventManager.Trigger(Event.RIFLE_AIMED, new EventData
             {
-                initiator = currentPlayer,
-                target = targetPlayer,
+                Initiator = currentPlayer,
+                Target = targetPlayer,
             });
         }
 

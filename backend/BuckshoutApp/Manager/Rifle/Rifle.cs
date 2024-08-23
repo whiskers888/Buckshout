@@ -34,7 +34,7 @@ namespace BuckshoutApp.Manager.Rifle
         public List<Patron> Patrons { get; private set; }
 
         public List<Modifier> Modifiers { get; set; }
-        public int Damage => Is(ModifierState.RIFLE_BONUS_DAMAGE) ? 2 : 1;
+        public int Damage => 1 + (GetModifier(ModifierState.RIFLE_BONUS_DAMAGE)?.Value ?? 0);
         public void LoadRifle()
         {
             int countPatrons = Context.Random.Next(2, Context.Settings.MAX_PATRONS_IN_RIFLE);
@@ -47,12 +47,13 @@ namespace BuckshoutApp.Manager.Rifle
             Patrons.Shuffle();
             Context.EventManager.Trigger(Event.RIFLE_LOADED, new EventData()
             {
-                special = {
+                Special = {
                     {"CHARGED", Patrons.Where(it => it.IsCharged == true).Count() },
                     {"COUNT", Patrons.Count }
                 }
             });
         }
+        public Modifier GetModifier(ModifierState state) => Modifiers.FirstOrDefault(it => it.State.Contains(state));
 
         public bool NextPatron()
         {
@@ -67,8 +68,8 @@ namespace BuckshoutApp.Manager.Rifle
 
             EventData e = new()
             {
-                initiator = currentPlayer,
-                target = targetPlayer,
+                Initiator = currentPlayer,
+                Target = targetPlayer,
             };
 
             if (Patrons.Count == 0)
@@ -100,8 +101,8 @@ namespace BuckshoutApp.Manager.Rifle
             else if (!IsCharged && targetPlayer != currentPlayer)
                 Context.QueueManager.Next(targetPlayer);
 
-            e.special.Add("IS_CHARGED", IsCharged);
-            e.special.Add("IS_MISSING", IsCharged && evasion);
+            e.Special.Add("IS_CHARGED", IsCharged);
+            e.Special.Add("IS_MISSING", IsCharged && evasion);
 
             Context.EventManager.Trigger(Event.RIFLE_SHOT, e);
             Context.EventManager.Trigger(Event.RIFLE_PULLED, e);
@@ -121,8 +122,8 @@ namespace BuckshoutApp.Manager.Rifle
             Modifiers.Add(modifier);
             Context.EventManager.Trigger(Event.MODIFIER_APPLIED, new EventData()
             {
-                target = initiator,
-                special = { { "MODIFIER", modifier } }
+                Target = initiator,
+                Special = { { "MODIFIER", modifier } }
             });
         }
         public void RemoveModifier(Modifier modifier)
@@ -130,7 +131,7 @@ namespace BuckshoutApp.Manager.Rifle
             if (Modifiers.Remove(modifier))
                 Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
                 {
-                    special = { { "MODIFIER", modifier } }
+                    Special = { { "MODIFIER", modifier } }
                 });
         }
         public bool Is(ModifierState state)

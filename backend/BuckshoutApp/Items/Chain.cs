@@ -8,23 +8,30 @@ namespace BuckshoutApp.Items
     public class Chain(GameContext context) : Item(context)
     {
         public override string Name => "Цепь";
-        public override string Description => "Связывает цель со случайным игроком (в том числе и вы).\n" +
+        public override string Description => "Связывает цель c другим случайным игроком (в том числе и вы).\n" +
                                               "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
                                               "Эффект применяется к каждой из целей отдельно, и наносит урон связанному игроку, развеевается после попытки выстрела в игрока.\n" +
-                                              "Не может примениться на уже связанного игрока.";
+                                              "Не может примениться (как направлено, так и случайно) на уже связанного игрока.";
         public override string Lore => "Да что ты как с цепи сорвался!?";
         public override string Model => "chain";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
         public override ItemTargetTeam TargetTeam => ItemTargetTeam.ANY;
 
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "chain/throw"},
+            {ItemEvent.EFFECTED, "chain/wind_gust" },
+            {ItemEvent.CANCELED, "chain/break"}
+        };
+
         internal override void BeforeUse(EventData e)
         {
-            if (e.target.Is(ModifierState.PLAYER_CHAINED))
+            if (e.Target.Is(ModifierState.PLAYER_CHAINED))
             {
                 Disallow(e, "Этот игрок уже связан!");
             }
-            if (Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.target).Count() < 1)
+            if (Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).Count() < 1)
             {
                 Disallow(e, "Не с кем связать!");
             }
@@ -38,13 +45,13 @@ namespace BuckshoutApp.Items
 
             var id = modifier.On(Event.DAMAGE_TAKEN, damageE =>
             {
-                if (damageE.special.TryGetValue("TYPE", out object? value))
+                if (damageE.Special.TryGetValue("TYPE", out object? value))
                 {
                     if (value == "CHAIN") return;
                 }
-                if (damageE.target == target)
+                if (damageE.Target == target)
                 {
-                    victim.ChangeHealth(Manager.ChangeHealthType.Damage, (int)damageE.special["VALUE"], target, "CHAIN");
+                    victim.ChangeHealth(Manager.ChangeHealthType.Damage, (int)damageE.Special["VALUE"], target, "CHAIN");
                 }
             });
             modifier.OnRemoved = () =>
@@ -53,19 +60,19 @@ namespace BuckshoutApp.Items
             };
             modifier.RemoveWhen(Event.RIFLE_SHOT, null, (shotE) =>
             {
-                if (shotE.target == target) return true;
+                if (shotE.Target == target) return true;
                 return false;
             });
         }
 
         public override void Effect(EventData e)
         {
-            var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.target).ToList().RandomChoise();
+            var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).ToList().RandomChoise();
 
-            ApplyModifiers(e.target, target);
-            ApplyModifiers(target, e.target);
+            ApplyModifiers(e.Target, target);
+            ApplyModifiers(target, e.Target);
 
-            e.special["MESSAGE"] = $"Игроки {e.target.Name} и {target.Name} теперь связаны!";
+            e.Special["MESSAGE"] = $"Игроки {e.Target.Name} и {target.Name} теперь связаны!";
             Context.EventManager.Trigger(Event.MESSAGE, e);
         }
     }

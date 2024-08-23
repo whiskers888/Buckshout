@@ -11,13 +11,17 @@ namespace BuckshoutApp.Items
 
         public override string Lore => "А потом он взял дробовик, засунул себе его прямо в рот и спустил курок, но это уже совсем другая история...";
         public override string Model => "magnifier";
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "magnifier/theme"},
+        };
 
         public int DURATION = 5000;
 
         public override void Effect(EventData e)
         {
-            e.special.Add("IS_CHARGED", Context.Rifle.Patrons[^1].IsCharged);
-            e.special.Add("DURATION", DURATION);
+            e.Special.Add("IS_CHARGED", Context.Rifle.Patrons[^1].IsCharged);
+            e.Special.Add("DURATION", DURATION);
             Context.EventManager.Trigger(Event.RIFLE_CHECKED, e); ;
         }
     }

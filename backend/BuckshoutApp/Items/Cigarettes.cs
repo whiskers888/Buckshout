@@ -19,7 +19,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            e.initiator.ChangeHealth(Manager.ChangeHealthType.Heal, COUNT_HEALTH, e.initiator);
+            e.Initiator.ChangeHealth(Manager.ChangeHealthType.Heal, COUNT_HEALTH, e.Initiator);
         }
     }
 }

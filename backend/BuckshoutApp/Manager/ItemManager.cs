@@ -16,14 +16,14 @@ namespace BuckshoutApp.Manager
 
             Context.EventManager.Subscribe(Event.ITEM_USED, (e) =>
             {
-                History.Add((Item)e.special["ITEM"]);
-                Queue.Add((Item)e.special["ITEM"]);
+                History.Add((Item)e.Special["ITEM"]);
+                Queue.Add((Item)e.Special["ITEM"]);
             });
             Context.EventManager.Subscribe(Event.ITEM_EFFECTED, ClearQueue);
             Context.EventManager.Subscribe(Event.ITEM_CANCELED, ClearQueue);
         }
 
-        public void ClearQueue(EventData e) => Queue.Remove((Item)e.special["ITEM"]);
+        public void ClearQueue(EventData e) => Queue.Remove((Item)e.Special["ITEM"]);
         private List<Item> Items { get; set; }
         private List<Item> Queue { get; set; }
         private List<Item> History { get; set; }

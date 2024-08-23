@@ -32,11 +32,10 @@ namespace BuckshoutApp.Context
             Settings = new Settings();
 
         }
-
-
         public Random Random => new();
+
         public string Id;
-        public int Round { get; set; }
+        public int Round { get; set; } = 1;
 
         public PlayerManager PlayerManager { get; set; }
         public QueueManager QueueManager { get; set; }
@@ -68,7 +67,7 @@ namespace BuckshoutApp.Context
             if (Status == GameStatus.FINISHED) return;
             EventManager.Trigger(Event.ROUND_STARTED, new Items.EventData
             {
-                special = new Dictionary<string, object>
+                Special = new Dictionary<string, object>
                 {
                     { "ROUND", Round }
                 }
