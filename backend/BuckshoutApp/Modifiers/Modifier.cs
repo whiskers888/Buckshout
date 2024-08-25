@@ -19,7 +19,6 @@ namespace BuckshoutApp.Modifiers
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
-        // public Dictionary<ModifierFunction, object> Functions { get; set; } = [];
         public int Duration { get; set; } = 0;
         public string Icon { get; set; } = "";
         public bool IsBuff { get; set; } = false;
@@ -53,24 +52,32 @@ namespace BuckshoutApp.Modifiers
             OnApplied?.Invoke();
             rifle.AddModifier(this, initiator);
         }
+        public void SetRemoved()
+        {
+            Removed = true;
+        }
         public void Remove(Event @event, Item item = null, Action<EventData>? callback = null)
         {
+
             Context.EventManager.Once(@event, (e) =>
             {
-                switch (TargetType)
+                if (!Removed)
                 {
-                    case ModifierTargetType.PLAYER:
-                        Target.RemoveModifier(this); break;
+                    switch (TargetType)
+                    {
+                        case ModifierTargetType.PLAYER:
+                            Target.RemoveModifier(this); break;
 
-                    case ModifierTargetType.RIFLE:
-                        Context.Rifle.RemoveModifier(this); break;
+                        case ModifierTargetType.RIFLE:
+                            Context.Rifle.RemoveModifier(this); break;
 
-                    case ModifierTargetType.ITEM:
-                        item.RemoveModifier(this, Target); break;
+                        case ModifierTargetType.ITEM:
+                            item.RemoveModifier(this, Target); break;
+                    }
+                    OnRemoved?.Invoke();
+                    callback?.Invoke(e);
                 }
                 Removed = true;
-                OnRemoved?.Invoke();
-                callback?.Invoke(e);
             });
         }
         public void RemoveWhen(Event @event, Item item = null, Func<EventData, bool> checkState = null)
@@ -78,22 +85,27 @@ namespace BuckshoutApp.Modifiers
             string id = "";
             id = Context.EventManager.SubscribeUniq(@event, (e) =>
             {
-                if (checkState != null && checkState.Invoke(e) != true) return;
-
-                switch (TargetType)
+                if (!Removed)
                 {
-                    case ModifierTargetType.PLAYER:
-                        Target.RemoveModifier(this); break;
 
-                    case ModifierTargetType.RIFLE:
-                        Context.Rifle.RemoveModifier(this); break;
+                    if (checkState != null && checkState.Invoke(e) != true) return;
 
-                    case ModifierTargetType.ITEM:
-                        item.RemoveModifier(this, Target); break;
+                    switch (TargetType)
+                    {
+                        case ModifierTargetType.PLAYER:
+                            Target.RemoveModifier(this); break;
+
+                        case ModifierTargetType.RIFLE:
+                            Context.Rifle.RemoveModifier(this); break;
+
+                        case ModifierTargetType.ITEM:
+                            item.RemoveModifier(this, Target); break;
+                    }
+                    OnRemoved?.Invoke();
                 }
+
                 Context.EventManager.Unsubscribe(@event, id);
                 Removed = true;
-                OnRemoved?.Invoke();
             });
         }
         private void SetDuration()
@@ -107,6 +119,7 @@ namespace BuckshoutApp.Modifiers
                     {
                         if (Duration == 0)
                         {
+                            Removed = true;
                             Target.RemoveModifier(this);
                             OnRemoved?.Invoke();
                             Context.EventManager.Unsubscribe(Event.TURN_CHANGED, id);
@@ -121,7 +134,8 @@ namespace BuckshoutApp.Modifiers
         {
             return Context.EventManager.SubscribeUniq(@event, (e) =>
             {
-                action(e);
+                if (!Removed)
+                    action(e);
             });
         }
     }

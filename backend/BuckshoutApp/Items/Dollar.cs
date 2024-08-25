@@ -29,11 +29,11 @@ namespace BuckshoutApp.Items
 
         internal override void BeforeUse(EventData e)
         {
-            if (Corrupted.Contains(e.Target))
+            if (Corrupted.Contains(e.Target!))
             {
                 Disallow(e, "Этот игрок уже был подкуплен этим предметом!");
             }
-            if (e.Target.Is(ModifierState.PLAYER_CORRUPTED))
+            if (e.Target!.Is(ModifierState.PLAYER_CORRUPTED))
             {
                 Disallow(e, "Этот игрок уже подкуплен!");
             }
@@ -42,16 +42,16 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DOLLAR);
-            modifier.Description = $"Когда в игрока {e.Initiator.Name} будут стрелять, этот игрок примет выстрел на себя.";
-            modifier.Apply(e.Target);
+            modifier.Description = $"Когда в игрока {e.Initiator!.Name} будут стрелять, этот игрок примет выстрел на себя.";
+            modifier.Apply(e.Target!);
 
             modifier.RemoveWhen(Event.BEFORE_DAMAGE_TAKE, null, (damageE) =>
             {
                 if (modifier.Removed) return true;
-                if (damageE.Target == e.Initiator && damageE.Special["TYPE"] == "RIFLE")
+                if (damageE.Target == e.Initiator && damageE.Special["TYPE"].ToString() == "RIFLE")
                 {
                     damageE.Prevent = true;
-                    e.Target.ChangeHealth(ChangeHealthType.Damage, (int)damageE.Special["VALUE"], e.Initiator, "DOLLAR");
+                    e.Target!.ChangeHealth(ChangeHealthType.Damage, (int)damageE.Special["VALUE"], e.Initiator, "DOLLAR");
                     return true;
                 }
                 return false;
@@ -62,9 +62,9 @@ namespace BuckshoutApp.Items
                 return false;
             });
 
-            Corrupted.Add(e.Target);
+            Corrupted.Add(e.Target!);
             if (Corrupted.Count < Context.PlayerManager.Players.Count)
-                e.Target.AddItem(this);
+                e.Target!.AddItem(this);
         }
     }
 }

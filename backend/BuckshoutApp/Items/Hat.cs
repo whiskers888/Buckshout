@@ -22,7 +22,7 @@ namespace BuckshoutApp.Items
         {
             for (int i = 0; i < ITEMS_COUNT; i++)
             {
-                e.Initiator.AddItem(Context.ItemManager.NextItem());
+                e.Initiator!.AddItem(Context.ItemManager.NextItem());
             }
         }
     }

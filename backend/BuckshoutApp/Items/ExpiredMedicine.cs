@@ -25,12 +25,12 @@ namespace BuckshoutApp.Items
             if (HEAL_CHANCE >= healOrDamage)
             {
                 e.Special["SOUND"] = "items/medicine/heal";
-                e.Initiator.ChangeHealth(Manager.ChangeHealthType.Heal, HEAL_AMOUNT, e.Initiator);
+                e.Initiator!.ChangeHealth(Manager.ChangeHealthType.Heal, HEAL_AMOUNT, e.Initiator);
             }
             else
             {
                 e.Special["SOUND"] = "items/medicine/damage";
-                e.Initiator.ChangeHealth(Manager.ChangeHealthType.Damage, DAMAGE_AMOUNT, e.Initiator);
+                e.Initiator!.ChangeHealth(Manager.ChangeHealthType.Damage, DAMAGE_AMOUNT, e.Initiator);
             }
 
             Context.EventManager.Trigger(Event.PLAY_SOUND, e);

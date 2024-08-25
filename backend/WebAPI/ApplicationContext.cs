@@ -7,11 +7,9 @@ namespace BuckshoutApp.Context
     {
         public ApplicationContext(IConfiguration config, IDistributedCache cache)
         {
-            Version = "0.9999-beta4";
+            Version = "1.0";
             Title = "Buckshout";
             Configuration = config;
-
-
 
             RoomManager = new RoomManager();
             CacheManager = new CacheManager(cache, this);

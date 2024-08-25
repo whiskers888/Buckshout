@@ -10,7 +10,7 @@ namespace Buckshout.Managers
     {
         private readonly IDistributedCache _cache;
 
-        private readonly ApplicationContext ApplicationContext;
+        /*private readonly ApplicationContext ApplicationContext;*/
         public CacheManager(IDistributedCache cache, ApplicationContext applicationContext)
         {
             _cache = cache;
@@ -35,8 +35,8 @@ namespace Buckshout.Managers
             var cache = await GetCache(conn.connectionId);
             if (cache is not null)
             {
-                RemoveCache(conn.connectionId);
-                SetCache(conn.connectionId, conn.roomName);
+                await RemoveCache(conn.connectionId);
+                await SetCache(conn.connectionId, conn.roomName);
             }
 
         }

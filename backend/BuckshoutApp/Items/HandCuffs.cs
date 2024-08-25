@@ -23,7 +23,7 @@ namespace BuckshoutApp.Items
 
         internal override void BeforeUse(EventData e)
         {
-            if (e.Target.Is(ModifierState.PLAYER_STUNNED))
+            if (e.Target!.Is(ModifierState.PLAYER_STUNNED))
             {
                 Disallow(e, "Этот игрок уже пропускает ход!");
             }

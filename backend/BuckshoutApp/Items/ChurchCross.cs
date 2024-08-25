@@ -26,7 +26,7 @@ namespace BuckshoutApp.Items
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHURCH_CROSS);
             modifier.Value = CHANCE_EVASION;
-            modifier.Apply(e.Initiator);
+            modifier.Apply(e.Initiator!);
             modifier.RemoveWhen(Event.RIFLE_SHOT, null, (e) =>
             {
                 return (bool)e.Special["IS_MISSING"];

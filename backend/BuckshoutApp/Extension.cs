@@ -22,9 +22,6 @@ namespace BuckshoutApp
                 n--;
                 int k = rng.Next(n + 1);
                 (list[n], list[k]) = (list[k], list[n]);
-                /*T value = list[k];
-                list[k] = list[n];
-                list[n] = value;*/
             }
         }
         public static T RandomChoise<T>(this IList<T> list)

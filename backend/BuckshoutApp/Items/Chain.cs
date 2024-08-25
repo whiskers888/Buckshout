@@ -27,7 +27,7 @@ namespace BuckshoutApp.Items
 
         internal override void BeforeUse(EventData e)
         {
-            if (e.Target.Is(ModifierState.PLAYER_CHAINED))
+            if (e.Target!.Is(ModifierState.PLAYER_CHAINED))
             {
                 Disallow(e, "Этот игрок уже связан!");
             }
@@ -47,11 +47,11 @@ namespace BuckshoutApp.Items
             {
                 if (damageE.Special.TryGetValue("TYPE", out object? value))
                 {
-                    if (value == "CHAIN") return;
+                    if (value.ToString() == "CHAIN") return;
                 }
                 if (damageE.Target == target)
                 {
-                    victim.ChangeHealth(Manager.ChangeHealthType.Damage, (int)damageE.Special["VALUE"], target, "CHAIN");
+                    victim.ChangeHealth(ChangeHealthType.Damage, (int)damageE.Special["VALUE"], target, "CHAIN");
                 }
             });
             modifier.OnRemoved = () =>
@@ -70,10 +70,10 @@ namespace BuckshoutApp.Items
             // Может быть баг
             var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).ToList().RandomChoise();
 
-            ApplyModifiers(e.Target, target);
-            ApplyModifiers(target, e.Target);
+            ApplyModifiers(e.Target!, target);
+            ApplyModifiers(target, e.Target!);
 
-            e.Special["MESSAGE"] = $"Игроки {e.Target.Name} и {target.Name} теперь связаны!";
+            e.Special["MESSAGE"] = $"Игроки {e.Target!.Name} и {target.Name} теперь связаны!";
             Context.EventManager.Trigger(Event.MESSAGE, e);
         }
     }

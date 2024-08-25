@@ -84,6 +84,7 @@ namespace BuckshoutApp.Items
         public void Disallow(EventData e, string msg)
         {
             State = ItemState.NOT_ALLOWED;
+            /*if (!e.Special.ContainsKey("MESSAGE") && e.Special["MESSAGE"] != msg)*/
             e.Special.TryAdd("MESSAGE", msg);
             Context.EventManager.Trigger(Event.MESSAGE, e);
         }
@@ -112,6 +113,7 @@ namespace BuckshoutApp.Items
         }
         public void RemoveModifier(Modifier modifier, Player target)
         {
+            modifier.SetRemoved();
             if (Modifiers.Remove(modifier))
                 Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
                 {
@@ -135,10 +137,6 @@ namespace BuckshoutApp.Items
                 Special = new Dictionary<string, object> { { "ITEM", this } }
             });
         }
-        /*public void ClearModifiers()
-        {
-            Modifiers.Clear();
-        }*/
     }
 }
 

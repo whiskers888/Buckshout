@@ -21,18 +21,20 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_BLOOD_PACK);
-            modifier.Apply(e.Initiator);
+            modifier.Apply(e.Initiator!);
 
             Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
             {
+
                 modifier.RemoveWhen(Event.DAMAGE_TAKEN, null, (damageE) =>
                 {
-                    OpenTrap(e.Initiator);
+                    OpenTrap(e.Initiator!);
                     if (damageE.Target != e.Initiator)
                     {
-                        e.Initiator.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
+                        e.Initiator!.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
                         return true;
                     }
+
                     return false;
                 });
             });

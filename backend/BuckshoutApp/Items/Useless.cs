@@ -18,7 +18,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            var count = e.Initiator.Inventory.Where(it => it.Name == Name).Count() + 1;
+            var count = e.Initiator!.Inventory.Where(it => it.Name == Name).Count() + 1;
             if (count == Context.Settings.MAX_INVENTORY_SLOTS)
                 e.Special.Add("MESSAGE", "НИЧЕГО не произошло! Как, собственно, и всегда! Надеюсь, теперь Вам понятна истинная БЕСОЛЕЗНОСТЬ этого предмета?!");
             else if (count >= Context.Settings.MAX_INVENTORY_SLOTS / 2)

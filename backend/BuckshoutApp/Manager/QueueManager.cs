@@ -61,11 +61,11 @@ namespace BuckshoutApp.Manager
             }
 
             var turnDuration = Context.Settings.MAX_TURN_DURATION;
-            foreach (var modirier in player.Modifiers)
+            foreach (var modifier in player.Modifiers)
             {
-                if (modirier.State.Contains(ModifierState.PLAYER_TURN_TIME_LIMITED))
+                if (modifier.State.Contains(ModifierState.PLAYER_TURN_TIME_LIMITED))
                 {
-                    turnDuration /= modirier.Value;
+                    turnDuration /= modifier.Value;
                 }
             }
             Context.EventManager.Trigger(Event.TURN_CHANGED, new Items.EventData()

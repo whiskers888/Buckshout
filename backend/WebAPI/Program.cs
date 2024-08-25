@@ -46,35 +46,22 @@ namespace Buckshout
         }
         public static void ConfigureHost(WebApplication app)
         {
-
-#if ETHERNET
             var ipAddressEthernet = NetworkUtils.GetLocalIPv4(NetworkInterfaceType.Ethernet);
-            if (ipAddressEthernet != null)
-            {
-                ConfigureIp(app, ipAddressEthernet);
-            }
-#endif
-#if DEBUG
             var ipAddressWireless = NetworkUtils.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
-            if (ipAddressWireless != null)
-            {
-                ConfigureIp(app, ipAddressWireless);
-            }
-#endif
-            /*else
-            {
-                Console.WriteLine("Server running only in local");
-                app.Urls.Add("http://localhost:5000");
-                app.Urls.Add("https://localhost:5001");
-            }*/
-        }
 
-        public static void ConfigureIp(WebApplication app, string ipAddress)
-        {
             app.Urls.Add($"http://localhost:5000");
             app.Urls.Add($"https://localhost:5001");
-            app.Urls.Add($"http://{ipAddress}:5000");
-            app.Urls.Add($"https://{ipAddress}:5001");
+            if (ipAddressEthernet != null)
+            {
+                app.Urls.Add($"http://{ipAddressEthernet}:5000");
+                app.Urls.Add($"https://{ipAddressEthernet}:5001");
+            }
+            if (ipAddressWireless != null)
+            {
+
+                app.Urls.Add($"http://{ipAddressWireless}:5000");
+                app.Urls.Add($"https://{ipAddressWireless}:5001");
+            }
         }
     }
 }

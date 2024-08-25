@@ -7,8 +7,6 @@ namespace BuckshoutApp.Items
     internal class Mirror(GameContext context) : Item(context)
     {
         public override string Name => "Зеркало";
-        // При использовании на себя: При применение на вас предмета, он так же применяется на кастера
-        // При использовании на врага: Мы копируем no target эффекты(либо применение х2, либо на тебя кроме пилы)
         public override string Description => "Имеется 2 типа использования\n" +
                                               "При использовании на себя: Следующий предмет который будет использован на вас, применится и на врага\n" +
                                               "При использовании на врага: Копируется эффект любого предмета без цели примененный врагом(кроме пилы)";
@@ -26,9 +24,8 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            var id = "";
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_MIRROR);
-            modifier.Apply(e.Initiator);
+            modifier.Apply(e.Initiator!);
             if (e.Initiator == e.Target)
             {
                 modifier.RemoveWhen(Event.ITEM_EFFECTED, null, (itemE) =>

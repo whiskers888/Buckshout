@@ -29,7 +29,7 @@ namespace BuckshoutApp.Items
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.RIFLE_HACKSAW);
             modifier.Value = BONUS_DAMAGE;
-            modifier.Apply(e.Target, Context.Rifle);
+            modifier.Apply(e.Target!, Context.Rifle);
             modifier.Remove(Event.RIFLE_SHOT);
         }
     }

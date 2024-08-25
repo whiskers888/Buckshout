@@ -37,16 +37,17 @@ namespace Buckshout.Controllers
 
             return base.OnConnectedAsync();
         }
-        public async Task Recconected(string roomName)
+        /*public async Task Recconected(string roomName)
         {
 
-        }
+        }*/
         public async Task CreateRoom(string roomName)
         {
             var room = ApplicationContext.RoomManager.CreateRoom(roomName, Clients.Group(roomName));
 
             GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
+                /*вылетает баг*/
                 if (e == Event.SECRET_MESSAGE || e == Event.RIFLE_CHECKED)
                     await SendPlayer(data.Initiator!.Id, e, new DataModel(data));
                 else if (e == Event.ITEM_RECEIVED)
@@ -73,7 +74,11 @@ namespace Buckshout.Controllers
         public async Task JoinRoom(string playerName, string roomName)
         {
             if (GetGameContext(roomName).Status != GameStatus.PREPARING) return;
-
+            if (playerName.Length > 20)
+            {
+                GetGameContext(roomName).EventManager.Trigger(Event.SECRET_MESSAGE, new EventData() { Special = { { "MESSAGE", "Слишком длинный никнем. Никнейм не должен содержать более 20 символов" } } });
+                return;
+            }
             // await CacheManager.UpdateCache(new UserConnection(Context.ConnectionId, roomName));
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 

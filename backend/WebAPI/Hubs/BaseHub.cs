@@ -48,7 +48,7 @@ namespace Buckshout.Hubs
         internal async Task SendPlayer(string connectionID, Event eventName, object? data = null)
         {
 
-            await RoomManager.GetClient(connectionID).SendAsync(eventName.ToString(), new JsonResult(new
+            await RoomManager.GetClient(connectionID)!.SendAsync(eventName.ToString(), new JsonResult(new
             {
                 data,
                 datetime = DateTime.Now.ToString()

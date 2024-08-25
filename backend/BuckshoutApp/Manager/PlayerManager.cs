@@ -88,6 +88,7 @@ namespace BuckshoutApp.Manager
 
         public void ChangeHealth(ChangeHealthType direction, int count, Player initiator, string type = "DEFAULT")
         {
+            Console.WriteLine($"{initiator.Name} - {this.Name} выдал {direction.ToString()} с кол-во {count} Тип {type}");
             if (this.Is(ModifierState.PLAYER_DEAD)) return;
             EventData e = new()
             {
@@ -120,6 +121,7 @@ namespace BuckshoutApp.Manager
 
         public void AddItem(Item item)
         {
+            if (Inventory.Count >= Context.Settings.MAX_INVENTORY_SLOTS) return;
             Inventory.Add(item);
             Context.EventManager.Trigger(Event.ITEM_RECEIVED, new EventData()
             {
@@ -150,6 +152,8 @@ namespace BuckshoutApp.Manager
         }
         public void RemoveModifier(Modifier modifier)
         {
+            modifier.SetRemoved();
+            if (modifier.State.Contains(ModifierState.PLAYER_DEAD)) return;
             if (Modifiers.Remove(modifier))
                 Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
                 {
@@ -159,7 +163,7 @@ namespace BuckshoutApp.Manager
         }
         public void ClearModifiers()
         {
-            Modifiers.ForEach(m =>
+            Modifiers.ToList().ForEach(m =>
             {
                 RemoveModifier(m);
             });

@@ -41,7 +41,9 @@ namespace BuckshoutApp.Manager
                         {
                             p.ChangeHealth(ChangeHealthType.Damage, Context.Settings.FATIGUE_DAMAGE_PER_ITEM, p);
                         }
-                        p.Inventory.RemoveAt(Context.Random.Next(0, p.Inventory.Count - 1));
+                        // вылетел баг mix и minvalue
+                        var item = p.Inventory[Context.Random.Next(0, p.Inventory.Count - 1)];
+                        p.RemoveItem(item);
                     }
                 });
             }
@@ -68,7 +70,6 @@ namespace BuckshoutApp.Manager
             {
                 for (var i = 0; i < Context.Settings.ITEMS_PER_ROUND; i++)
                 {
-                    if (player.Inventory.Count >= Context.Settings.MAX_INVENTORY_SLOTS) return;
                     player.AddItem(NextItem());
                 }
             });

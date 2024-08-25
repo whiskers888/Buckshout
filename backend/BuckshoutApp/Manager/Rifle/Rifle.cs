@@ -48,9 +48,9 @@ namespace BuckshoutApp.Manager.Rifle
             Context.EventManager.Trigger(Event.RIFLE_LOADED, new EventData()
             {
                 Special = {
-                    {"CHARGED", Patrons.Where(it => it.IsCharged == true).Count() },
-                    {"COUNT", Patrons.Count }
-                }
+                { "CHARGED", Patrons.Where(it => it.IsCharged == true).Count() },
+                    { "COUNT", Patrons.Count }
+            }
             });
         }
         public Modifier GetModifier(ModifierState state) => Modifiers.FirstOrDefault(it => it.State.Contains(state));
@@ -128,6 +128,7 @@ namespace BuckshoutApp.Manager.Rifle
         }
         public void RemoveModifier(Modifier modifier)
         {
+            modifier.SetRemoved();
             if (Modifiers.Remove(modifier))
                 Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
                 {
