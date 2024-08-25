@@ -45,13 +45,13 @@ namespace BuckshoutApp.Items
             modifier.Description = $"Когда в игрока {e.Initiator.Name} будут стрелять, этот игрок примет выстрел на себя.";
             modifier.Apply(e.Target);
 
-            modifier.RemoveWhen(Event.BEFORE_DAMAGE_TAKE, null, (damegeE) =>
+            modifier.RemoveWhen(Event.BEFORE_DAMAGE_TAKE, null, (damageE) =>
             {
                 if (modifier.Removed) return true;
-                if (damegeE.Target == e.Initiator && damegeE.Special["TYPE"] == "RIFLE")
+                if (damageE.Target == e.Initiator && damageE.Special["TYPE"] == "RIFLE")
                 {
-                    damegeE.Prevent = true;
-                    e.Target.ChangeHealth(ChangeHealthType.Damage, (int)damegeE.Special["VALUE"], e.Initiator, "DOLLAR");
+                    damageE.Prevent = true;
+                    e.Target.ChangeHealth(ChangeHealthType.Damage, (int)damageE.Special["VALUE"], e.Initiator, "DOLLAR");
                     return true;
                 }
                 return false;
