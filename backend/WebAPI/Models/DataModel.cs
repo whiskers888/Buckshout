@@ -5,7 +5,7 @@ namespace Buckshout.Models
 {
     public class DataModel
     {
-        public DataModel(EventData? e)
+        public DataModel(EventData? e, bool isHidden = false)
         {
             Special = [];
             if (e == null) return;
@@ -17,9 +17,9 @@ namespace Buckshout.Models
             foreach (var kv in e.Special)
             {
                 if (kv.Value is Item item)
-                    Special.Add(kv.Key, new ItemModel(item));
+                    Special.Add(kv.Key, new ItemModel(item, isHidden));
                 else if (kv.Value is Modifier modifier)
-                    Special.Add(kv.Key, new ModifierModel(modifier));
+                    Special.Add(kv.Key, new ModifierModel(modifier, isHidden));
                 else
                     Special.Add(kv.Key, kv.Value);
             };

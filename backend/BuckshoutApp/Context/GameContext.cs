@@ -34,7 +34,7 @@ namespace BuckshoutApp.Context
         }
         public Random Random => new();
 
-        public string Id;
+        public string Id = Guid.NewGuid().ToString();
         public int Round { get; set; } = 1;
 
         public PlayerManager PlayerManager { get; set; }
@@ -64,7 +64,10 @@ namespace BuckshoutApp.Context
         }
         public void StartRound()
         {
+
             if (Status == GameStatus.FINISHED) return;
+            if (Round == 1)
+                QueueManager.Next();
             EventManager.Trigger(Event.ROUND_STARTED, new Items.EventData
             {
                 Special = new Dictionary<string, object>
@@ -73,12 +76,13 @@ namespace BuckshoutApp.Context
                 }
             });
             Round += 1;
+
             PlayerManager.Players.ForEach(p => p.ClearModifiers());
             Rifle.LoadRifle();
             ItemManager.FillBox();
 
             ItemManager.GiveItems();
-            QueueManager.Next();
+            /**/
         }
         public void FinishGame()
         {

@@ -14,6 +14,7 @@
 
         PLAYER_TRAP,
         PLAYER_BLOOD_PACK,
+        PLAYER_MIRROR,
 
 
         RIFLE_HACKSAW,

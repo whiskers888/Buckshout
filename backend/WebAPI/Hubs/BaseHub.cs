@@ -31,17 +31,20 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
-        /*
-        Метод нигде не используется, не думаю что он еще где то будет юзаться,
-        internal async Task Send(string roomName, string eventName, object? data = null)
+        internal async Task SendOther(string connectionID, Event eventName, object? data = null)
         {
 
-            await ApplicationContext.RoomManager.GetRoom(roomName).Group.SendAsync(eventName.ToString(), new JsonResult(new
+            var group = ApplicationContext.RoomManager.GetClientRoom(connectionID);
+            foreach (var client in group.Clients.Where(it => it.Key != connectionID))
             {
-                data,
-                datetime = DateTime.Now.ToString()
-            }));
-        }*/
+                await client.Value.SendAsync(eventName.ToString(), new JsonResult(new
+                {
+                    data,
+                    datetime = DateTime.Now.ToString()
+                }));
+            }
+
+        }
         internal async Task SendPlayer(string connectionID, Event eventName, object? data = null)
         {
 

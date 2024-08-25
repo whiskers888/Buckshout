@@ -67,6 +67,7 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
+            // Может быть баг
             var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).ToList().RandomChoise();
 
             ApplyModifiers(e.Target, target);

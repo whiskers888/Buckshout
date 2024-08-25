@@ -49,6 +49,17 @@ namespace Buckshout.Controllers
             {
                 if (e == Event.SECRET_MESSAGE || e == Event.RIFLE_CHECKED)
                     await SendPlayer(data.Initiator!.Id, e, new DataModel(data));
+                else if (e == Event.ITEM_RECEIVED)
+                {
+                    await SendPlayer(data.Target.Id, e, new DataModel(data));
+                    await SendOther(data.Target.Id, e, new DataModel(data, true));
+                }
+                else if (e == Event.MODIFIER_APPLIED)
+                {
+                    var client = GetGameContext(roomName).QueueManager.Current.Id;
+                    await SendPlayer(client, e, new DataModel(data));
+                    await SendOther(client, e, new DataModel(data, true));
+                }
                 else
                     await Send(roomName, e, new DataModel(data));
             });

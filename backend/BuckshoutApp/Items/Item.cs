@@ -36,7 +36,7 @@ namespace BuckshoutApp.Items
         internal virtual void BeforeUse(EventData e) { }
         internal virtual void BeforeCancel() { }
         internal virtual void OnCanceled(EventData e) { }
-        public bool Use(EventData e)
+        public bool Use(EventData e, bool skipTimer = false)
         {
             State = ItemState.USING;
             e.Special.Add("ITEM", this);
@@ -50,32 +50,41 @@ namespace BuckshoutApp.Items
             int timer = 0;
             int progress = 0;
 
-            timer = TimerExtension.SetInterval(() =>
+            if (!skipTimer)
             {
-                if (State == ItemState.DELAYED) return;
-                else progress += Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL;
-
-                if (progress >= Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL || State == ItemState.CANCELED)
+                timer = TimerExtension.SetInterval(() =>
                 {
-                    if (State == ItemState.USING)
+                    if (State == ItemState.DELAYED) return;
+                    else progress += Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL;
+
+                    if (progress >= Context.Settings.ITEM_CHANNELING_CHECK_INTERVAL || State == ItemState.CANCELED)
                     {
-                        Context.EventManager.Trigger(Event.ITEM_EFFECTED, e);
-                        Effect(e);
+                        if (State == ItemState.USING)
+                        {
+                            Context.EventManager.Trigger(Event.ITEM_EFFECTED, e);
+                            Effect(e);
+                        }
+                        else
+                        {
+                            OnCanceled(e);
+                        }
+                        State = ItemState.REMOVED;
+                        TimerExtension.ClearInterval(timer);
                     }
-                    else
-                    {
-                        OnCanceled(e);
-                    }
-                    State = ItemState.REMOVED;
-                    TimerExtension.ClearInterval(timer);
-                }
-            }, Context.Settings.ITEM_CHANNELING_TIME);
-            return true;
+                }, Context.Settings.ITEM_CHANNELING_TIME);
+                return true;
+            }
+            else
+            {
+                Context.EventManager.Trigger(Event.ITEM_EFFECTED, e);
+                Effect(e);
+                return true;
+            }
         }
         public void Disallow(EventData e, string msg)
         {
             State = ItemState.NOT_ALLOWED;
-            e.Special.Add("MESSAGE", msg);
+            e.Special.TryAdd("MESSAGE", msg);
             Context.EventManager.Trigger(Event.MESSAGE, e);
         }
         public void Cancel()
@@ -96,6 +105,7 @@ namespace BuckshoutApp.Items
             Modifiers.Add(modifier);
             Context.EventManager.Trigger(Event.MODIFIER_APPLIED, new EventData()
             {
+                Initiator = initiator,
                 Target = initiator,
                 Special = { { "MODIFIER", modifier }, { "ITEM", this } }
             });
@@ -116,6 +126,14 @@ namespace BuckshoutApp.Items
                 if (modifier.State.Contains(state)) return true;
             }
             return false;
+        }
+        public void OpenTrap(Player initiator)
+        {
+            Context.EventManager.Trigger(Event.TRAP_TRIGGERED, new EventData()
+            {
+                Initiator = initiator,
+                Special = new Dictionary<string, object> { { "ITEM", this } }
+            });
         }
         /*public void ClearModifiers()
         {

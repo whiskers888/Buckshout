@@ -66,8 +66,20 @@ namespace BuckshoutApp.Manager
                     Description = "Как только прольется чья-то кровь, этот игрок восстановит себе здоровье.",
                     Duration = -1,
                     State = [],
+                    IsHidden = true,
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "blood-bag",
+                    IsBuff = true,
+                },
+                ModifierKey.PLAYER_MIRROR => new(Context)
+                {
+                    Name = "Зеркало",
+                    Description = "OVERRIDE",
+                    Duration = -1,
+                    State = [],
+                    IsHidden = true,
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "mirror-variant",
                     IsBuff = true,
                 },
                 ModifierKey.PLAYER_CHAINED => new(Context)

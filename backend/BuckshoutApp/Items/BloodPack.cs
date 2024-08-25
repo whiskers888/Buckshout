@@ -17,11 +17,9 @@ namespace BuckshoutApp.Items
 
         public override ItemType Type => ItemType.TRAP;
 
+
         public override void Effect(EventData e)
         {
-            e.Special.Add("MESSAGE", "[DEV] СКРЫТИЕ МОДИФИКАТОРОВ НЕ РЕАЛИЗОВАНО!");
-            Context.EventManager.Trigger(Event.SECRET_MESSAGE, e);
-
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_BLOOD_PACK);
             modifier.Apply(e.Initiator);
 
@@ -29,6 +27,7 @@ namespace BuckshoutApp.Items
             {
                 modifier.RemoveWhen(Event.DAMAGE_TAKEN, null, (damageE) =>
                 {
+                    OpenTrap(e.Initiator);
                     if (damageE.Target != e.Initiator)
                     {
                         e.Initiator.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
