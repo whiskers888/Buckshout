@@ -159,7 +159,10 @@ namespace BuckshoutApp.Manager
         }
         public void ClearModifiers()
         {
-            Modifiers.Clear();
+            Modifiers.ForEach(m =>
+            {
+                RemoveModifier(m);
+            });
         }
 
         public Modifier GetModifier(ModifierState state) => Modifiers.FirstOrDefault(it => it.State.Contains(state));

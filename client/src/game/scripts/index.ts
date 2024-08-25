@@ -85,7 +85,9 @@ export function init() {
 	});
 	on(Event.ROOM_UPDATED, e => {
 		rooms.update(e.room);
-		game.update(e.room.game);
+		if (game.id == e.room.game.id) {
+			game.update(e.room.game);
+		}
 	});
 	on(Event.ROOM_REMOVED, e => {
 		rooms.remove(e.name);
@@ -162,6 +164,10 @@ export function init() {
 	on(Event.ITEM_CANCELED, e => {
 		const item: Item = e.special['ITEM'];
 		sound.play(item.soundSet[ItemEvent.CANCELED]);
+	});
+
+	on(Event.TRAP_TRIGGERED, e => {
+		game.showTrap(e.initiator, e.special['ITEM']);
 	});
 
 	on(Event.ROUND_STARTED, e => {

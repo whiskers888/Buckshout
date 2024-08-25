@@ -1,3 +1,4 @@
+import type { Item } from './item/item';
 import type { Player } from './player/player';
 
 export class GameSettings {
@@ -27,12 +28,20 @@ export enum GameStatus {
 	FINISHED,
 }
 
+export interface TrapInfo {
+	initiator: Player;
+	item: Item;
+}
+
 export interface Game {
+	id: string;
 	players: Player[];
 	settings: GameSettings;
 	current: Player | null;
 	lastCaster: Player | null;
 	status: GameStatus;
+
+	trap: TrapInfo | null;
 
 	round: number;
 	turn: {

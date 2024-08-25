@@ -32,6 +32,7 @@ function onFocusChanged(value: boolean) {
 			style="display: flex; align-items: center; gap: 20px"
 		>
 			<v-text-field
+				v-if="game.playerById(localPlayer.id)"
 				width="200"
 				v-model:model-value="game.playerById(localPlayer.id).team"
 				label="Команда"

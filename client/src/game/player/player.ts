@@ -3,7 +3,7 @@ import { Item } from '@/game/item/item';
 import { Modifier, type ModifierState } from '@/game/modifier/modifier';
 import { useLocalPlayer } from '@/stores/player';
 
-const PLAYER_COLORS = ['#c23a3a', '#2b63c2', '#2cc22b', '#a83ac2', '#cd9b3d'];
+const PLAYER_COLORS = ['#c23a3a', '#2b63c2', '#2cc22b', '#a83ac2', '#cd9b3d', '#3dcdac'];
 
 export class Player {
 	constructor(data: Player, context: Game) {

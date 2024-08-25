@@ -11,11 +11,14 @@ import { Player } from '@/game/player/player';
 
 export const useGame = defineStore('game', {
 	state: (): Game => ({
+		id: '',
 		players: [],
 		current: null,
 		lastCaster: null,
 		status: GameStatus.PREPARING,
 		settings: new GameSettings(),
+
+		trap: null,
 
 		round: 1,
 		turn: {
@@ -117,6 +120,16 @@ export const useGame = defineStore('game', {
 					useRifle().removeModifier(modifier.id);
 					break;
 			}
+		},
+
+		showTrap(_initiator: Player, item: Item) {
+			this.trap = {
+				initiator: this.playerById(_initiator.id),
+				item,
+			};
+			setTimeout(() => {
+				this.trap = null;
+			}, 3000);
 		},
 
 		invokeSetTeam(team: string) {
