@@ -27,19 +27,23 @@ namespace BuckshoutApp.Manager
 
         public void CheckWinner()
         {
-            if (Context.PlayerManager.AlivePlayers.Count == 1)
-            {
-                Context.EventManager.Trigger(Event.PLAYER_WON, new EventData()
-                {
-                    Target = Context.PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
-                });
-            }
-            else if (Context.PlayerManager.AlivePlayers.Count == 0)
+            if (Context.PlayerManager.AlivePlayers.Count == 0)
             {
                 var e = new EventData();
                 e.Special.Add("MESSAGE", "Ничья! Что-ж, за то никому не придется платить...");
                 Context.EventManager.Trigger(Event.MESSAGE, e);
                 Context.FinishGame();
+            }
+            else
+            {
+                var team = Context.PlayerManager.AlivePlayers[0].Team;
+                if (Context.PlayerManager.AlivePlayers.Where(it => it.Team == team).Count() == Context.PlayerManager.AlivePlayers.Count)
+                {
+                    Context.EventManager.Trigger(Event.PLAYER_WON, new EventData()
+                    {
+                        Target = Context.PlayerManager.Players.FirstOrDefault(it => !it.Is(ModifierState.PLAYER_DEAD))
+                    });
+                }
             }
         }
         public void Next(Player player)

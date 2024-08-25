@@ -102,6 +102,17 @@ namespace Buckshout.Controllers
             await SendCaller(Event.ROOM_LEFT);
         }
 
+        public async Task SetTeam(string roomName, string team)
+        {
+            var gameContext = GetGameContext(roomName);
+            gameContext.PlayerManager.Get(Context.ConnectionId).Team = team;
+
+            await SendAll(Event.ROOM_UPDATED, new
+            {
+                room = new RoomModel(ApplicationContext.RoomManager.GetRoom(roomName))
+            });
+        }
+
         public async Task StartGame(string roomName)
         {
             /* var connection = await GetCache();*/

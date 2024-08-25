@@ -5,7 +5,6 @@ import Toolbar from './Toolbar.vue';
 
 import { useGame } from '@/stores/game';
 
-
 const game = useGame();
 </script>
 

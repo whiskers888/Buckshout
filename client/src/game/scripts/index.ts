@@ -74,7 +74,7 @@ export function init() {
 		notifier.error(`Игрок ${e.target.name} проиграл!`);
 	});
 	on(Event.PLAYER_WON, e => {
-		notifier.success(`Игрок ${e.target.name} победил!`);
+		notifier.success(`Команда ${e.target.team} победила!`);
 	});
 
 	on(Event.ROOM_CREATED, e => {
@@ -85,6 +85,7 @@ export function init() {
 	});
 	on(Event.ROOM_UPDATED, e => {
 		rooms.update(e.room);
+		game.update(e.room.game);
 	});
 	on(Event.ROOM_REMOVED, e => {
 		rooms.remove(e.name);
@@ -134,7 +135,10 @@ export function init() {
 		const item = initiator.inventory.find(it => it.id === e.special['ITEM'].id);
 		if (!item) return;
 
-		game.removeItem(e.initiator, item);
+		item.using = true;
+		setTimeout(() => {
+			game.removeItem(e.initiator, item);
+		}, game.settings.ITEM_CHANNELING_TIME);
 		localPlayer.setActivity(PlayerActivity.DECIDES_CANCEL);
 		sound.play(item.soundSet[ItemEvent.USED]);
 

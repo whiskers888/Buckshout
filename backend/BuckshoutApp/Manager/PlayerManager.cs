@@ -45,12 +45,11 @@ namespace BuckshoutApp.Manager
         public Player(GameContext context, string id, string name)
         {
             Context = context;
-
             Id = id;
             Name = name;
-            Team = id; // TODO: сделать реализацию команд
+            Team = name;
             Avatar = Context.Random.Next(2, 50);
-            Inventory = [/*new Cancel(Context), new Handcuffs(context), new Beer(context), new Hacksaw(context), new Phone(context), new Adrenaline(context)*/];
+            Inventory = [];
             Modifiers = [];
             Status = PlayerStatus.CONNECTED;
             if (Context.Mode == Mode.Default)

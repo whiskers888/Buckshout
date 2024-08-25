@@ -31,7 +31,7 @@ namespace BuckshoutApp.Manager
 
             // Добавляем их в массив
             RefAvaliableItems.AddRange([
-                /*adrenaline,
+                adrenaline,
                 beer,
                 // bloodpack,
                 chain,
@@ -46,9 +46,7 @@ namespace BuckshoutApp.Manager
                 phone,
                 stamp,
                 stopwatch,
-                useless*/
-
-                dollar
+                useless
             ]);
         }
         public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
@@ -64,7 +62,7 @@ namespace BuckshoutApp.Manager
         public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
         public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 
-        public int ITEMS_PER_ROUND { get; set; } = 7; // каждый раунд выдается столько итемов
+        public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
 
         public int FATIGUE_ROUND { get; set; } = 6; // начиная с этого раунда у игрока появляется усталость. предметы больше не выдаются

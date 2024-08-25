@@ -94,7 +94,7 @@ namespace BuckshoutApp.Manager
                 // Эффекты предметов
                 ModifierKey.ITEM_CANNOT_BE_STOLEN => new(Context)
                 {
-                    Name = "ПРЕДМЕТ 404",
+                    Name = "Жулик, не воруй!",
                     Description = "Этот предмет нельзя украсть.",
                     Duration = -1,
                     State = [ModifierState.ITEM_CANNOT_BE_STOLEN],
@@ -104,8 +104,8 @@ namespace BuckshoutApp.Manager
                 },
                 ModifierKey.ITEM_ADRENALINE => new(Context)
                 {
-                    Name = "Жулик, не воруй",
-                    Description = "Предмет был украден, поэтому он пропадет на следующий ход.",
+                    Name = "Избавление от улик",
+                    Description = "Предмет был украден, игрок сбросит его, как только его ход завершится.",
                     Duration = 1,
                     State = [ModifierState.ITEM_LOST_ON_TURN_ENDED],
                     TargetType = ModifierTargetType.ITEM,

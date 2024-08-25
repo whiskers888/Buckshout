@@ -110,8 +110,8 @@ export const useGame = defineStore('game', {
 					break;
 				case ModifierTargetType.ITEM:
 					this.playerById(target.id)
-						?.inventory.find(it => it.id === item.id)!
-						.removeModifier(modifier.id);
+						?.inventory.find(it => it.id === item.id)
+						?.removeModifier(modifier.id);
 					break;
 				case ModifierTargetType.RIFLE:
 					useRifle().removeModifier(modifier.id);
@@ -119,6 +119,10 @@ export const useGame = defineStore('game', {
 			}
 		},
 
+		invokeSetTeam(team: string) {
+			const rooms = useRooms();
+			connection.invoke(Action.SET_TEAM, rooms.current?.name, team);
+		},
 		invokeStart() {
 			const rooms = useRooms();
 			connection.invoke(Action.START_GAME, rooms.current?.name);

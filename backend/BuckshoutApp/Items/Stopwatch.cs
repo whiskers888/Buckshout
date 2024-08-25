@@ -23,7 +23,7 @@ namespace BuckshoutApp.Items
         {
             foreach (var player in Context.PlayerManager.Players)
             {
-                if (player != e.Initiator)
+                if (player.Team != e.Initiator.Team)
                 {
                     var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_STOPWATCH);
                     modifier.Value = TURN_TIME_DIVIDER;

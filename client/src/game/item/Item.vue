@@ -13,8 +13,9 @@ const rifle = useRifle();
 const notifier = useNotifier();
 
 function onItemClick() {
+	if (item?.using) return;
 	if (rifle.status !== RifleStatus.READY) {
-		notifier.error('Дробовик еще не заряжен!');
+		if (localPlayer.isCurrent) notifier.error('Дробовик еще не заряжен!');
 		return;
 	}
 	if (localPlayer.activity === PlayerActivity.USING_ITEM) {
@@ -37,6 +38,7 @@ const { owner, item } = defineProps<{
 			:class="[
 				'item',
 				{
+					using: item.using,
 					target: localPlayer.canTargetItem(owner, item),
 					special: item?.behavior.includes(ItemBehavior.CUSTOM) && owner.id === localPlayer.id,
 					active: localPlayer.activity === PlayerActivity.DECIDES_CANCEL,
@@ -86,6 +88,30 @@ const { owner, item } = defineProps<{
 				"
 				:alt="!item.is(ModifierState.ITEM_INVISIBLE) ? item.name : 'Неизвестно'"
 			/>
+			<div class="item-modifiers">
+				<v-tooltip
+					v-for="modifier in item.modifiers"
+					:key="modifier.name"
+					location="right"
+				>
+					<template v-slot:activator="{ props }">
+						<v-icon
+							v-bind="props"
+							:style="{
+								border: `1px solid ${modifier.isBuff ? '#0f0' : '#f00'}`,
+								borderRadius: '50%',
+								padding: '10px',
+								fontSize: '14px',
+							}"
+							:icon="`mdi-${modifier.icon}`"
+						/>
+					</template>
+					<div class="modifier-tooltip">
+						<h3>{{ modifier.name }}</h3>
+						<p class="item-tooltip-description">{{ modifier.description }}</p>
+					</div>
+				</v-tooltip>
+			</div>
 		</div>
 	</div>
 </template>
@@ -149,6 +175,14 @@ const { owner, item } = defineProps<{
 	font-size: 12px;
 }
 
+.item-modifiers {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	padding: 2px;
+}
+
 /*  */
 .special {
 	opacity: 0.4;
@@ -181,5 +215,21 @@ const { owner, item } = defineProps<{
 	syntax: '<angle>';
 	inherits: true;
 	initial-value: 0turn;
+}
+
+.using {
+	animation: pulse 1s linear infinite !important;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 </style>

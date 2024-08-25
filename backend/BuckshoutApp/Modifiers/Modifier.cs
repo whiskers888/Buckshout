@@ -52,7 +52,7 @@ namespace BuckshoutApp.Modifiers
             OnApplied?.Invoke();
             rifle.AddModifier(this, initiator);
         }
-        public void Remove(Event @event, Item item = null)
+        public void Remove(Event @event, Item item = null, Action<EventData>? callback = null)
         {
             Context.EventManager.Once(@event, (e) =>
             {
@@ -69,6 +69,7 @@ namespace BuckshoutApp.Modifiers
                 }
                 Removed = true;
                 OnRemoved?.Invoke();
+                callback?.Invoke(e);
             });
         }
         public void RemoveWhen(Event @event, Item item = null, Func<EventData, bool> checkState = null)

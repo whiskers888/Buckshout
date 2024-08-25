@@ -46,10 +46,14 @@ export const useLocalPlayer = defineStore('player', {
 			return game.current?.id === state.id;
 		},
 		canTargetPlayer: state => (target: Player) => {
+			if (target.modifiers.some(it => it.state.some(s => state.itemToUse?.ignoreTargetState.includes(s))))
+				return false;
 			if (state.itemToUse?.targetType !== UnitTargetType.PLAYER) return false;
 			return canTargetTeam(state, target);
 		},
 		canTargetItem: state => (target: Player, item: Item) => {
+			if (item.modifiers.some(it => it.state.some(s => state.itemToUse?.ignoreTargetState.includes(s))))
+				return false;
 			if (state.itemToUse?.targetType !== UnitTargetType.ITEM) return false;
 			if (item.is(ModifierState.ITEM_INVISIBLE)) return false;
 			return canTargetTeam(state, target);

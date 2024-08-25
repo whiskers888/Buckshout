@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { GameStatus } from './game';
 import { ModifierState } from './modifier/modifier';
 
@@ -11,6 +13,10 @@ const rooms = useRooms();
 const game = useGame();
 const localPlayer = useLocalPlayer();
 const items = useItems();
+
+function onFocusChanged(value: boolean) {
+	if (!value) game.invokeSetTeam(game.playerById(localPlayer.id).team);
+}
 </script>
 
 <template>
@@ -21,11 +27,23 @@ const items = useItems();
 			text="Выйти"
 			@click="rooms.leave"
 		/>
-		<v-btn
+		<div
 			v-if="game.status === GameStatus.PREPARING"
-			text="Начать игру"
-			@click="game.invokeStart"
-		/>
+			style="display: flex; align-items: center; gap: 20px"
+		>
+			<v-text-field
+				width="200"
+				v-model:model-value="game.playerById(localPlayer.id).team"
+				label="Команда"
+				hide-details
+				prepend-inner-icon="mdi-account-multiple"
+				@update:focused="onFocusChanged"
+			/>
+			<v-btn
+				text="Начать игру"
+				@click="game.invokeStart"
+			/>
+		</div>
 		<div
 			v-else
 			style="width: 100%"
@@ -69,20 +87,18 @@ const items = useItems();
 								:src="`https://api.multiavatar.com/${chainItem.initiator.avatar}.png`"
 								alt="?"
 							/>
-							<p>{{ chainItem.initiator.name }}</p>
+							<div class="player-name">{{ chainItem.initiator.name }}</div>
 						</div>
-						<div style="display: flex; flex-direction: column; align-items: center">
-							<div class="chain-affected-item">
-								<img
-									:src="
-										!chainItem.item.is(ModifierState.ITEM_INVISIBLE)
-											? `/models/items/${chainItem.item.model}.png`
-											: '/models/items/unknown.png'
-									"
-								/>
-							</div>
+						<div class="chain-affected-item">
+							<img
+								:src="
+									!chainItem.item.is(ModifierState.ITEM_INVISIBLE)
+										? `/models/items/${chainItem.item.model}.png`
+										: '/models/items/unknown.png'
+								"
+							/>
 							<div class="clock">
-								<p>{{ chainItem.time / 1000 }}</p>
+								{{ chainItem.time / 1000 }}
 							</div>
 						</div>
 						<div
@@ -105,7 +121,7 @@ const items = useItems();
 								:src="`https://api.multiavatar.com/${chainItem.target.avatar}.png`"
 								alt="?"
 							/>
-							<p>{{ chainItem.target.name }}</p>
+							<div class="player-name">{{ chainItem.target.name }}</div>
 						</div>
 					</div>
 				</div>
@@ -143,10 +159,10 @@ const items = useItems();
 
 .chain-item {
 	display: flex;
-	gap: 10px;
-	border: 1px solid;
-	border-radius: 10px;
-	padding: 10px;
+	gap: 8px;
+	border: 2px solid;
+	border-radius: 8px;
+	padding: 4px 8px;
 }
 
 .chain-items {
@@ -155,7 +171,6 @@ const items = useItems();
 }
 
 .chain-item img {
-	width: 30px;
 	height: 30px;
 	border-radius: 50%;
 }
@@ -169,7 +184,15 @@ const items = useItems();
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	align-items: center;
+	justify-content: space-between;
+	gap: 2px;
+}
+
+.player-name {
+	max-width: 70px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .clock {
@@ -177,8 +200,8 @@ const items = useItems();
 	border-radius: 50%;
 	padding: 2px;
 	font-size: 12px;
-	width: 20px;
-	height: 20px;
+	width: 24px;
+	height: 24px;
 	display: flex;
 	justify-content: center;
 	align-items: center;

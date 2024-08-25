@@ -100,10 +100,13 @@ export class Item {
 	lore = '';
 	model = '';
 
-	behavior = [ItemBehavior.NO_TARGET];
-	targetType = UnitTargetType.NONE;
-	targetTeam = UnitTargetTeam.NONE;
+	using = false;
+
 	type = ItemType.DEFAULT;
+	behavior = [ItemBehavior.NO_TARGET];
+	targetTeam = UnitTargetTeam.NONE;
+	targetType = UnitTargetType.NONE;
+	ignoreTargetState: ModifierState[] = [];
 
 	soundSet = {} as Record<ItemEvent, string>;
 

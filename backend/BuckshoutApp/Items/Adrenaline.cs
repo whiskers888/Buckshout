@@ -19,6 +19,7 @@ namespace BuckshoutApp.Items
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override ItemTargetType TargetType => ItemTargetType.ITEM;
         public override ItemTargetTeam TargetTeam => ItemTargetTeam.ENEMY;
+        public override ModifierState[] IgnoreTargetState { get; } = [ModifierState.ITEM_CANNOT_BE_STOLEN];
         public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
         {
             {ItemEvent.USED, "adrenaline/heartbeat"},
@@ -41,7 +42,13 @@ namespace BuckshoutApp.Items
             e.Target!.Inventory.Remove(item);
             Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
             e.Initiator!.AddItem(item);
-            Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
+            var modifier = Context.ModifierManager.CreateModifier(ModifierKey.ITEM_ADRENALINE);
+            modifier.Apply(e.Initiator, item);
+            modifier.RemoveWhen(Event.ITEM_USED, item, (useE) =>
+            {
+                return useE.Special["ITEM"] == item;
+            });
+            modifier.Remove(Event.TURN_CHANGED, item, (_) =>
             {
                 e.Initiator.RemoveItem(item);
             });

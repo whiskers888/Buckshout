@@ -3,6 +3,7 @@ export enum Action {
 	JOIN_ROOM = 'JoinRoom',
 	LEAVE_ROOM = 'LeaveRoom',
 
+	SET_TEAM = 'SetTeam',
 	START_GAME = 'StartGame',
 	TAKE_AIM = 'TakeAim',
 	SHOOT = 'Shoot',

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onUpdated } from 'vue';
+
 import type { Player } from './player';
 
 import Item from '@/game/item/Item.vue';
@@ -15,6 +17,10 @@ const rifle = useRifle();
 const { player } = defineProps<{
 	player: Player;
 }>();
+
+onUpdated(() => {
+	console.log('UPD', player);
+});
 </script>
 
 <template>
@@ -69,7 +75,7 @@ const { player } = defineProps<{
 							</template>
 						</v-tooltip>
 
-						<span>{{ player.name }}</span>
+						<span>[{{ player.team }}] {{ player.name }}</span>
 					</div>
 
 					<v-tooltip
