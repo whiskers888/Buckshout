@@ -46,6 +46,7 @@ export const useGame = defineStore('game', {
 			}
 		},
 		update(data: Game) {
+			this.id = data.id;
 			this.status = data.status;
 			this.settings = new GameSettings(data.settings);
 			this.players = [];

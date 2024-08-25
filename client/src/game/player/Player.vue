@@ -81,6 +81,9 @@ const { player } = defineProps<{
 								<v-icon
 									v-for="hp in game.settings.MAX_PLAYER_HEALTH"
 									icon="mdi-heart"
+									:class="{
+										damage: hp > player.health && hp <= player.prevHealth,
+									}"
 									:color="hp <= player.health ? '#f00' : '#000'"
 									:key="hp"
 								/>
@@ -277,5 +280,21 @@ const { player } = defineProps<{
 	grid-template-columns: repeat(4, 1fr);
 	grid-gap: 2px;
 	margin-top: 6px;
+}
+
+.damage {
+	animation: pulse-hp 0.5s linear infinite !important;
+}
+
+@keyframes pulse-hp {
+	0% {
+		color: #f00;
+	}
+	50% {
+		opacity: #fff;
+	}
+	100% {
+		opacity: #f00;
+	}
 }
 </style>

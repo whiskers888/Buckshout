@@ -16,7 +16,7 @@ import { useSound } from '@/stores/sound';
 
 function on(e: Event, callback: (data: any) => void) {
 	connection.on(e, ans => {
-		console.log(e, ans.value.data);
+		// console.log(e, ans.value.data);
 		try {
 			callback(ans.value.data);
 		} catch (e) {

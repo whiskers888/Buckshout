@@ -10,6 +10,7 @@ export class Player {
 		this.context = context;
 		this.id = data.id;
 		this.health = data.health;
+		this.prevHealth = data.health;
 		this.name = data.name;
 		this.inventory = [];
 		this.modifiers = [];
@@ -69,6 +70,9 @@ export class Player {
 		if (this.health < 0) {
 			this.health = 0;
 		}
+		setTimeout(() => {
+			this.prevHealth = this.health;
+		}, 3000);
 	}
 	heal(value: number) {
 		this.health += value;
@@ -80,6 +84,7 @@ export class Player {
 	context: Game;
 	id: string;
 	health: number;
+	prevHealth: number;
 	name: string;
 	team: string;
 	inventory: Item[];
