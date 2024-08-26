@@ -50,7 +50,7 @@ namespace BuckshoutApp.Items
                 {
                     Item item = (Item)itemE.Special["ITEM"];
                     if (itemE.Initiator == e.Target &&
-                        item.TargetType == ItemTargetType.NONE &&
+                        item.TargetType == ItemTargetType.NONE && item.Type != ItemType.TRAP &&
                         item.Name != "Печать \"Переделать\"")
                     {
 

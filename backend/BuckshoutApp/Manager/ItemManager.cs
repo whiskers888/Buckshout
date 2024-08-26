@@ -41,9 +41,11 @@ namespace BuckshoutApp.Manager
                         {
                             p.ChangeHealth(ChangeHealthType.Damage, Context.Settings.FATIGUE_DAMAGE_PER_ITEM, p);
                         }
-                        // вылетел баг mix и minvalue
-                        var item = p.Inventory[Context.Random.Next(0, p.Inventory.Count - 1)];
-                        p.RemoveItem(item);
+                        else
+                        {
+                            var item = p.Inventory[Context.Random.Next(0, p.Inventory.Count - 1)];
+                            p.RemoveItem(item);
+                        }
                     }
                 });
             }
@@ -51,7 +53,6 @@ namespace BuckshoutApp.Manager
             {
                 for (var i = 0; i < Context.PlayerManager.Players.Count * Context.Settings.ITEMS_PER_PLAYER_COEF; i++)
                 {
-                    // TODO: ТУТ МОЖЕТ БЫТЬ ПИЗДА
                     Items.Add((Item)Activator.CreateInstance(item, [Context])!);
                 }
             });

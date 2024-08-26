@@ -57,7 +57,7 @@ namespace BuckshoutApp.Manager
         public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
         public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 
 
-        public int MAX_TURN_DURATION { get; set; } = 120000;
+        public int MAX_TURN_DURATION { get; set; } = 60000;
 
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
         public int INIT_PLAYER_HEALTH { get; set; } = 5;
