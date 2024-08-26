@@ -34,7 +34,7 @@ const { owner, item } = defineProps<{
 <template>
 	<div class="item-container">
 		<div
-			v-if="item && !owner.is(ModifierState.PLAYER_DEAD)"
+			v-if="item && !owner.is(ModifierState.PLAYER_DEAD) && localPlayer.is(ModifierState.PLAYER_BLINDED)"
 			:class="[
 				'item',
 				{

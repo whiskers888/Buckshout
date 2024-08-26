@@ -6,6 +6,7 @@ import { useSound } from './sound';
 import { Modifier, type ModifierState } from '@/game/modifier/modifier';
 import type { Player } from '@/game/player/player';
 import { type Rifle, RiflePatron, RifleStatus } from '@/game/rifle/rifle';
+import { shuffle } from '@/shared/utils/shuffle';
 
 export const useRifle = defineStore('rifle', {
 	state: (): Rifle => ({
@@ -76,14 +77,6 @@ export const useRifle = defineStore('rifle', {
 				this.patrons.sequence.push(...new Array(this.patrons.charged).fill(true));
 				this.patrons.sequence.push(...new Array(this.patrons.blank).fill(false));
 
-				const shuffle = (array: any[]) => {
-					for (let i = array.length - 1; i > 0; i--) {
-						const j = Math.floor(Math.random() * (i + 1));
-						const temp = array[i];
-						array[i] = array[j];
-						array[j] = temp;
-					}
-				};
 				shuffle(this.patrons.sequence);
 
 				setTimeout(() => {

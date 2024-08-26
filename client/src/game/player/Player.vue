@@ -22,25 +22,41 @@ const { player } = defineProps<{
 		:class="[
 			'player',
 			{
-				me: player.isOwnedByUser,
+				me: !localPlayer.is(ModifierState.PLAYER_BLINDED) && player.isOwnedByUser,
 				current: player.isCurrent,
 				target: localPlayer.canTargetPlayer(player),
 				dead: player.is(ModifierState.PLAYER_DEAD),
 			},
 		]"
-		:style="{ borderColor: player.color }"
+		:style="{ borderColor: localPlayer.is(ModifierState.PLAYER_BLINDED) ? '#000' : player.color }"
 	>
 		<div class="player-status">
 			<div class="player-info">
 				<div class="player-avatar">
+					<div
+						v-if="localPlayer.is(ModifierState.PLAYER_BLINDED)"
+						class="player-avatar-hidden"
+					>
+						?
+					</div>
 					<img
+						v-else
 						:id="`Player-${player.id}`"
 						:src="`https://api.multiavatar.com/${player.avatar}.png`"
 						alt="?"
 					/>
 				</div>
 				<div style="max-width: 100%">
-					<div class="player-name">
+					<div
+						v-if="localPlayer.is(ModifierState.PLAYER_BLINDED)"
+						class="player-name"
+					>
+						[КАКОЙ-ТО ИГРОК]
+					</div>
+					<div
+						v-else
+						class="player-name"
+					>
 						<v-tooltip
 							location="right"
 							text="Это Вы, единственный и неповторимый!"
@@ -72,7 +88,22 @@ const { player } = defineProps<{
 						<span>[{{ player.team }}] {{ player.name }}</span>
 					</div>
 
+					<div
+						v-if="localPlayer.is(ModifierState.PLAYER_BLINDED)"
+						style="display: flex"
+					>
+						<div
+							v-for="hp in game.settings.MAX_PLAYER_HEALTH"
+							:key="hp"
+						>
+							<v-icon
+								icon="mdi-help-rhombus-outline"
+								color="#000"
+							/>
+						</div>
+					</div>
 					<v-tooltip
+						v-else
 						location="right"
 						:text="`Здоровье игрока: ${player.health}/${game.settings.MAX_PLAYER_HEALTH} ед.`"
 					>
@@ -156,7 +187,16 @@ const { player } = defineProps<{
 				</template>
 			</div>
 		</div>
-		<div class="player-modifiers">
+		<div
+			v-if="localPlayer.is(ModifierState.PLAYER_BLINDED)"
+			class="player-modifiers"
+		>
+			<b>[Статус скрыт]</b>
+		</div>
+		<div
+			v-else
+			class="player-modifiers"
+		>
 			<b>Статус:</b>
 			<v-tooltip
 				v-for="modifier in player.modifiers"
@@ -216,7 +256,7 @@ const { player } = defineProps<{
 	top: -30px;
 	left: -40px;
 	rotate: 40deg;
-	background: v-bind('player.color');
+	background: v-bind("localPlayer.is(ModifierState.PLAYER_BLINDED) ? '#000' : player.color");
 }
 
 .player.dead {
@@ -262,6 +302,18 @@ const { player } = defineProps<{
 .player-avatar img {
 	width: 100%;
 	border-radius: 50%;
+}
+
+.player-avatar-hidden {
+	width: 100%;
+	height: 100%;
+	background: #000;
+	border-radius: 50%;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 26px;
 }
 
 .player-name {
