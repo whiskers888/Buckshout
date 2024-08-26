@@ -77,16 +77,26 @@ const { player } = defineProps<{
 						:text="`Здоровье игрока: ${player.health}/${game.settings.MAX_PLAYER_HEALTH} ед.`"
 					>
 						<template v-slot:activator="{ props }">
-							<div v-bind="props">
-								<v-icon
+							<div
+								v-bind="props"
+								style="display: flex"
+							>
+								<div
 									v-for="hp in game.settings.MAX_PLAYER_HEALTH"
-									icon="mdi-heart"
-									:class="{
-										damage: hp > player.health && hp <= player.prevHealth,
-									}"
-									:color="hp <= player.health ? '#f00' : '#000'"
 									:key="hp"
-								/>
+									:class="{
+										shine: hp <= player.health && hp > player.prevHealth,
+									}"
+									style="position: relative; border-radius: 50%"
+								>
+									<v-icon
+										icon="mdi-heart"
+										:class="{
+											damage: hp > player.health && hp <= player.prevHealth,
+										}"
+										:color="hp <= player.health ? '#f00' : '#000'"
+									/>
+								</div>
 							</div>
 						</template>
 					</v-tooltip>
@@ -296,5 +306,19 @@ const { player } = defineProps<{
 	100% {
 		opacity: #f00;
 	}
+}
+
+.shine::before {
+	background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+	content: '';
+	display: block;
+	top: 15%;
+	height: 50%;
+	left: -50%;
+	position: absolute;
+	transform: skewX(-60deg);
+	width: 80%;
+	z-index: 2;
+	animation: shine 0.85s infinite linear;
 }
 </style>

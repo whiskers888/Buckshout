@@ -54,7 +54,8 @@ namespace BuckshoutApp.Manager
                 useless
             ]);
         }
-        public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время в течение которого можно отменить итем при помощи Печати
+        public int SHOW_ACTION_TIME { get; set; } = 3000; // !!НЕ ДЕЛАТЬ >= ITEM_CHANNELING_TIME!! Время, в течение которого будут отображаться изменения (мигать хп бар, итемы и т.п) просто визуал
+        public int ITEM_CHANNELING_TIME { get; set; } = 5000; // Время, в течение которого можно отменить итем при помощи Печати
         public int ITEM_CHANNELING_CHECK_INTERVAL { get; set; } = 100; // 
 
         public int MAX_TURN_DURATION { get; set; } = 60000;
@@ -69,9 +70,11 @@ namespace BuckshoutApp.Manager
 
         public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
+        public int MAX_ITEMS_PER_ROUND { get; set; } = 4; // но не больше этого значения
 
-        public int FATIGUE_ROUND { get; set; } = 6; // начиная с этого раунда у игрока появляется усталость. предметы больше не выдаются
+        public int FATIGUE_ROUND { get; set; } = 8; // начиная с этого раунда у игрока появляется усталость. предметы больше не выдаются
         public int FATIGUE_ITEMS_TO_LOSE { get; set; } = 1; // он начинает терять предметы
+        public int FATIGUE_ITEMS_TO_LOSE_INCREMENT { get; set; } = 1; // с каждым раундом все больше
         public int FATIGUE_DAMAGE_PER_ITEM { get; set; } = 1; // и получает урон, если их не осталось
 
         public int RECCONECTION_TIME { get; set; } = 12 * 100 * 100;

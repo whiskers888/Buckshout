@@ -83,7 +83,7 @@ namespace BuckshoutApp.Manager
             }
             var used = item.Use(e);
             if (used)
-                Inventory.Remove(item);
+                RemoveItem(item);
         }
 
         public void ChangeHealth(ChangeHealthType direction, int count, Player initiator, string type = "DEFAULT")

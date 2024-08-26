@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 import { useGame } from './game';
 
-import type { Item } from '@/game/item/item';
+import { type Item, ItemType } from '@/game/item/item';
 import type { Player } from '@/game/player/player';
 
 export interface ChainItem {
@@ -25,8 +25,8 @@ export const useItems = defineStore('items', {
 			const chainItem = {
 				initiator,
 				item,
-				target,
-				targetItem,
+				target: item.type == ItemType.TRAP ? undefined : target,
+				targetItem: item.type == ItemType.TRAP ? undefined : targetItem,
 				time: game.settings.ITEM_CHANNELING_TIME,
 			};
 			this.chain.push(chainItem);

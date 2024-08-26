@@ -57,6 +57,8 @@ namespace BuckshoutApp.Context
             Mode = mode;
             Status = GameStatus.IN_PROGRESS;
 
+            ItemManager.FillBox();
+
             EventManager.Once(Event.PLAYER_WON, (e) =>
             {
                 FinishGame();
@@ -79,8 +81,6 @@ namespace BuckshoutApp.Context
 
             PlayerManager.Players.ForEach(p => p.ClearModifiers());
             Rifle.LoadRifle();
-            ItemManager.FillBox();
-
             ItemManager.GiveItems();
             /**/
         }

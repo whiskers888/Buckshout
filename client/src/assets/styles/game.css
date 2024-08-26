@@ -32,3 +32,12 @@
 		opacity: 1;
 	}
 }
+
+.shine {
+	overflow: hidden;
+}
+@keyframes shine {
+	100% {
+		left: 125%;
+	}
+}

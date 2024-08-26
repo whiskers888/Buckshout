@@ -34,7 +34,6 @@ namespace BuckshoutApp.Items
                         e.Initiator!.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
                         return true;
                     }
-
                     return false;
                 });
             });

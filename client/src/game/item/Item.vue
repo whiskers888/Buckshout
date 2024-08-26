@@ -13,7 +13,7 @@ const rifle = useRifle();
 const notifier = useNotifier();
 
 function onItemClick() {
-	if (item?.using) return;
+	if (item?.removing) return;
 	if (rifle.status !== RifleStatus.READY) {
 		if (localPlayer.isCurrent) notifier.error('Дробовик еще не заряжен!');
 		return;
@@ -38,7 +38,8 @@ const { owner, item } = defineProps<{
 			:class="[
 				'item',
 				{
-					using: item.using,
+					shine: item.adding,
+					removing: item.removing,
 					target: localPlayer.canTargetItem(owner, item),
 					special: item?.behavior.includes(ItemBehavior.CUSTOM) && owner.id === localPlayer.id,
 					active: localPlayer.activity === PlayerActivity.DECIDES_CANCEL,
@@ -217,7 +218,21 @@ const { owner, item } = defineProps<{
 	initial-value: 0turn;
 }
 
-.using {
+.removing {
 	animation: pulse 1s linear infinite !important;
+}
+
+.shine::before {
+	background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+	content: '';
+	display: block;
+	height: 100%;
+	left: -75%;
+	position: absolute;
+	top: 0;
+	transform: skewX(-25deg);
+	width: 50%;
+	z-index: 2;
+	animation: shine 0.85s infinite linear;
 }
 </style>

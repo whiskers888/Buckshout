@@ -16,7 +16,7 @@ import { useSound } from '@/stores/sound';
 
 function on(e: Event, callback: (data: any) => void) {
 	connection.on(e, ans => {
-		// console.log(e, ans.value.data);
+		console.log(e, ans.value.data);
 		try {
 			callback(ans.value.data);
 		} catch (e) {
@@ -47,6 +47,7 @@ export function init() {
 	const items = useItems();
 
 	on(Event.CONNECTED, e => {
+		console.log('CONNECTED');
 		rooms.items = e.rooms;
 		localPlayer.setConnectionId(connection.connectionId!);
 	});
@@ -126,10 +127,26 @@ export function init() {
 	});
 
 	on(Event.ITEM_RECEIVED, e => {
-		game.addItem(e.target, e.special['ITEM']);
+		const target = game.playerById(e.target.id);
+		if (!target) return;
+		game.addItem(target, e.special['ITEM']);
+		const item = target.inventory.find(it => it.id == e.special['ITEM'].id);
+		if (!item) return;
+		setTimeout(() => {
+			item.adding = false;
+		}, 3000);
 	});
 	on(Event.ITEM_REMOVED, e => {
-		game.removeItem(e.target, e.special['ITEM']);
+		const target = game.playerById(e.target.id);
+		const item = target.inventory.find(it => it.id == e.special['ITEM'].id);
+		if (!item) {
+			console.error('ITEM TO REMOVE NOT FOUND', e);
+			return;
+		}
+		item.removing = true;
+		setTimeout(() => {
+			game.removeItem(e.target, item);
+		}, game.settings.SHOW_ACTION_TIME);
 	});
 	on(Event.ITEM_USED, e => {
 		const initiator = game.playerById(e.initiator.id);
@@ -137,10 +154,6 @@ export function init() {
 		const item = initiator.inventory.find(it => it.id === e.special['ITEM'].id);
 		if (!item) return;
 
-		item.using = true;
-		setTimeout(() => {
-			game.removeItem(e.initiator, item);
-		}, game.settings.ITEM_CHANNELING_TIME);
 		localPlayer.setActivity(PlayerActivity.DECIDES_CANCEL);
 		sound.play(item.soundSet[ItemEvent.USED]);
 
@@ -158,9 +171,9 @@ export function init() {
 		sound.play(item.soundSet[ItemEvent.EFFECTED]);
 		items.clear();
 	});
-	on(Event.ITEM_STOLEN, e => {
-		game.removeItem(e.target, e.special['TARGET_ITEM']);
-	});
+	// on(Event.ITEM_STOLEN, e => {
+	// 	game.removeItem(e.target, e.special['TARGET_ITEM']);
+	// });
 	on(Event.ITEM_CANCELED, e => {
 		const item: Item = e.special['ITEM'];
 		sound.play(item.soundSet[ItemEvent.CANCELED]);

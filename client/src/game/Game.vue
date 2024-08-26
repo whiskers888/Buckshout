@@ -37,6 +37,7 @@ const game = useGame();
 						<img
 							:src="`https://api.multiavatar.com/${game.trap.initiator.avatar}.png`"
 							alt="?"
+							style="border-radius: 50%"
 						/>
 						<div>{{ game.trap.initiator.name }}</div>
 					</div>
@@ -88,6 +89,7 @@ const game = useGame();
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	z-index: 100;
 }
 
 .trap-info {

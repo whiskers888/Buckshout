@@ -31,24 +31,6 @@ namespace BuckshoutApp.Manager
         public List<Item> FillBox()
         {
             Items.Clear();
-            if (Context.Round > Context.Settings.FATIGUE_ROUND)
-            {
-                Context.PlayerManager.Players.ForEach(p =>
-                {
-                    for (var i = 0; i < Context.Settings.FATIGUE_ITEMS_TO_LOSE; i++)
-                    {
-                        if (p.Inventory.Count == 0)
-                        {
-                            p.ChangeHealth(ChangeHealthType.Damage, Context.Settings.FATIGUE_DAMAGE_PER_ITEM, p);
-                        }
-                        else
-                        {
-                            var item = p.Inventory[Context.Random.Next(0, p.Inventory.Count - 1)];
-                            p.RemoveItem(item);
-                        }
-                    }
-                });
-            }
             Context.Settings.RefAvaliableItems.ForEach(item =>
             {
                 for (var i = 0; i < Context.PlayerManager.Players.Count * Context.Settings.ITEMS_PER_PLAYER_COEF; i++)
@@ -62,19 +44,50 @@ namespace BuckshoutApp.Manager
 
         public Item NextItem()
         {
+            if (Items.Count <= 0)
+            {
+                FillBox();
+            }
             return Items.Pop();
         }
 
         public void GiveItems()
         {
-            Context.PlayerManager.Players.ForEach(player =>
+            if (Context.Round > Context.Settings.FATIGUE_ROUND)
             {
-                for (var i = 0; i < Context.Settings.ITEMS_PER_ROUND; i++)
+                Context.EventManager.Trigger(Event.PLAY_SOUND, new EventData()
+                {
+                    Special = new Dictionary<string, object> { { "SOUND", "fatigue_ravens" } }
+                });
+                Context.PlayerManager.AlivePlayers.ForEach(player =>
+                {
+                    for (var i = 0; i < Context.Settings.FATIGUE_ITEMS_TO_LOSE; i++)
+                    {
+                        if (player.Inventory.Count == 0)
+                        {
+                            player.ChangeHealth(ChangeHealthType.Damage, Context.Settings.FATIGUE_DAMAGE_PER_ITEM, player, "FATIGUE");
+                        }
+                        else
+                        {
+                            var item = player.Inventory[Context.Random.Next(0, player.Inventory.Count - 1)];
+                            player.RemoveItem(item);
+                        }
+                    }
+                });
+                Context.Settings.FATIGUE_ITEMS_TO_LOSE += Context.Settings.FATIGUE_ITEMS_TO_LOSE_INCREMENT;
+            }
+
+            for (var i = 0; i < Context.Settings.ITEMS_PER_ROUND; i++)
+            {
+                Context.PlayerManager.AlivePlayers.ForEach(player =>
                 {
                     player.AddItem(NextItem());
-                }
-            });
-            Context.Settings.ITEMS_PER_ROUND += Context.Settings.ITEMS_PER_ROUND_INCREMENT;
+                });
+            }
+            if (Context.Round < Context.Settings.FATIGUE_ROUND && Context.Settings.ITEMS_PER_ROUND < Context.Settings.MAX_ITEMS_PER_ROUND)
+            {
+                Context.Settings.ITEMS_PER_ROUND += Context.Settings.ITEMS_PER_ROUND_INCREMENT;
+            }
         }
         public Item GetLastAfter(Item item)
         {

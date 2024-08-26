@@ -1,6 +1,7 @@
 import type { Game } from '@/game/game';
 import { Item } from '@/game/item/item';
 import { Modifier, type ModifierState } from '@/game/modifier/modifier';
+import { useGame } from '@/stores/game';
 import { useLocalPlayer } from '@/stores/player';
 
 const PLAYER_COLORS = ['#c23a3a', '#2b63c2', '#2cc22b', '#a83ac2', '#cd9b3d', '#3dcdac'];
@@ -70,15 +71,20 @@ export class Player {
 		if (this.health < 0) {
 			this.health = 0;
 		}
-		setTimeout(() => {
-			this.prevHealth = this.health;
-		}, 3000);
+		this.updatePrevHealth();
 	}
 	heal(value: number) {
 		this.health += value;
 		if (this.health > this.context.settings.MAX_PLAYER_HEALTH) {
 			this.health = this.context.settings.MAX_PLAYER_HEALTH;
 		}
+		this.updatePrevHealth();
+	}
+	updatePrevHealth() {
+		const game = useGame();
+		setTimeout(() => {
+			this.prevHealth = this.health;
+		}, game.settings.SHOW_ACTION_TIME);
 	}
 
 	context: Game;

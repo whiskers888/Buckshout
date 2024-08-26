@@ -13,6 +13,7 @@ namespace BuckshoutApp.Items
         public override string Name => "Адреналин";
         public override string Description => "Вы забираете выбранный предмет себе.\n" +
                                               "Запрещено применять на: Адреналин, Глина.\n" +
+                                              $"Предмет появится в Вашем инвентаре спустя {Context.Settings.SHOW_ACTION_TIME / 1000} сек. после удачного применения.\n" +
                                               "Украденный предмет исчезнет в конце хода, если его не использовать.";
         public override string Lore => "Не пойман - не вор.";
         public override string Model => "adrenaline";
@@ -39,19 +40,22 @@ namespace BuckshoutApp.Items
         {
             Item item = (Item)e.Special["TARGET_ITEM"];
 
-            e.Target!.Inventory.Remove(item);
-            Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
-            e.Initiator!.AddItem(item);
-            var modifier = Context.ModifierManager.CreateModifier(ModifierKey.ITEM_ADRENALINE);
-            modifier.Apply(e.Initiator, item);
-            modifier.RemoveWhen(Event.ITEM_USED, item, (useE) =>
+            e.Target!.RemoveItem(item);
+            // Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
+            TimerExtension.SetTimeout(() =>
             {
-                return useE.Special["ITEM"] == item;
-            });
-            modifier.Remove(Event.TURN_CHANGED, item, (_) =>
-            {
-                e.Initiator.RemoveItem(item);
-            });
+                e.Initiator!.AddItem(item);
+                var modifier = Context.ModifierManager.CreateModifier(ModifierKey.ITEM_ADRENALINE);
+                modifier.Apply(e.Initiator, item);
+                modifier.RemoveWhen(Event.ITEM_USED, item, (useE) =>
+                {
+                    return useE.Special["ITEM"] == item;
+                });
+                modifier.Remove(Event.TURN_CHANGED, item, (_) =>
+                {
+                    e.Initiator.RemoveItem(item);
+                });
+            }, Context.Settings.SHOW_ACTION_TIME);
         }
     }
 }

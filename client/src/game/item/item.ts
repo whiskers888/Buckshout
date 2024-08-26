@@ -1,4 +1,5 @@
 import { Modifier, type ModifierState } from '@/game/modifier/modifier';
+import { useGame } from '@/stores/game';
 
 export enum ItemBehavior {
 	NO_TARGET,
@@ -100,7 +101,8 @@ export class Item {
 	lore = '';
 	model = '';
 
-	using = false;
+	adding = true;
+	removing = false;
 
 	type = ItemType.DEFAULT;
 	behavior = [ItemBehavior.NO_TARGET];

@@ -130,7 +130,7 @@ export const useGame = defineStore('game', {
 			};
 			setTimeout(() => {
 				this.trap = null;
-			}, 3000);
+			}, this.settings.SHOW_ACTION_TIME);
 		},
 
 		invokeSetTeam(team: string) {

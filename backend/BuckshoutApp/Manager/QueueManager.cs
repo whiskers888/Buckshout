@@ -48,6 +48,7 @@ namespace BuckshoutApp.Manager
         }
         public void Next(Player player)
         {
+            Console.WriteLine($"{Current.Name}, -> ${player.Name}");
             Timer?.Dispose();
 
             CheckWinner();
@@ -79,19 +80,29 @@ namespace BuckshoutApp.Manager
 
             if (player.Is(ModifierState.PLAYER_STUNNED))
             {
+                Console.WriteLine($"{player.Name}, PLAYER_STUNNED --");
                 Context.EventManager.Trigger(Event.TURN_SKIPPED, new Items.EventData()
                 {
                     Target = player,
                 });
                 int currentPlayerIndex = Queue.IndexOf(Current);
+                var aliveQueue = Queue.Where(p => !p.Is(ModifierState.PLAYER_DEAD));
 
                 Player nextPlayer;
-                if (Queue.Count > 2)
-                    nextPlayer = Queue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player) ?? Queue[0];
+                if (aliveQueue.Count() > 2)
+                    nextPlayer = aliveQueue.Skip(currentPlayerIndex).FirstOrDefault(it => it != Current && it != player) ?? aliveQueue.Where(it => it != Current && it != player).FirstOrDefault() ?? aliveQueue.First();
                 else
                     nextPlayer = Current;
 
-                Next(nextPlayer);
+                if (Current != player)
+                {
+                    Current = player;
+                    Next(nextPlayer);
+                }
+                else
+                {
+                    Next();
+                }
             }
             else
             {
