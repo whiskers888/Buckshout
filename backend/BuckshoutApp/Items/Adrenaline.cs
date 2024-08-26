@@ -41,7 +41,7 @@ namespace BuckshoutApp.Items
             Item item = (Item)e.Special["TARGET_ITEM"];
 
             e.Target!.RemoveItem(item);
-            // Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
+            Context.EventManager.Trigger(Event.ITEM_STOLEN, e);
             TimerExtension.SetTimeout(() =>
             {
                 e.Initiator!.AddItem(item);

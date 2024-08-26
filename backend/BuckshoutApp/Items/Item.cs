@@ -84,16 +84,17 @@ namespace BuckshoutApp.Items
         public void Disallow(EventData e, string msg)
         {
             State = ItemState.NOT_ALLOWED;
-            /*if (!e.Special.ContainsKey("MESSAGE") && e.Special["MESSAGE"] != msg)*/
             e.Special.TryAdd("MESSAGE", msg);
             Context.EventManager.Trigger(Event.MESSAGE, e);
         }
-        public void Cancel()
+        public void Cancel(EventData e)
         {
             Context.EventManager.Trigger(
                 Event.ITEM_CANCELED,
                 new EventData()
                 {
+                    Initiator = e.Initiator,
+                    Target = e.Target,
                     Special = new Dictionary<string, object>() { { "ITEM", this } }
                 });
             BeforeCancel();
@@ -129,7 +130,7 @@ namespace BuckshoutApp.Items
             }
             return false;
         }
-        public void OpenTrap(Player initiator)
+        public void ShowTrap(Player initiator)
         {
             Context.EventManager.Trigger(Event.TRAP_TRIGGERED, new EventData()
             {

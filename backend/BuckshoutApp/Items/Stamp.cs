@@ -30,7 +30,7 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             Item target = Context.ItemManager.GetLastAfter(this);
-            target?.Cancel();
+            target?.Cancel(e);
         }
 
         internal override void BeforeCancel()

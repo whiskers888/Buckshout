@@ -2,7 +2,7 @@
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Modifiers;
 
-namespace BuckshoutApp.Items
+namespace BuckshoutApp.Items.Trap
 {
     internal class Mirror(GameContext context) : Item(context)
     {
@@ -22,65 +22,56 @@ namespace BuckshoutApp.Items
 
         public override ItemType Type => ItemType.TRAP;
 
+        private void ApplyTrap(EventData e, Modifier modifier, bool onSelf, Func<EventData, bool> checker)
+        {
+            modifier.RemoveWhen(Event.ITEM_EFFECTED, null, (itemE) =>
+            {
+                Item item = (Item)itemE.Special["ITEM"];
+                if (itemE.Special.TryGetValue("IS_MIRROR", out object value))
+                {
+                    if ((bool)value == true) return false;
+                }
+                if (checker.Invoke(itemE))
+                {
+                    item.Use(new EventData()
+                    {
+                        Target = onSelf ? itemE.Initiator : e.Initiator,
+                        Initiator = onSelf ? itemE.Target : e.Target,
+                        Special = new Dictionary<string, object> { { "IS_MIRROR", true } }
+                    }, true);
+                    e.Special["SOUND"] = "items/mirror/break";
+                    Context.EventManager.Trigger(Event.PLAY_SOUND, e);
+                    ShowTrap(e.Initiator!);
+                    return true;
+                }
+                return false;
+            });
+        }
         public override void Effect(EventData e)
         {
-            var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_MIRROR);
+            Modifier modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_MIRROR);
+
             if (e.Initiator == e.Target)
             {
                 modifier.Description = "Следующий предмет, который будет использован на Вас другим игроком, применится и на него тоже.";
-                modifier.RemoveWhen(Event.ITEM_EFFECTED, null, (itemE) =>
+                ApplyTrap(e, modifier, true, (itemE) =>
                 {
-                    Item item = (Item)itemE.Special["ITEM"];
-                    if (itemE.Special.TryGetValue("IS_MIRROR", out object value))
-                    {
-                        if ((bool)value == true) return false;
-                    }
-                    if (itemE.Target == e.Initiator &&
-                        itemE.Initiator != e.Initiator &&
-                        item.TargetType == ItemTargetType.PLAYER &&
-                        item.Type != ItemType.TRAP
-                    )
-                    {
-                        item.Use(new EventData()
-                        {
-                            Target = itemE.Initiator,
-                            Initiator = itemE.Target,
-                            Special = new Dictionary<string, object> { { "IS_MIRROR", true } }
-                        }, true);
-                        OpenTrap(e.Initiator!);
-                        return true;
-                    }
-                    return false;
+                    var item = (Item)itemE.Special["ITEM"];
+                    return itemE.Target == e.Initiator && itemE.Initiator != e.Initiator &&
+                           item.TargetType == ItemTargetType.PLAYER && item.Type != ItemType.TRAP;
                 });
             }
             else
             {
                 modifier.Description = $"Эффект сдедующего ненаправленного предмета, примененного игроком {e.Target!.Name}, будет скопирован Вами.";
-                modifier.RemoveWhen(Event.ITEM_EFFECTED, null, (itemE) =>
+                ApplyTrap(e, modifier, false, (itemE) =>
                 {
                     Item item = (Item)itemE.Special["ITEM"];
-                    if (itemE.Special.TryGetValue("IS_MIRROR", out object value))
-                    {
-                        if ((bool)value == true) return false;
-                    }
-                    if (itemE.Initiator == e.Target &&
-                        item.TargetType == ItemTargetType.NONE &&
-                        item.Type != ItemType.TRAP &&
-                        item.Name != "Печать \"Переделать\""
-                    )
-                    {
-                        item.Use(new EventData()
-                        {
-                            Initiator = e.Initiator,
-                            Target = e.Target,
-                            Special = new Dictionary<string, object> { { "IS_MIRROR", true } }
-                        }, true);
-                        OpenTrap(e.Initiator!);
-                        return true;
-                    }
-                    return false;
+                    return itemE.Initiator == e.Target && item.TargetType == ItemTargetType.NONE &&
+                           item.Type != ItemType.TRAP && item.Name != "Печать \"Переделать\"";
                 });
             }
+            //HACK: Не убирать так как тогда не оверайдит описание
             modifier.Apply(e.Initiator!);
         }
     }

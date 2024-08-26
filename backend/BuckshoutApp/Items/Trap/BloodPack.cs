@@ -3,7 +3,7 @@ using BuckshoutApp.Manager;
 using BuckshoutApp.Manager.Events;
 using BuckshoutApp.Modifiers;
 
-namespace BuckshoutApp.Items
+namespace BuckshoutApp.Items.Trap
 {
     public class BloodPack(GameContext context) : Item(context)
     {
@@ -25,10 +25,11 @@ namespace BuckshoutApp.Items
 
             Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
             {
-
                 modifier.RemoveWhen(Event.DAMAGE_TAKEN, null, (damageE) =>
                 {
-                    OpenTrap(e.Initiator!);
+                    e.Special["SOUND"] = "items/bloodpack/blood";
+                    Context.EventManager.Trigger(Event.PLAY_SOUND, e);
+                    ShowTrap(e.Initiator!);
                     if (damageE.Target != e.Initiator)
                     {
                         e.Initiator!.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
