@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { ModifierState } from './modifier/modifier';
 import Player from './player/Player.vue';
 import Rifle from './rifle/Rifle.vue';
 import Toolbar from './Toolbar.vue';
 
+import { shuffle } from '@/shared/utils/shuffle';
 import { useGame } from '@/stores/game';
+import { useLocalPlayer } from '@/stores/player';
 
 const game = useGame();
+const localPlayer = useLocalPlayer();
 </script>
 
 <template>
@@ -14,7 +18,9 @@ const game = useGame();
 		<div class="game-field">
 			<div class="players">
 				<Player
-					v-for="player in game.players"
+					v-for="player in localPlayer.is(ModifierState.PLAYER_BLINDED)
+						? shuffle(game.players)
+						: game.players"
 					:key="player.id"
 					:player="player"
 				/>

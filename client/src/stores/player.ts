@@ -58,6 +58,12 @@ export const useLocalPlayer = defineStore('player', {
 			if (item.is(ModifierState.ITEM_INVISIBLE)) return false;
 			return canTargetTeam(state, target);
 		},
+		is: state => {
+			return (_state: ModifierState) => {
+				const game = useGame();
+				return game.playerById(state.id).is(_state);
+			};
+		},
 	},
 	actions: {
 		setConnectionId(id: string) {
