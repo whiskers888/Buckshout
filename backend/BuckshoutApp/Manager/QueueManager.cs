@@ -46,11 +46,22 @@ namespace BuckshoutApp.Manager
                 }
             }
         }
+
+        public Player ForcePlayer { get; set; }
+        public void ForceNext(Player player)
+        {
+            ForcePlayer = player;
+        }
         public void Next(Player player)
         {
-            Console.WriteLine($"Ход передается от {Current.Name} к {player.Name}");
             Timer?.Dispose();
+            if (ForcePlayer != null)
+            {
+                player = ForcePlayer;
+                ForcePlayer = null;
+            }
 
+            Console.WriteLine($"Ход передается от {Current.Name} к {player.Name}");
             CheckWinner();
             if (Context.Status == GameStatus.FINISHED) return;
 
@@ -69,7 +80,7 @@ namespace BuckshoutApp.Manager
                     turnDuration /= modifier.Value;
                 }
             }
-            Context.EventManager.Trigger(Event.TURN_CHANGED, new Items.EventData()
+            Context.EventManager.Trigger(Event.TURN_CHANGED, new EventData()
             {
                 Target = player,
                 Special = new Dictionary<string, object>
@@ -81,7 +92,7 @@ namespace BuckshoutApp.Manager
             if (player.Is(ModifierState.PLAYER_STUNNED))
             {
                 Console.WriteLine($"{player.Name}, был скован.");
-                Context.EventManager.Trigger(Event.TURN_SKIPPED, new Items.EventData()
+                Context.EventManager.Trigger(Event.TURN_SKIPPED, new EventData()
                 {
                     Target = player,
                 });

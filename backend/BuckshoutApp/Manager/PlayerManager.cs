@@ -97,7 +97,8 @@ namespace BuckshoutApp.Manager
             };
             e.Special.Add("VALUE", count);
             e.Special.Add("TYPE", type);
-            Context.EventManager.Trigger(Event.BEFORE_DAMAGE_TAKE, e);
+            if (direction == ChangeHealthType.Damage)
+                Context.EventManager.Trigger(Event.BEFORE_DAMAGE_TAKE, e);
             if (e.Prevent) return;
             switch (direction)
             {

@@ -8,7 +8,7 @@ namespace BuckshoutApp.Items.Trap
     public class Defibrillator(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Дефибриллятор";
-        public override string Description => $"Когда Вы получаете летальный урон, Вы не умираете, а выживаете с {MIN_HEALTH} ед. здоровья.\n" +
+        public override string Description => $"Когда Вы получаете летальный урон, Вы не умираете, а выживаете с {MIN_HEALTH} ед. здоровья, получив при этом право хода.\n" +
                                               "Начинает действовать только после окончания Вашего хода, и срабатывает один раз.";
 
         public override string Lore => "Wraith King, а не рейтинг!";
@@ -35,6 +35,14 @@ namespace BuckshoutApp.Items.Trap
                             ShowTrap(e.Initiator!);
                             int countGiveHP = damage - e.Initiator!.Health + MIN_HEALTH;
                             e.Initiator.ChangeHealth(ChangeHealthType.Heal, countGiveHP, e.Initiator, "DEFIBRILLATOR");
+                            if (damageE.Special.TryGetValue("TYPE", out object? value))
+                            {
+                                if (value.ToString() == "RIFLE")
+                                    Context.QueueManager.ForceNext(e.Initiator!);
+                                else
+                                    Context.QueueManager.Next(e.Initiator!);
+                            }
+
                             return true;
                         }
                     }

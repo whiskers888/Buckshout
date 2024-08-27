@@ -19,9 +19,9 @@ namespace BuckshoutApp.Items
 
         public override void Effect(EventData e)
         {
-            if (e.Target.Team == e.Initiator.Team)
+            if (e.Target!.Team == e.Initiator!.Team)
             {
-                e.Target.Modifiers.ForEach(m =>
+                e.Target.Modifiers.ToList().ForEach(m =>
                 {
                     if (!m.IsBuff)
                     {
@@ -31,7 +31,7 @@ namespace BuckshoutApp.Items
             }
             else
             {
-                e.Target.Modifiers.ForEach(m =>
+                e.Target.Modifiers.ToList().ForEach(m =>
                 {
                     if (m.IsBuff)
                     {
