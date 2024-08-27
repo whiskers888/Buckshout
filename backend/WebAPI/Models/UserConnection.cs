@@ -1,4 +1,4 @@
 ﻿namespace Buckshout.Models
 {
-    public record UserConnection(/*string userName, */ string connectionId, string? roomName);
+    public record UserConnection(string connectionId, string? playerName = null, string? roomName = null);
 }

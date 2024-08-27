@@ -56,6 +56,7 @@ namespace BuckshoutApp.Items
                 }
                 return false;
             });
+
             modifier.RemoveWhen(Event.RIFLE_SHOT, null, (shotE) =>
             {
                 if (shotE.Target == e.Initiator) return true;
@@ -65,6 +66,12 @@ namespace BuckshoutApp.Items
             Corrupted.Add(e.Target!);
             if (Corrupted.Count < Context.PlayerManager.Players.Count)
                 e.Target!.AddItem(this);
+            /*В случае если будет вариант для создания нового объекта и потребуется поменять ID
+             * {
+                Item item = (Item)this.MemberwiseClone();
+                item.Id = Guid.NewGuid().ToString();
+                e.Target!.AddItem(item);
+            }*/
         }
     }
 }

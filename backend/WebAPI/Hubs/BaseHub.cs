@@ -21,7 +21,12 @@ namespace Buckshout.Hubs
         internal CacheManager CacheManager => ApplicationContext.CacheManager;
 
 
-
+        internal string GetUserIdentifier()
+        {
+            var ipAddress = Context.GetHttpContext().Connection.RemoteIpAddress.ToString();
+            var userAgent = Context.GetHttpContext().Request.Headers["User-Agent"].ToString();
+            return $"{ipAddress}_{userAgent}";
+        }
         internal dynamic GetCommon() => new ExpandoObject();
         internal async Task Send(string roomName, Event eventName, object? data = null)
         {

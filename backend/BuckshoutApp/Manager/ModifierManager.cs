@@ -59,7 +59,17 @@ namespace BuckshoutApp.Manager
                     IsBuff = true,
                 },
                 ModifierKey.PLAYER_COVER => throw new NotImplementedException(),
-                ModifierKey.PLAYER_DEFIBRILLATOR => throw new NotImplementedException(),
+                ModifierKey.PLAYER_DEFIBRILLATOR => new(Context)
+                {
+                    Name = "Дефибриллятор",
+                    Description = "Вам не страшен летальный урон, так как вы возродитесь",
+                    Duration = -1,
+                    State = [],
+                    IsHidden = true,
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "heart-flash",
+                    IsBuff = true,
+                },
                 ModifierKey.PLAYER_BLOOD_PACK => new(Context)
                 {
                     Name = "В ожидании донора",
@@ -82,6 +92,17 @@ namespace BuckshoutApp.Manager
                     Icon = "mirror-variant",
                     IsBuff = true,
                 },
+                ModifierKey.PLAYER_GRENADE => new(Context)
+                {
+                    Name = "Граната",
+                    Description = "Когда попытаются у вас украсть предмет или отменить ваш предмет, вы оторвете чеку и передадите граната в руки другому игроку",
+                    Duration = -1,
+                    State = [],
+                    IsHidden = true,
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "handshake",
+                    IsBuff = true,
+                },
                 ModifierKey.PLAYER_CHAINED => new(Context)
                 {
                     Name = "Скованные одной цепью",
@@ -102,7 +123,26 @@ namespace BuckshoutApp.Manager
                     Icon = "currency-usd",
                     IsBuff = false,
                 },
-
+                ModifierKey.PLAYER_AWAIT_BLINDFOLD => new(Context)
+                {
+                    Name = "Готовиться одеть повязку",
+                    Description = "На следующем своем ходе вы будете в повязке",
+                    Duration = -1,
+                    State = [ModifierState.PLAYER_BLINDED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "blind",
+                    IsBuff = false,
+                },
+                ModifierKey.PLAYER_BLINDFOLD => new(Context)
+                {
+                    Name = "В повязке",
+                    Description = "Вы ничего не видите, так как на вас повязке",
+                    Duration = -1,
+                    State = [ModifierState.PLAYER_BLINDED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "blind",
+                    IsBuff = false,
+                },
                 // Эффекты предметов
                 ModifierKey.ITEM_CANNOT_BE_STOLEN => new(Context)
                 {

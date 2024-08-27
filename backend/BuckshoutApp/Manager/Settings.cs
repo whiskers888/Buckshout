@@ -1,4 +1,5 @@
 ﻿using BuckshoutApp.Items;
+using BuckshoutApp.Items.Trap;
 
 namespace BuckshoutApp.Manager
 {
@@ -11,11 +12,9 @@ namespace BuckshoutApp.Manager
             // Описываем ссылки на классы
             Type adrenaline = typeof(Adrenaline);
             Type beer = typeof(Beer);
-            Type stamp = typeof(Stamp);
             Type hacksaw = typeof(Hacksaw);
             Type phone = typeof(Phone);
             Type handcuffs = typeof(Handcuffs);
-
             Type cigarettes = typeof(Cigarettes);
             Type medicine = typeof(ExpiredMedicine);
             Type magnifier = typeof(Magnifier);
@@ -23,35 +22,50 @@ namespace BuckshoutApp.Manager
 
             Type stopwatch = typeof(Stopwatch);
             Type cross = typeof(ChurchCross);
-
+            Type stamp = typeof(Stamp);
             Type useless = typeof(Useless);
             Type chain = typeof(Chain);
+            Type dollar = typeof(Dollar);
+            Type hat = typeof(Hat);
+            Type clay = typeof(Clay);
+            Type blindfold = typeof(Blindfold);
+
+
             Type bloodpack = typeof(BloodPack);
             Type mirror = typeof(Mirror);
-            Type dollar = typeof(Dollar);
+            Type grenade = typeof(Grenade);
 
-            Type hat = typeof(Hat);
 
             // Добавляем их в массив
             RefAvaliableItems.AddRange([
+                handcuffs,
                 adrenaline,
+                cigarettes,
+                stamp,
+                clay,
+                grenade,
+                blindfold,
+                /*adrenaline,
                 beer,
                 bloodpack,
+                blindfold,
                 chain,
-                cross,
                 cigarettes,
+                clay,
+                cross,
                 dollar,
+                grenade,
                 hacksaw,
                 handcuffs,
                 hat,
                 invertor,
-                mirror,
                 magnifier,
                 medicine,
+                mirror,
                 phone,
                 stamp,
                 stopwatch,
-                useless
+                useless*/
             ]);
         }
         public int SHOW_ACTION_TIME { get; set; } = 3000; // !!НЕ ДЕЛАТЬ >= ITEM_CHANNELING_TIME!! Время, в течение которого будут отображаться изменения (мигать хп бар, итемы и т.п) просто визуал
@@ -65,10 +79,10 @@ namespace BuckshoutApp.Manager
 
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 
-        public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
+        public int MAX_INVENTORY_SLOTS { get; set; } = 16; // кол-во слотов
         public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 
-        public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
+        public int ITEMS_PER_ROUND { get; set; } = 16; // каждый раунд выдается столько итемов
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
         public int MAX_ITEMS_PER_ROUND { get; set; } = 4; // но не больше этого значения
 
