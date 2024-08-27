@@ -39,7 +39,7 @@ namespace Buckshout.Hubs
                 await SendCaller(Event.SECRET_MESSAGE, "Слишком длинный никнейм!");
             return check;
         }
-        internal async void SendEvents(Event e, EventData data, string roomName)
+        internal async Task SendEvents(Event e, EventData data, string roomName)
         {
             /*вылетает баг*/
             if (e == Event.SECRET_MESSAGE || e == Event.RIFLE_CHECKED)

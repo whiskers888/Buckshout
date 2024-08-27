@@ -1,6 +1,7 @@
 using Buckshout.Controllers;
 using BuckshoutApp;
 using BuckshoutApp.Context;
+using StackExchange.Redis;
 using System.Net.NetworkInformation;
 
 namespace Buckshout
@@ -9,14 +10,17 @@ namespace Buckshout
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
+
+            string redisConn = builder.Configuration.GetConnectionString("Redis");
             builder.Services.AddStackExchangeRedisCache(options =>
             {
-                var connection = builder.Configuration.GetConnectionString("Redis");
+                var connection = redisConn;
                 options.Configuration = connection;
             });
-
-
+            //Чистим полностью редис перед запуском
+            FlushRedis(redisConn!);
 
             builder.Services.AddCors(options =>
             {
@@ -62,6 +66,15 @@ namespace Buckshout
                 app.Urls.Add($"http://{ipAddressWireless}:5000");
                 app.Urls.Add($"https://{ipAddressWireless}:5001");
             }
+        }
+        private async static void FlushRedis(string redicConn)
+        {
+
+            ConnectionMultiplexer redis = await ConnectionMultiplexer.ConnectAsync(redicConn);
+            IDatabase db = redis.GetDatabase();
+
+            await db.ExecuteAsync("FLUSHALL");
+            Console.WriteLine("All Redis databases flushed.");
         }
     }
 }

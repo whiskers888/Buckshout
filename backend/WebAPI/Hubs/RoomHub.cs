@@ -39,7 +39,7 @@ namespace Buckshout.Controllers
             Console.WriteLine($"Пользователь {connectionId} создал комнату {roomName}");
             GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
-                SendEvents(e, data, roomName);
+                await SendEvents(e, data, roomName);
             });
 
             await SendAll(Event.ROOM_CREATED, new
