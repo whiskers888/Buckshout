@@ -18,9 +18,7 @@ const localPlayer = useLocalPlayer();
 		<div class="game-field">
 			<div class="players">
 				<Player
-					v-for="player in localPlayer.is(ModifierState.PLAYER_BLINDED)
-						? shuffle(game.players)
-						: game.players"
+					v-for="player in game.playersOrder"
 					:key="player.id"
 					:player="player"
 				/>

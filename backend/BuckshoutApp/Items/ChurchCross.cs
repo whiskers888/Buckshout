@@ -6,7 +6,7 @@ namespace BuckshoutApp.Items
 {
     public class ChurchCross(GameContext context) : Item(context)
     {
-        public override string Name => "Крестик";
+        public override string Name { get; set; } = "Крестик";
         public override string Description => $"Дает {CHANCE_EVASION}% шанс увернуться от заряженного патрона {QUANTITY_EVASION} раз до своего следующего хода.\n" +
                                               "Увернувшись при выстреле в самого себя, Вы сохраните право хода.";
 

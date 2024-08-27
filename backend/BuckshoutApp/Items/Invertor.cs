@@ -4,7 +4,7 @@ namespace BuckshoutApp.Items
 {
     public class Invertor(GameContext context) : Item(context)
     {
-        public override string Name => "Инвертор";
+        public override string Name { get; set; } = "Инвертор";
         public override string Description => "Меняет тип заряженного в данный момент патрона на противоположный.";
         public override string Lore => "Осталось только понять, что же заряжено в данный момент...";
         public override string Model => "invertor";

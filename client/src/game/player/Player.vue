@@ -23,7 +23,7 @@ const { player } = defineProps<{
 			'player',
 			{
 				me: !localPlayer.is(ModifierState.PLAYER_BLINDED) && player.isOwnedByUser,
-				current: player.isCurrent,
+				current: !localPlayer.is(ModifierState.PLAYER_BLINDED) && player.isCurrent,
 				target: localPlayer.canTargetPlayer(player),
 				dead: player.is(ModifierState.PLAYER_DEAD),
 			},

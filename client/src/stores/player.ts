@@ -61,7 +61,7 @@ export const useLocalPlayer = defineStore('player', {
 		is: state => {
 			return (_state: ModifierState) => {
 				const game = useGame();
-				return game.playerById(state.id).is(_state);
+				return game.playerById(state.id)?.is(_state);
 			};
 		},
 	},

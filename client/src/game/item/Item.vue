@@ -34,7 +34,7 @@ const { owner, item } = defineProps<{
 <template>
 	<div class="item-container">
 		<div
-			v-if="item && !owner.is(ModifierState.PLAYER_DEAD) && localPlayer.is(ModifierState.PLAYER_BLINDED)"
+			v-if="item && !owner.is(ModifierState.PLAYER_DEAD) && !localPlayer.is(ModifierState.PLAYER_BLINDED)"
 			:class="[
 				'item',
 				{
@@ -43,6 +43,7 @@ const { owner, item } = defineProps<{
 					target: localPlayer.canTargetItem(owner, item),
 					special: item?.behavior.includes(ItemBehavior.CUSTOM) && owner.id === localPlayer.id,
 					active: localPlayer.activity === PlayerActivity.DECIDES_CANCEL,
+					clay: item.is(ModifierState.ITEM_CLAY),
 				},
 			]"
 			@click="onItemClick"
@@ -103,6 +104,7 @@ const { owner, item } = defineProps<{
 								borderRadius: '50%',
 								padding: '10px',
 								fontSize: '14px',
+								background: 'rgb(var(--v-theme-background))',
 							}"
 							:icon="`mdi-${modifier.icon}`"
 						/>
@@ -148,6 +150,7 @@ const { owner, item } = defineProps<{
 	top: 0;
 	right: 0;
 	color: rgb(146, 162, 177) !important;
+	z-index: 10;
 }
 
 .item-tooltip {
@@ -182,6 +185,8 @@ const { owner, item } = defineProps<{
 	bottom: 0;
 	right: 0;
 	padding: 2px;
+	display: flex;
+	gap: 2px;
 }
 
 /*  */
@@ -234,5 +239,9 @@ const { owner, item } = defineProps<{
 	width: 50%;
 	z-index: 2;
 	animation: shine 0.85s infinite linear;
+}
+
+.clay img {
+	filter: contrast(60%) brightness(60%) sepia(50%) saturate(10) grayscale(20%);
 }
 </style>

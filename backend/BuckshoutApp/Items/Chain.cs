@@ -7,8 +7,8 @@ namespace BuckshoutApp.Items
 {
     public class Chain(GameContext context) : Item(context)
     {
-        public override string Name => "Цепь";
-        public override string Description => "Связывает цель c другим случайным игроком (в том числе и вы).\n" +
+        public override string Name { get; set; } = "Цепь";
+        public override string Description => "Связывает цель c другим случайным игроком (в том числе и Вы).\n" +
                                               "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
                                               "Эффект применяется к каждой из целей отдельно, и наносит урон связанному игроку, развеевается после попытки выстрела в игрока.\n" +
                                               "Не может примениться (как направлено, так и случайно) на уже связанного игрока.";

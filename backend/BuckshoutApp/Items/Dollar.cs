@@ -7,7 +7,7 @@ namespace BuckshoutApp.Items
 {
     public class Dollar(GameContext context) : Item(context)
     {
-        public override string Name => "100 Долларов";
+        public override string Name { get; set; } = "100 Долларов";
         public override string Description => "Вы подкупаете выбранного противника, отдавая ему этот предмет, и следующий выстрел, направленный в Вас, он примет на себя.\n" +
                                               "Предмет никак не влияет на педедачу права хода.\n" +
                                               "Вы можете подкупить несколько разных игроков одновременно, но защита сработает на первый же выстрел у всех сразу.\n" +

@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia';
 
+import { useLocalPlayer } from './player';
 import { useRifle } from './rifle';
 import { useRooms } from './room';
 
 import { Action, connection } from '@/api';
 import { type Game, GameSettings, GameStatus } from '@/game/game';
 import type { Item } from '@/game/item/item';
-import { type Modifier, ModifierTargetType } from '@/game/modifier/modifier';
+import { type Modifier, ModifierState, ModifierTargetType } from '@/game/modifier/modifier';
 import { Player } from '@/game/player/player';
+import { shuffle } from '@/shared/utils/shuffle';
 
 export const useGame = defineStore('game', {
 	state: (): Game => ({
@@ -32,6 +34,10 @@ export const useGame = defineStore('game', {
 		},
 		player: state => {
 			return (target: Player) => state.players.find(it => it.id === target.id)!;
+		},
+		playersOrder: state => {
+			const localPlayer = useLocalPlayer();
+			return localPlayer.is(ModifierState.PLAYER_BLINDED) ? shuffle(state.players) : state.players;
 		},
 	},
 	actions: {

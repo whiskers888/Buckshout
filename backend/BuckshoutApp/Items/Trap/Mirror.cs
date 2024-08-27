@@ -6,8 +6,8 @@ namespace BuckshoutApp.Items.Trap
 {
     internal class Mirror(GameContext context) : Item(context)
     {
-        public override string Name => "Зеркало";
-        public override string Description => "Имеется 2 типа использования\n" +
+        public override string Name { get; set; } = "Зеркало";
+        public override string Description => "Имеется 2 типа использования:\n" +
                                               "- При использовании на себя: Следующий предмет, который будет использован на Вас другим игроком, применится и на него тоже.\n" +
                                               "- При использовании на врага: Эффект сдедующего ненаправленного предмета, примененного целью, будет скопирован Вами (если это возможно).\n" +
                                               "Не действует на ловушки и Печать \"Переделать\" при любом варианте использования.\n" +
@@ -68,7 +68,7 @@ namespace BuckshoutApp.Items.Trap
                 {
                     Item item = (Item)itemE.Special["ITEM"];
                     return itemE.Initiator == e.Target && item.TargetType == ItemTargetType.NONE &&
-                           item.Type != ItemType.TRAP && item.Name != "Печать \"Переделать\"";
+                           item.Type != ItemType.TRAP && !item.Behavior.Contains(ItemBehavior.CUSTOM);
                 });
             }
             //HACK: Не убирать так как тогда не оверайдит описание

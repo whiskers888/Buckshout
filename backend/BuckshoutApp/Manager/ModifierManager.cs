@@ -62,7 +62,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_DEFIBRILLATOR => new(Context)
                 {
                     Name = "Дефибриллятор",
-                    Description = "Вам не страшен летальный урон, так как вы возродитесь",
+                    Description = "Получив летальный урон, этот игрок вернется к жизни.",
                     Duration = -1,
                     State = [],
                     IsHidden = true,
@@ -95,7 +95,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_GRENADE => new(Context)
                 {
                     Name = "Граната",
-                    Description = "Когда попытаются у вас украсть предмет или отменить ваш предмет, вы оторвете чеку и передадите граната в руки другому игроку",
+                    Description = "Когда кто-то попытается украсть или отменить предмет этого игрока, он получит в подарок гранату (без чеки).",
                     Duration = -1,
                     State = [],
                     IsHidden = true,
@@ -125,22 +125,22 @@ namespace BuckshoutApp.Manager
                 },
                 ModifierKey.PLAYER_AWAIT_BLINDFOLD => new(Context)
                 {
-                    Name = "Готовиться одеть повязку",
-                    Description = "На следующем своем ходе вы будете в повязке",
+                    Name = "Готовиться надеть повязку",
+                    Description = "На своем следующем ходу этот игрок будет в повязке.",
                     Duration = -1,
-                    State = [ModifierState.PLAYER_BLINDED],
+                    State = [],
                     TargetType = ModifierTargetType.PLAYER,
-                    Icon = "blind",
+                    Icon = "eye-outline",
                     IsBuff = false,
                 },
                 ModifierKey.PLAYER_BLINDFOLD => new(Context)
                 {
                     Name = "В повязке",
-                    Description = "Вы ничего не видите, так как на вас повязке",
+                    Description = "Этот игрок ничего не видит, даже этот модификатор...",
                     Duration = -1,
                     State = [ModifierState.PLAYER_BLINDED],
                     TargetType = ModifierTargetType.PLAYER,
-                    Icon = "blind",
+                    Icon = "eye-off-outline",
                     IsBuff = false,
                 },
                 // Эффекты предметов
@@ -157,13 +157,24 @@ namespace BuckshoutApp.Manager
                 ModifierKey.ITEM_ADRENALINE => new(Context)
                 {
                     Name = "Избавление от улик",
-                    Description = "Предмет был украден, игрок сбросит его, как только его ход завершится.",
+                    Description = "Этот предмет был украден, игрок сбросит его, как только завершит свой ход.",
                     Duration = 1,
                     State = [ModifierState.ITEM_LOST_ON_TURN_ENDED],
                     TargetType = ModifierTargetType.ITEM,
                     Icon = "needle-off",
                     IsBuff = false,
                 },
+                ModifierKey.ITEM_CLAY => new(Context)
+                {
+                    Name = "Глиняный предмет",
+                    Description = "Этот предмет сделан из глины, и его невозможно украсть.",
+                    Duration = -1,
+                    State = [ModifierState.ITEM_CANNOT_BE_STOLEN, ModifierState.ITEM_CLAY],
+                    TargetType = ModifierTargetType.ITEM,
+                    Icon = "wall",
+                    IsBuff = true,
+                },
+
                 // Эффекты дробовика
                 ModifierKey.RIFLE_HACKSAW => new(Context)
                 {

@@ -4,7 +4,7 @@ namespace BuckshoutApp.Items
 {
     public class Cigarettes(GameContext context) : Item(context)
     {
-        public override string Name => "Сигареты";
+        public override string Name { get; set; } = "Сигареты";
         public override string Description => $"Восстанавливает {COUNT_HEALTH} ед. здоровья.";
         public override string Lore => "Курение исцеляет.";
         public override string Model => "cigarettes";

@@ -18,7 +18,7 @@ namespace BuckshoutApp.Items
     {
         public GameContext Context { get; } = context;
         public string Id { get; } = Guid.NewGuid().ToString();
-        public virtual string Name { get; } = "UNKNOWN";
+        public virtual string Name { get; set; } = "UNKNOWN";
         public virtual string Description { get; } = "UNKNOWN";
         public virtual string Lore { get; } = "";
         public virtual string Model { get; } = "unknown";

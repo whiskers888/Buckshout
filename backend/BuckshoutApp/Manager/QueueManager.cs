@@ -48,7 +48,7 @@ namespace BuckshoutApp.Manager
         }
         public void Next(Player player)
         {
-            Console.WriteLine($"{Current.Name}, -> ${player.Name}");
+            Console.WriteLine($"Ход передается от {Current.Name} к {player.Name}");
             Timer?.Dispose();
 
             CheckWinner();
@@ -80,7 +80,7 @@ namespace BuckshoutApp.Manager
 
             if (player.Is(ModifierState.PLAYER_STUNNED))
             {
-                Console.WriteLine($"{player.Name}, PLAYER_STUNNED --");
+                Console.WriteLine($"{player.Name}, был скован.");
                 Context.EventManager.Trigger(Event.TURN_SKIPPED, new Items.EventData()
                 {
                     Target = player,

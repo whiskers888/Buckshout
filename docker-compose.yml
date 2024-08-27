@@ -6,18 +6,18 @@ services:
     restart: always
     ports:
       - "6379:6379"
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/WebAPI/Dockerfile
-    restart: always
-    working_dir: /app/backend/WebAPI
-    volumes:
-      - ./backend:/app/backend
-    ports:
-      - "5000:5000"
-      - "5001:5001"
-    command: dotnet /app/publish/Buckshout.dll
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./backend/WebAPI/Dockerfile
+  #   restart: always
+  #   working_dir: /app/backend/WebAPI
+  #   volumes:
+  #     - ./backend:/app/backend
+  #   ports:
+  #     - "5000:5000"
+  #     - "5001:5001"
+  #   command: dotnet /app/publish/Buckshout.dll
 
   # client:
   #   build:

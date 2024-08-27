@@ -6,9 +6,10 @@ namespace BuckshoutApp.Items
 {
     public class Blindfold(GameContext context) : Item(context)
     {
-        public override string Name => "Повязка на глаза";
-        public override string Description => "Завязывает глаза игроку, в следствии чего он не видит не игроков, не их предметы." +
-                                              "Начинает действовать только с хода цели.";
+        public override string Name { get; set; } = "Повязка на глаза";
+        public override string Description => "Как только наступит ход выбранного игрока, его глаза будут закрыты повязкой.\n" +
+                                              "Игрок с закрытыми глазами не может исмользовать предметы, и не может отличить игроков друг от друга (в том числе и себя).\n" +
+                                              "Порядок игроков случайно перемешивается для игрока в повязке.";
 
         public override string Lore => "Этот предмет был украден у моей бабушки, хотел еще забрать прищепки на соски!";
         public override string Model => "blindfold";
@@ -21,8 +22,6 @@ namespace BuckshoutApp.Items
             var modifierAwaitBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_AWAIT_BLINDFOLD);
             modifierAwaitBlindfold.Apply(e.Target!);
 
-            /*Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
-            {*/
             modifierAwaitBlindfold.RemoveWhen(Event.TURN_CHANGED, null, (_) =>
             {
                 if (e.Initiator == Context.QueueManager.Current)
@@ -31,12 +30,10 @@ namespace BuckshoutApp.Items
                     modifierBlindfold.Apply(e.Target!);
 
                     modifierBlindfold.RemoveWhen(Event.TURN_CHANGED);
-
                     return true;
                 }
                 return false;
             });
-            /* });*/
         }
     }
 }

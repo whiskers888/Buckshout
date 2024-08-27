@@ -11,6 +11,7 @@ export enum ModifierState {
 	PLAYER_EVASION,
 	PLAYER_ADDICTED,
 	PLAYER_CHAINED,
+	PLAYER_CORRUPTED,
 	PLAYER_BLINDED,
 
 	RIFLE_BONUS_DAMAGE,
@@ -18,6 +19,7 @@ export enum ModifierState {
 	ITEM_INVISIBLE,
 	ITEM_CANNOT_BE_STOLEN,
 	ITEM_LOST_ON_TURN_ENDED,
+	ITEM_CLAY,
 }
 
 export class Modifier {

@@ -5,7 +5,7 @@ namespace BuckshoutApp.Items
 {
     public class Handcuffs(GameContext context) : Item(context)
     {
-        public override string Name => "Наручники";
+        public override string Name { get; set; } = "Наручники";
         public override string Description => "Сковывет выбранного противника, из-за чего тот пропускает свой следующий ход.\n" +
                                               "Он не сможет выстрелить или использовать предметы, но все эффекты, касающиеся наступления его хода сработают.\n" +
                                               "Нельзя применить, если игрок уже скован, пока он не походит.";

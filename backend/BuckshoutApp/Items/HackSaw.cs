@@ -6,7 +6,7 @@ namespace BuckshoutApp.Items
 {
     public class Hacksaw(GameContext context) : Item(context)
     {
-        public override string Name => "Ножовка";
+        public override string Name { get; set; } = "Ножовка";
         public override string Description => $"Следующий выстрел дробовика нанесет на {BONUS_DAMAGE} ед. урона больше.\n" +
                                                "Эффект не пропадет, если ход завершился без выстрела, но пропадет при выстреле, даже если он был холостой.\n" +
                                                "Нельзя использовать, если эффект этого предмета уже применен к дробовику.";

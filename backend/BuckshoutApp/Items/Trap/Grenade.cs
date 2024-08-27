@@ -7,9 +7,10 @@ namespace BuckshoutApp.Items.Trap
 {
     public class Grenade(GameContext context) : Item(context)
     {
-        public override string Name => "Граната";
-        public override string Description => "Когда любой другой игрок попытается украсть ваш предмет или отменить его, \n" +
-                                              $"он получит эту гранату себе в руку без чеки и получит урон в размере {DAMAGE} ед.\n";
+        public override string Name { get; set; } = "Граната";
+        public override string Description => "Когда любой другой игрок попытается украсть или отменить Ваш предмет, он получит эту гранату, но, разумеется, без чеки." +
+                                              $"Граната наносит {DAMAGE} ед. урона.\n" +
+                                              "Начинает действовать только после окончания Вашего хода, и срабатывает один раз.";
 
         public override string Lore => "Так вот откуда пошла фраза \" Отдам в добрые руки\"";
         public override string Model => "grenade";

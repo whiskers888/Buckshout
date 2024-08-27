@@ -25,7 +25,8 @@
 
 
         ITEM_CANNOT_BE_STOLEN,
-        ITEM_ADRENALINE
+        ITEM_ADRENALINE,
+        ITEM_CLAY
     }
 
     public enum ModifierState
@@ -43,6 +44,7 @@
 
         ITEM_INVISIBLE,
         ITEM_CANNOT_BE_STOLEN,
-        ITEM_LOST_ON_TURN_ENDED
+        ITEM_LOST_ON_TURN_ENDED,
+        ITEM_CLAY
     }
 }

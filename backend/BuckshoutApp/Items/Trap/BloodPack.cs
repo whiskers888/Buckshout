@@ -7,8 +7,8 @@ namespace BuckshoutApp.Items.Trap
 {
     public class BloodPack(GameContext context) : Item(context)
     {
-        public override string Name => "Переливание крови";
-        public override string Description => "Когда любой другой игрок потеряет здоровье, вы восстановите себе такое же кол-во здоровья.\n" +
+        public override string Name { get; set; } = "Переливание крови";
+        public override string Description => "Когда любой другой игрок потеряет здоровье, Вы восстановите себе такое же кол-во здоровья.\n" +
                                               "Начинает действовать только после окончания Вашего хода, и срабатывает один раз.\n" +
                                               "Сочетается с другими Переливаниями крови так, что каждый из предметов восстановит здоровье в полном объеме, не зависимо друг от друга.";
 

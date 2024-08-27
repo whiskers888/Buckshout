@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { useGame } from './game';
 import { useSound } from './sound';
 
-import { Modifier, type ModifierState } from '@/game/modifier/modifier';
+import { Modifier, ModifierState } from '@/game/modifier/modifier';
 import type { Player } from '@/game/player/player';
 import { type Rifle, RiflePatron, RifleStatus } from '@/game/rifle/rifle';
 import { shuffle } from '@/shared/utils/shuffle';
@@ -30,11 +30,12 @@ export const useRifle = defineStore('rifle', {
 	actions: {
 		aim(target: Player) {
 			const game = useGame();
-			const player = game.players.find(it => it.id === target.id);
+
+			const player = game.playersOrder.find(it => it.id === target.id);
 
 			if (!player) return;
 
-			const index = game.players.findIndex(it => it === player);
+			const index = game.playersOrder.findIndex(it => it === player);
 
 			this.position = index * 265;
 			this.target = player;
@@ -47,6 +48,8 @@ export const useRifle = defineStore('rifle', {
 			this.isMissing = isMissing;
 			this.status = RifleStatus.SHOOTING;
 			this.patrons.current = isCharged ? RiflePatron.CHARGED : RiflePatron.BLANK;
+
+			if (this.target?.is(ModifierState.PLAYER_BLINDED)) this.target = null;
 		},
 		pull(isCharged: boolean) {
 			const sound = useSound();
@@ -77,7 +80,7 @@ export const useRifle = defineStore('rifle', {
 				this.patrons.sequence.push(...new Array(this.patrons.charged).fill(true));
 				this.patrons.sequence.push(...new Array(this.patrons.blank).fill(false));
 
-				shuffle(this.patrons.sequence);
+				this.patrons.sequence = shuffle(this.patrons.sequence);
 
 				setTimeout(() => {
 					const load = setInterval(() => {

@@ -5,10 +5,10 @@ namespace BuckshoutApp.Items
 {
     public class Clay(GameContext context) : Item(context)
     {
-        public override string Name => "Глина";
-        public override string Description => $"Вы клонируете предмет который есть у ваших противников.\n" +
-                                              "Если у Вас недостаточно ячеек, предмет просто исчезнет.\n" +
-                                               "Слепленный предмет нельзя украсть";
+        public override string Name { get; set; } = "Глина";
+        public override string Description => $"Вы создаете глиняную копию выбранного предмета.\n" +
+                                               "Предмет, созданный таким образом, нельзя украсть.";
+
         public override string Lore => "Слеплено из г**** и палок!... Из глины, там говорится про глину...!";
         public override string Model => "clay";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
@@ -27,7 +27,8 @@ namespace BuckshoutApp.Items
             if (item != null)
             {
                 var createdItem = (Item)Activator.CreateInstance(item.GetType(), [Context])!;
-                createdItem.Modifiers.Add(Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CANNOT_BE_STOLEN));
+                createdItem.Name += " из Глины";
+                createdItem.Modifiers.Add(Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CLAY));
                 e.Initiator!.AddItem(createdItem);
             }
         }

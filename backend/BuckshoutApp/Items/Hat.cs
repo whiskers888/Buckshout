@@ -4,7 +4,7 @@ namespace BuckshoutApp.Items
 {
     public class Hat(GameContext context) : Item(context)
     {
-        public override string Name => "Шляпа";
+        public override string Name { get; set; } = "Шляпа";
         public override string Description => $"Вы достаете себе {ITEMS_COUNT} случайных предмета.\n" +
                                               "Если у Вас недостаточно ячеек, они просто исчезнут.";
         public override string Lore => "Ловкость рук и никакого мошенничества!";

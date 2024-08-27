@@ -30,11 +30,10 @@ namespace BuckshoutApp.Manager
             Type clay = typeof(Clay);
             Type blindfold = typeof(Blindfold);
 
-
             Type bloodpack = typeof(BloodPack);
             Type mirror = typeof(Mirror);
             Type grenade = typeof(Grenade);
-
+            Type defibrillator = typeof(Defibrillator);
 
             // Добавляем их в массив
             RefAvaliableItems.AddRange([
@@ -43,9 +42,10 @@ namespace BuckshoutApp.Manager
                 cigarettes,
                 stamp,
                 clay,
+                defibrillator,
                 grenade,
                 blindfold,
-                /*adrenaline,
+                adrenaline,
                 beer,
                 bloodpack,
                 blindfold,
@@ -65,7 +65,7 @@ namespace BuckshoutApp.Manager
                 phone,
                 stamp,
                 stopwatch,
-                useless*/
+                useless
             ]);
         }
         public int SHOW_ACTION_TIME { get; set; } = 3000; // !!НЕ ДЕЛАТЬ >= ITEM_CHANNELING_TIME!! Время, в течение которого будут отображаться изменения (мигать хп бар, итемы и т.п) просто визуал
@@ -79,10 +79,10 @@ namespace BuckshoutApp.Manager
 
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 
-        public int MAX_INVENTORY_SLOTS { get; set; } = 16; // кол-во слотов
+        public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
         public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 
-        public int ITEMS_PER_ROUND { get; set; } = 16; // каждый раунд выдается столько итемов
+        public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
         public int MAX_ITEMS_PER_ROUND { get; set; } = 4; // но не больше этого значения
 

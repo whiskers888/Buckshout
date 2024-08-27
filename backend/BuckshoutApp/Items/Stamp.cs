@@ -4,7 +4,7 @@ namespace BuckshoutApp.Items
 {
     public class Stamp(GameContext context) : Item(context)
     {
-        public override string Name => "Печать \"Переделать\"";
+        public override string Name { get; set; } = "Печать \"Переделать\"";
 
         public override string Description => "Можно применить только в течение " + context.Settings.ITEM_CHANNELING_TIME / 1000 + " сек. после того, как любой игрок попытался использовать предмет.\n" +
                                               "Отменяет эффект этого предмета.\n" +
