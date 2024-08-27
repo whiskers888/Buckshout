@@ -16,7 +16,11 @@ namespace Buckshout.Managers
     public class RoomManager
     {
         private readonly Dictionary<string, Room> rooms = new();
-
+        private ApplicationContext applicationContext;
+        public RoomManager(ApplicationContext applicationContext)
+        {
+            this.applicationContext = applicationContext;
+        }
         public Room CreateRoom(string roomName, IClientProxy group)
         {
 
@@ -48,8 +52,10 @@ namespace Buckshout.Managers
                 room.Clients.Remove(connectionId);
                 if (room.GameContext.PlayerManager.Players.Count <= 0)
                 {
+                    applicationContext.CacheManager.RemoveCache(connectionId);
                     room.GameContext.FinishGame();
                     rooms.Remove(roomName);
+
                     return true;
                 }
             }

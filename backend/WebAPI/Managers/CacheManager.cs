@@ -14,32 +14,32 @@ namespace Buckshout.Managers
         {
             _cache = cache;
         }
-        internal async Task SetCache(string userIdentifier, UserConnection userConnection)
+        internal async Task SetCache(string connectionId, UserConnection userConnection)
         {
             var userData = JsonSerializer.Serialize(userConnection);
-            await _cache.SetStringAsync(userIdentifier, userData);
+            await _cache.SetStringAsync(connectionId, userData);
         }
 
-        internal async Task<UserConnection> GetCache(string userIdentifier)
+        internal async Task<UserConnection> GetCache(string connectionId)
         {
-            var userData = await _cache.GetStringAsync(userIdentifier);
+            var userData = await _cache.GetStringAsync(connectionId);
             if (userData is null) return null;
             return JsonSerializer.Deserialize<UserConnection>(userData);
         }
 
-        internal async Task UpdateCache(string userIdentifier, UserConnection userData)
+        internal async Task UpdateCache(string connectionId, UserConnection userData)
         {
-            var cache = await GetCache(userIdentifier);
+            var cache = await GetCache(connectionId);
             if (cache is not null)
             {
-                await RemoveCache(userIdentifier);
-                await SetCache(userIdentifier, userData);
+                await RemoveCache(connectionId);
+                await SetCache(connectionId, userData);
             }
 
         }
-        internal async Task RemoveCache(string userIdentifier)
+        internal async Task RemoveCache(string connectionId)
         {
-            await _cache.RemoveAsync(userIdentifier);
+            await _cache.RemoveAsync(connectionId);
         }
 
         /*internal async Task RemoveCache(IClientProxy groups, string userIdentifier, Action remove)

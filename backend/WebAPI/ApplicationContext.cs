@@ -11,7 +11,7 @@ namespace BuckshoutApp.Context
             Title = "Buckshout";
             Configuration = config;
 
-            RoomManager = new RoomManager();
+            RoomManager = new RoomManager(this);
             CacheManager = new CacheManager(cache, this);
         }
 
