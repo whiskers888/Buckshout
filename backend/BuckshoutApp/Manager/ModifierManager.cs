@@ -146,7 +146,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.PLAYER_DISORIENTATION => new(Context)
                 {
                     Name = "Дезориентирован",
-                    Description = "Этот игрок не видит свое кол-во здоровья до следующего раунда.",
+                    Description = "Этот игрок не видит кол-во своего здоровья до следующего раунда.",
                     Duration = -1,
                     State = [ModifierState.PLAYER_DISORIENTED],
                     TargetType = ModifierTargetType.PLAYER,
@@ -199,7 +199,7 @@ namespace BuckshoutApp.Manager
                 ModifierKey.RIFLE_SILENCER => new(Context)
                 {
                     Name = "Глушитель",
-                    Description = "Дробовик с глушителем, при попадании цель перестанет видеть свое хп до следующего раунда!",
+                    Description = "Дробовик с глушителем, при попадании цель перестанет видеть свое здоровье!",
                     Duration = -1,
                     State = [ModifierState.RIFLE_SILENCED],
                     TargetType = ModifierTargetType.RIFLE,

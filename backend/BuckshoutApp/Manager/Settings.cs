@@ -29,8 +29,8 @@ namespace BuckshoutApp.Manager
             Type hat = typeof(Hat);
             Type clay = typeof(Clay);
             Type blindfold = typeof(Blindfold);
-            Type silencer = typeof(Silencer);
             Type milk = typeof(Milk);
+            Type silencer = typeof(Silencer);
 
             Type bloodpack = typeof(BloodPack);
             Type mirror = typeof(Mirror);
@@ -47,6 +47,7 @@ namespace BuckshoutApp.Manager
                 cigarettes,
                 clay,
                 cross,
+                defibrillator,
                 dollar,
                 grenade,
                 hacksaw,
@@ -58,6 +59,7 @@ namespace BuckshoutApp.Manager
                 milk,
                 mirror,
                 phone,
+                silencer,
                 stamp,
                 stopwatch,
                 useless

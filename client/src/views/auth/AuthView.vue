@@ -4,7 +4,10 @@ import type { VForm } from 'vuetify/components';
 
 import { useSession } from '@/stores/session';
 
-const required = [(value: string) => !!value || 'Это обязательное поле'];
+const rules = [
+	(value: string) => !!value || 'Это обязательное поле',
+	(value: string) => value.length < 20 || 'Слишком длинный никнейм',
+];
 
 const login = ref('');
 const form = ref<VForm>();
@@ -84,7 +87,7 @@ async function submit() {
 						label="Никнейм"
 						prepend-inner-icon="mdi-account"
 						autofocus
-						:rules="required"
+						:rules="rules"
 					/>
 				</div>
 

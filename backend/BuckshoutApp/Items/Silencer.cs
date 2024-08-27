@@ -7,15 +7,14 @@ namespace BuckshoutApp.Items
     public class Silencer(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Глушитель";
-        public override string Description => $"Следующий выстрел дробовика будет с надетым глушителем\n" +
-                                               "Наложит эффект, который закроет цели его кол-во здоровья до следующего раунда.\n" +
-                                               "Нельзя использовать, если эффект этого предмета уже применен к дробовику.";
+        public override string Description => "Следующий выстрел дробовика лишит цель возможности видеть свое здоровье до следующего раунда.\n" +
+                                              "Эффект не пропадет, если ход завершился без выстрела, но пропадет при выстреле, даже если он был холостой.\n" +
+                                              "Нельзя использовать, если эффект этого предмета уже применен к дробовику.";
         public override string Lore => "...";
         public override string Model => "silencer";
         public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
         {
-            /*{ItemEvent.USED, "hacksaw/saw"},
-            {ItemEvent.EFFECTED, "hacksaw/fall"}*/
+            {ItemEvent.USED, "silencer/screw"}
         };
 
         internal override void BeforeUse(EventData e)
@@ -27,10 +26,13 @@ namespace BuckshoutApp.Items
         {
             var modifierRifle = Context.ModifierManager.CreateModifier(ModifierKey.RIFLE_SILENCER);
             modifierRifle.Apply(e.Target!, Context.Rifle);
-            modifierRifle.Remove(Event.RIFLE_SHOT, null, (damageE) =>
+            modifierRifle.Remove(Event.RIFLE_SHOT, null, (shotE) =>
             {
-                var modifierPlayer = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DISORIENTATION);
-                modifierPlayer.Apply(damageE.Target!);
+                if ((bool)shotE.Special["IS_CHARGED"] && !(bool)shotE.Special["IS_MISSING"])
+                {
+                    var modifierPlayer = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DISORIENTATION);
+                    modifierPlayer.Apply(shotE.Target!);
+                }
             });
         }
     }

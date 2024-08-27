@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RiflePatron, RifleStatus } from './rifle';
 
-import { ModifierState } from '@/game/modifier/modifier';
 import { useGame } from '@/stores/game';
 import { PlayerActivity, useLocalPlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
@@ -59,11 +58,7 @@ const localPlayer = useLocalPlayer();
 							rifle.status == RifleStatus.SHOOTING && rifle.patrons.current == RiflePatron.CHARGED,
 					},
 				]"
-				:src="
-					rifle.is(ModifierState.RIFLE_BONUS_DAMAGE)
-						? '/models/rifle/rifle_hacksawed.png'
-						: '/models/rifle/rifle.png'
-				"
+				:src="rifle.getModel()"
 			/>
 			<div>
 				<v-tooltip
@@ -131,6 +126,11 @@ const localPlayer = useLocalPlayer();
 	transform: translateY(v-bind('rifle.offset'));
 	position: relative;
 	transition: all 1s linear;
+}
+
+.rifle-modifiers {
+	display: flex;
+	gap: 4px;
 }
 
 .rifle-model {

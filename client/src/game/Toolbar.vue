@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 import { GameStatus } from './game';
 import { ModifierState } from './modifier/modifier';
 

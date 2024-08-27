@@ -37,13 +37,15 @@ export const useRifle = defineStore('rifle', {
 
 			const index = game.playersOrder.findIndex(it => it === player);
 
-			this.position = index * 265;
+			this.position = index * (140 + (60 * game.settings.MAX_INVENTORY_SLOTS) / 4);
 			this.target = player;
 		},
 		shoot(isCharged: boolean, isMissing: boolean) {
 			const sound = useSound();
-			if (isCharged) sound.play('buckshot', 'rifle');
-			else sound.play('blankshot', 'rifle');
+			if (isCharged) {
+				if (this.is(ModifierState.RIFLE_SILENCED)) sound.play('silenced', 'rifle');
+				else sound.play('buckshot', 'rifle');
+			} else sound.play('blankshot', 'rifle');
 
 			this.isMissing = isMissing;
 			this.status = RifleStatus.SHOOTING;
@@ -94,6 +96,14 @@ export const useRifle = defineStore('rifle', {
 					}, 500);
 				}, 5000);
 			}, 2200);
+		},
+
+		getModel() {
+			if (this.is(ModifierState.RIFLE_BONUS_DAMAGE) && this.is(ModifierState.RIFLE_SILENCED))
+				return '/models/rifle/rifle_hacksawed_and_silenced.png';
+			if (this.is(ModifierState.RIFLE_BONUS_DAMAGE)) return '/models/rifle/rifle_hacksawed.png';
+			if (this.is(ModifierState.RIFLE_SILENCED)) return '/models/rifle/rifle_silenced.png';
+			return '/models/rifle/rifle.png';
 		},
 
 		addModifier(modifier: Modifier) {
