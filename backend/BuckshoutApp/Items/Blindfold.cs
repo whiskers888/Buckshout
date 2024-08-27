@@ -19,24 +19,24 @@ namespace BuckshoutApp.Items
         public override void Effect(EventData e)
         {
             var modifierAwaitBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_AWAIT_BLINDFOLD);
-            modifierAwaitBlindfold.Apply(e.Initiator!);
+            modifierAwaitBlindfold.Apply(e.Target!);
 
-            Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
+            /*Context.EventManager.Once(Event.TURN_CHANGED, (_) =>
+            {*/
+            modifierAwaitBlindfold.RemoveWhen(Event.TURN_CHANGED, null, (_) =>
             {
-                modifierAwaitBlindfold.RemoveWhen(Event.TURN_CHANGED, null, (_) =>
+                if (e.Initiator == Context.QueueManager.Current)
                 {
-                    if (e.Initiator == Context.QueueManager.Current)
-                    {
-                        var modifierBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_BLINDFOLD);
-                        modifierBlindfold.Apply(e.Initiator!);
+                    var modifierBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_BLINDFOLD);
+                    modifierBlindfold.Apply(e.Target!);
 
-                        modifierBlindfold.RemoveWhen(Event.TURN_CHANGED);
+                    modifierBlindfold.RemoveWhen(Event.TURN_CHANGED);
 
-                        return true;
-                    }
-                    return false;
-                });
+                    return true;
+                }
+                return false;
             });
+            /* });*/
         }
     }
 }
