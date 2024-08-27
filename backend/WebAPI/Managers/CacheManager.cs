@@ -1,6 +1,5 @@
 ﻿using Buckshout.Models;
 using BuckshoutApp.Context;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -15,40 +14,37 @@ namespace Buckshout.Managers
         {
             _cache = cache;
         }
-        internal async Task SetCache(string connectionId, string roomName = "")
+        internal async Task SetCache(string userIdentifier, UserConnection userConnection)
         {
-            var stringConnection = JsonSerializer.Serialize(new UserConnection(connectionId, roomName));
-            await _cache.SetStringAsync(connectionId, stringConnection);
+            var userData = JsonSerializer.Serialize(userConnection);
+            await _cache.SetStringAsync(userIdentifier, userData);
         }
 
-        internal async Task<UserConnection> GetCache(string connectionId)
+        internal async Task<UserConnection> GetCache(string userIdentifier)
         {
-            var stringConnection = await _cache.GetAsync(connectionId);
-            if (stringConnection is null) return null;
-            return JsonSerializer.Deserialize<UserConnection>(stringConnection);
-            /*else
-                throw new Exception("Невозможно достать из кэша подключение пользователя");*/
+            var userData = await _cache.GetStringAsync(userIdentifier);
+            if (userData is null) return null;
+            return JsonSerializer.Deserialize<UserConnection>(userData);
         }
 
-        internal async Task UpdateCache(UserConnection conn)
+        internal async Task UpdateCache(string userIdentifier, UserConnection userData)
         {
-            var cache = await GetCache(conn.connectionId);
+            var cache = await GetCache(userIdentifier);
             if (cache is not null)
             {
-                await RemoveCache(conn.connectionId);
-                await SetCache(conn.connectionId, conn.roomName);
+                await RemoveCache(userIdentifier);
+                await SetCache(userIdentifier, userData);
             }
 
         }
-
-        private async Task RemoveCache(string connectionId)
+        internal async Task RemoveCache(string userIdentifier)
         {
-            await _cache.RemoveAsync(connectionId);
+            await _cache.RemoveAsync(userIdentifier);
         }
 
-        internal async Task RemoveCache(IClientProxy groups, string connectionId, Action remove)
+        /*internal async Task RemoveCache(IClientProxy groups, string userIdentifier, Action remove)
         {
             await _cache.RemoveAsync(connectionId);
-        }
+        }*/
     }
 }
