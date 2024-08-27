@@ -59,8 +59,7 @@ namespace BuckshoutApp.Items
 
             modifier.RemoveWhen(Event.RIFLE_SHOT, null, (shotE) =>
             {
-                if (shotE.Target == e.Initiator) return true;
-                return false;
+                return shotE.Target == e.Initiator;
             });
 
             Corrupted.Add(e.Target!);
