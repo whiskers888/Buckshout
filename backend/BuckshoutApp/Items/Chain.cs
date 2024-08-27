@@ -8,10 +8,10 @@ namespace BuckshoutApp.Items
     public class Chain(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Цепь";
-        public override string Description => "Связывает цель c другим случайным игроком (в том числе и Вы).\n" +
+        public override string Description => "Связывает цель c другим случайным игроком (в том числе и Вы), но в приоритете еще не связанным.\n" +
                                               "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
-                                              "Эффект применяется к каждой из целей отдельно, и наносит урон связанному игроку, развеевается после попытки выстрела в игрока.\n" +
-                                              "Не может примениться (как направлено, так и случайно) на уже связанного игрока.";
+                                              "Эффект применяется к каждой из целей отдельно, и развеивается, как только нанесет урон.\n" +
+                                              "Урон от Цепи не может быть передан Цепью.";
         public override string Lore => "Да что ты как с цепи сорвался!?";
         public override string Model => "chain";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
@@ -27,11 +27,16 @@ namespace BuckshoutApp.Items
 
         internal override void BeforeUse(EventData e)
         {
-            if (e.Target!.Is(ModifierState.PLAYER_CHAINED))
+            /*if (e.Target!.Is(ModifierState.PLAYER_CHAINED))
             {
                 Disallow(e, "Этот игрок уже связан!");
             }
-            if (Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).Count() < 1)
+            if (!Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).Any())
+            {
+                Disallow(e, "Не с кем связать!");
+            }*/
+
+            if (!Context.PlayerManager.AlivePlayers.Where(it => it != e.Target).Any())
             {
                 Disallow(e, "Не с кем связать!");
             }
@@ -43,32 +48,29 @@ namespace BuckshoutApp.Items
             modifier.Description = $"Если {target.Name} получит урон, это игрок тоже пострадает.";
             modifier.Apply(victim);
 
-            var id = modifier.On(Event.DAMAGE_TAKEN, damageE =>
+            modifier.RemoveWhen(Event.DAMAGE_TAKEN, null, damageE =>
             {
                 if (damageE.Special.TryGetValue("TYPE", out object? value))
                 {
-                    if (value.ToString() == "CHAIN") return;
+                    if (value.ToString() == "CHAIN") return false;
                 }
                 if (damageE.Target == target)
                 {
                     victim.ChangeHealth(ChangeHealthType.Damage, (int)damageE.Special["VALUE"], target, "CHAIN");
+                    return true;
                 }
-            });
-            modifier.OnRemoved = () =>
-            {
-                Context.EventManager.Unsubscribe(Event.DAMAGE_TAKEN, id);
-            };
-            modifier.RemoveWhen(Event.RIFLE_SHOT, null, (shotE) =>
-            {
-                if (shotE.Target == target) return true;
                 return false;
             });
         }
 
         public override void Effect(EventData e)
         {
-            // Может быть баг
-            var target = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).ToList().RandomChoise();
+            var targets = Context.PlayerManager.AlivePlayers.Where(it => !it.Is(ModifierState.PLAYER_CHAINED) && it != e.Target).ToList();
+            if (targets.Count == 0)
+            {
+                targets = Context.PlayerManager.AlivePlayers.Where(it => it != e.Target).ToList();
+            }
+            var target = targets.RandomChoise();
 
             ApplyModifiers(e.Target!, target);
             ApplyModifiers(target, e.Target!);
