@@ -143,6 +143,16 @@ namespace BuckshoutApp.Manager
                     Icon = "eye-off-outline",
                     IsBuff = false,
                 },
+                ModifierKey.PLAYER_DISORIENTATION => new(Context)
+                {
+                    Name = "Дезориентирован",
+                    Description = "Этот игрок не видит свое кол-во здоровья до следующего раунда.",
+                    Duration = -1,
+                    State = [ModifierState.PLAYER_DISORIENTED],
+                    TargetType = ModifierTargetType.PLAYER,
+                    Icon = "crosshairs-question",
+                    IsBuff = false,
+                },
                 // Эффекты предметов
                 ModifierKey.ITEM_CANNOT_BE_STOLEN => new(Context)
                 {
@@ -184,6 +194,16 @@ namespace BuckshoutApp.Manager
                     State = [ModifierState.RIFLE_BONUS_DAMAGE],
                     TargetType = ModifierTargetType.RIFLE,
                     Icon = "hand-saw",
+                    IsBuff = true,
+                },
+                ModifierKey.RIFLE_SILENCER => new(Context)
+                {
+                    Name = "Глушитель",
+                    Description = "Дробовик с глушителем, при попадании цель перестанет видеть свое хп до следующего раунда!",
+                    Duration = -1,
+                    State = [ModifierState.RIFLE_SILENCED],
+                    TargetType = ModifierTargetType.RIFLE,
+                    Icon = "volume-off",
                     IsBuff = true,
                 },
                 _ => throw new NotImplementedException(),

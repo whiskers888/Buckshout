@@ -70,11 +70,10 @@ namespace Buckshout.Controllers
             var cache = await CacheManager.GetCache(userIdentifier);
             await CacheManager.UpdateCache(GetUserIdentifier(), new UserConnection(Context.ConnectionId, cache.playerName, cache.roomName));
 
-
             if (GetGameContext(roomName).Status != GameStatus.PREPARING) return;
             if (playerName.Length > 20)
             {
-                GetGameContext(roomName).EventManager.Trigger(Event.SECRET_MESSAGE, new EventData() { Special = { { "MESSAGE", "Слишком длинный никнем. Никнейм не должен содержать более 20 символов" } } });
+                await SendCaller(Event.SECRET_MESSAGE, "Слишком длинный никнейм!");
                 return;
             }
 

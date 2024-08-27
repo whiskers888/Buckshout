@@ -22,9 +22,9 @@ namespace BuckshoutApp.Items
             var modifierAwaitBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_AWAIT_BLINDFOLD);
             modifierAwaitBlindfold.Apply(e.Target!);
 
-            modifierAwaitBlindfold.RemoveWhen(Event.TURN_CHANGED, null, (_) =>
+            modifierAwaitBlindfold.RemoveWhen(Event.TURN_CHANGED, null, (turnE) =>
             {
-                if (e.Initiator == Context.QueueManager.Current)
+                if (e.Target == turnE.Target)
                 {
                     var modifierBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_BLINDFOLD);
                     modifierBlindfold.Apply(e.Target!);
