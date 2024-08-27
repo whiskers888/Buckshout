@@ -70,7 +70,7 @@ namespace BuckshoutApp.Manager
         public int Health { get; set; }
         public string Team { get; set; }
         public int Avatar { get; set; }
-        public PlayerStatus Status { get; set; }
+        public PlayerStatus Status { get; set; } = PlayerStatus.CONNECTED;
 
         public void UseItem(string itemId, string targetId, string? targetItemId = null)
         {
