@@ -40,8 +40,8 @@ namespace BuckshoutApp.Items
         private void ApplyModifiers(Player target, Player victim)
         {
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHAINED);
-            modifier.Description = $"Если этот игрок получит урон, игрок {victim.Name} тоже пострадает.";
-            modifier.Apply(target);
+            modifier.Description = $"Если {target.Name} получит урон, это игрок тоже пострадает.";
+            modifier.Apply(victim);
 
             var id = modifier.On(Event.DAMAGE_TAKEN, damageE =>
             {

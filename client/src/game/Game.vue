@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { ModifierState } from './modifier/modifier';
 import Player from './player/Player.vue';
 import Rifle from './rifle/Rifle.vue';
 import Toolbar from './Toolbar.vue';
 
-import { shuffle } from '@/shared/utils/shuffle';
 import { useGame } from '@/stores/game';
-import { useLocalPlayer } from '@/stores/player';
-
 const game = useGame();
-const localPlayer = useLocalPlayer();
 </script>
 
 <template>
