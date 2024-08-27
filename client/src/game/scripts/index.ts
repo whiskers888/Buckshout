@@ -51,7 +51,7 @@ export function init() {
 		rooms.items = e.rooms;
 		localPlayer.setConnectionId(connection.connectionId!);
 	});
-	on(Event.RECONNECTED, e => {
+	on(Event.RECONNECTED, () => {
 		// Пж реализуй реконнект бэк для этого готов почти, надо тестить, ну и рум нейм пафикшен
 	});
 	on(Event.DISCONNECTED, () => {

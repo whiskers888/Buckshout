@@ -3,7 +3,6 @@ import 'vuetify/styles';
 import { type ThemeDefinition, createVuetify } from 'vuetify';
 import { ru } from 'vuetify/locale';
 
-
 const themeSettings: ThemeDefinition = {
 	colors: {
 		primary: '#373a36',

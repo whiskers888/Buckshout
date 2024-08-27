@@ -1,5 +1,4 @@
 import { Modifier, type ModifierState } from '@/game/modifier/modifier';
-import { useGame } from '@/stores/game';
 
 export enum ItemBehavior {
 	NO_TARGET,
