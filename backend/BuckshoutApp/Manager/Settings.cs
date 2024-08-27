@@ -29,6 +29,8 @@ namespace BuckshoutApp.Manager
             Type hat = typeof(Hat);
             Type clay = typeof(Clay);
             Type blindfold = typeof(Blindfold);
+            Type silencer = typeof(Silencer);
+            Type milk = typeof(Milk);
 
             Type bloodpack = typeof(BloodPack);
             Type mirror = typeof(Mirror);
@@ -37,14 +39,6 @@ namespace BuckshoutApp.Manager
 
             // Добавляем их в массив
             RefAvaliableItems.AddRange([
-                handcuffs,
-                adrenaline,
-                cigarettes,
-                stamp,
-                clay,
-                defibrillator,
-                grenade,
-                blindfold,
                 adrenaline,
                 beer,
                 bloodpack,
@@ -61,6 +55,7 @@ namespace BuckshoutApp.Manager
                 invertor,
                 magnifier,
                 medicine,
+                milk,
                 mirror,
                 phone,
                 stamp,
@@ -75,7 +70,7 @@ namespace BuckshoutApp.Manager
         public int MAX_TURN_DURATION { get; set; } = 60000;
 
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
-        public int INIT_PLAYER_HEALTH { get; set; } = 5;
+        public int INIT_PLAYER_HEALTH { get; set; } = 2;
 
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 
