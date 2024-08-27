@@ -11,5 +11,6 @@ namespace Buckshout.Models
         public ModifierModel[] Modifiers { get; set; } = player.Modifiers.Select(it => new ModifierModel(it)).ToArray();
         public string Team { get; set; } = player.Team;
         public int Avatar { get; set; } = player.Avatar;
+        public PlayerStatus Status { get; set; } = player.Status;
     }
 }
