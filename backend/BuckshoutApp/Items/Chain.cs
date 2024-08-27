@@ -61,6 +61,10 @@ namespace BuckshoutApp.Items
                 }
                 return false;
             });
+            modifier.RemoveWhen(Event.PLAYER_LOST, null, loseE =>
+            {
+                return loseE.Target == target;
+            });
         }
 
         public override void Effect(EventData e)
