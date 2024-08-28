@@ -72,7 +72,7 @@ namespace BuckshoutApp.Manager
         public int MAX_TURN_DURATION { get; set; } = 60000;
 
         public int MAX_PLAYER_HEALTH { get; set; } = 8;
-        public int INIT_PLAYER_HEALTH { get; set; } = 2;
+        public int INIT_PLAYER_HEALTH { get; set; } = 5;
 
         public int MAX_PATRONS_IN_RIFLE { get; set; } = 8;
 
