@@ -90,7 +90,7 @@ export const useLocalPlayer = defineStore('player', {
 			}
 			if (game.turn.time < game.settings.ITEM_CHANNELING_TIME * 2) {
 				notifier.error(
-					`Нельзя использовать предметы, когда до конца хода менее ${(game.settings.ITEM_CHANNELING_TIME * 2) / 1000} сек.`,
+					`Нельзя использовать предметы, когда до конца хода осталось менее ${(game.settings.ITEM_CHANNELING_TIME * 2) / 1000} сек.`,
 				);
 				return;
 			}

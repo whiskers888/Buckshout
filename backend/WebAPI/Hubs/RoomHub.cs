@@ -68,7 +68,7 @@ namespace Buckshout.Controllers
 
             var userIdentifier = GetUserIdentifier();
             var cache = await CacheManager.GetCache(userIdentifier);
-            await CacheManager.UpdateCache(GetUserIdentifier(), new UserConnection(Context.ConnectionId, cache.playerName, cache.roomName));
+            // await CacheManager.UpdateCache(GetUserIdentifier(), new UserConnection(Context.ConnectionId, cache.playerName, cache.roomName));
 
             if (GetGameContext(roomName).Status != GameStatus.PREPARING) return;
             if (playerName.Length > 20)

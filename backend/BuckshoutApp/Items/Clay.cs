@@ -3,8 +3,12 @@ using BuckshoutApp.Modifiers;
 
 namespace BuckshoutApp.Items
 {
-    public class Clay(GameContext context) : Item(context)
+    public class Clay : Item
     {
+        public Clay(GameContext context) : base(context)
+        {
+            Modifiers.Add(Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CANNOT_BE_STOLEN));
+        }
         public override string Name { get; set; } = "Глина";
         public override string Description => $"Вы создаете глиняную копию выбранного предмета.\n" +
                                                "Предмет, созданный таким образом, нельзя украсть.";
@@ -17,8 +21,7 @@ namespace BuckshoutApp.Items
 
         public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
         {
-            /*{ItemEvent.USED, "hat/magic"},
-            {ItemEvent.CANCELED, "hat/clown"},*/
+            {ItemEvent.USED, "clay/craft"},
         };
 
         public override void Effect(EventData e)

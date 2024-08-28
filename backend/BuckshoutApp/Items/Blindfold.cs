@@ -17,6 +17,12 @@ namespace BuckshoutApp.Items
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
         public override ItemTargetTeam TargetTeam => ItemTargetTeam.ENEMY;
 
+        public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
+        {
+            {ItemEvent.USED, "blindfold/put"},
+            {ItemEvent.CANCELED, "blindfold/out"},
+        };
+
         public override void Effect(EventData e)
         {
             var modifierAwaitBlindfold = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_AWAIT_BLINDFOLD);

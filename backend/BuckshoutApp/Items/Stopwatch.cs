@@ -7,7 +7,7 @@ namespace BuckshoutApp.Items
     {
         public override string Name { get; set; } = "Секундомер";
         public override string Description => $"Время хода всех противников уменьшается в {TURN_TIME_DIVIDER} раза.\n" +
-                                               "Действует до Вашего следующего хода.\n" +
+                                               "Действует до Вашего следующего хода, не сбрасывается при окончании раунда.\n" +
                                                "Полностью сочетается с другими секундомерами.";
         public override string Lore => "Для тех, кто не любит долго ждать смерти.";
         public override string Model => "stopwatch";

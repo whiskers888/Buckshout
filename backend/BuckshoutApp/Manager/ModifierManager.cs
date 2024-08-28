@@ -24,7 +24,8 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "emoticon-dead-outline",
                     IsBuff = false,
-
+                    IsPurgableByRound = false,
+                    IsPurgableByItem = false,
                 },
                 ModifierKey.PLAYER_HANDCUFFS => new(Context)
                 {
@@ -47,6 +48,7 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.PLAYER,
                     Icon = "timer",
                     IsBuff = false,
+                    IsPurgableByRound = false,
                 },
                 ModifierKey.PLAYER_CHURCH_CROSS => new(Context)
                 {
@@ -153,6 +155,7 @@ namespace BuckshoutApp.Manager
                     Icon = "crosshairs-question",
                     IsBuff = false,
                 },
+
                 // Эффекты предметов
                 ModifierKey.ITEM_CANNOT_BE_STOLEN => new(Context)
                 {
@@ -163,6 +166,8 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.ITEM,
                     Icon = "hand-back-left-off",
                     IsBuff = true,
+                    IsPurgableByRound = false,
+                    IsPurgableByItem = false,
                 },
                 ModifierKey.ITEM_ADRENALINE => new(Context)
                 {
@@ -173,6 +178,8 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.ITEM,
                     Icon = "needle-off",
                     IsBuff = false,
+                    IsPurgableByRound = false,
+                    IsPurgableByItem = false,
                 },
                 ModifierKey.ITEM_CLAY => new(Context)
                 {
@@ -183,6 +190,8 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.ITEM,
                     Icon = "wall",
                     IsBuff = true,
+                    IsPurgableByRound = false,
+                    IsPurgableByItem = false,
                 },
 
                 // Эффекты дробовика
@@ -195,6 +204,8 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.RIFLE,
                     Icon = "hand-saw",
                     IsBuff = true,
+                    IsPurgableByRound = false,
+                    IsPurgableByItem = false,
                 },
                 ModifierKey.RIFLE_SILENCER => new(Context)
                 {
@@ -205,6 +216,8 @@ namespace BuckshoutApp.Manager
                     TargetType = ModifierTargetType.RIFLE,
                     Icon = "volume-off",
                     IsBuff = true,
+                    IsPurgableByRound = false,
+                    IsPurgableByItem = false,
                 },
                 _ => throw new NotImplementedException(),
             };

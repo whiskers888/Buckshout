@@ -22,6 +22,8 @@ namespace BuckshoutApp.Modifiers
         public int Duration { get; set; } = 0;
         public string Icon { get; set; } = "";
         public bool IsBuff { get; set; } = false;
+        public bool IsPurgableByItem { get; set; } = true;
+        public bool IsPurgableByRound { get; set; } = true;
         public bool IsHidden { get; set; } = false;
         public int Value { get; set; } = 0;
         public int StackCount { get; set; } = 0;

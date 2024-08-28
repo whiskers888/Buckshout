@@ -88,7 +88,7 @@ namespace BuckshoutApp.Manager
 
         public void ChangeHealth(ChangeHealthType direction, int count, Player initiator, string type = "DEFAULT")
         {
-            Console.WriteLine($"{initiator.Name} - {this.Name} выдал {direction.ToString()} с кол-во {count} Тип {type}");
+            Console.WriteLine($"{initiator.Name} - {this.Name} выдал {direction} с кол-во {count} Тип {type}");
             if (this.Is(ModifierState.PLAYER_DEAD)) return;
             EventData e = new()
             {
@@ -116,7 +116,8 @@ namespace BuckshoutApp.Manager
             {
                 Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_DEAD).Apply(this);
                 Context.EventManager.Trigger(Event.PLAYER_LOST, e);
-                Context.QueueManager.Next();
+                if (type != "RIFLE")
+                    Context.QueueManager.Next();
             }
         }
 
@@ -151,10 +152,11 @@ namespace BuckshoutApp.Manager
                 Special = { { "MODIFIER", modifier } }
             });
         }
-        public void RemoveModifier(Modifier modifier)
+        public void RemoveModifier(Modifier modifier, bool forced = true, bool round = false, bool item = false)
         {
+            if (!forced && ((round && !modifier.IsPurgableByRound) || (item && !modifier.IsPurgableByItem))) return;
+
             modifier.SetRemoved();
-            if (modifier.State.Contains(ModifierState.PLAYER_DEAD)) return;
             if (Modifiers.Remove(modifier))
                 Context.EventManager.Trigger(Event.MODIFIER_REMOVED, new EventData()
                 {
@@ -166,7 +168,7 @@ namespace BuckshoutApp.Manager
         {
             Modifiers.ToList().ForEach(m =>
             {
-                RemoveModifier(m);
+                RemoveModifier(m, false, true, false);
             });
         }
 

@@ -29,8 +29,10 @@ const { player } = defineProps<{
 			},
 		]"
 		:style="{
+			color: localPlayer.is(ModifierState.PLAYER_BLINDED) ? '#fff' : player.color,
 			borderColor: localPlayer.is(ModifierState.PLAYER_BLINDED) ? '#000' : player.color,
 			boxShadow: `0px 0px 10px 0px ${localPlayer.is(ModifierState.PLAYER_BLINDED) ? '#000' : player.color}`,
+			background: `${localPlayer.is(ModifierState.PLAYER_BLINDED) ? '#000' : player.color + '22'}`,
 		}"
 	>
 		<div class="player-status">
@@ -109,8 +111,8 @@ const { player } = defineProps<{
 									:key="hp"
 								>
 									<v-icon
-										icon="mdi-help-rhombus-outline"
-										color="#000"
+										icon="mdi-help-rhombus"
+										color="#666"
 									/>
 								</div>
 							</div>
@@ -119,7 +121,7 @@ const { player } = defineProps<{
 					<v-tooltip
 						v-else
 						location="right"
-						:text="`Здоровье игрока: ${player.health}/${game.settings.MAX_PLAYER_HEALTH} ед.`"
+						:text="`Здоровье игрока: ${player.health > game.settings.ALWAYS_HIDDEN_PLAYER_HEALTH ? player.health : '?'}/${game.settings.MAX_PLAYER_HEALTH} ед.`"
 					>
 						<template v-slot:activator="{ props }">
 							<div
@@ -135,6 +137,15 @@ const { player } = defineProps<{
 									style="position: relative; border-radius: 50%"
 								>
 									<v-icon
+										v-if="
+											hp <= game.settings.ALWAYS_HIDDEN_PLAYER_HEALTH &&
+											!player.is(ModifierState.PLAYER_DEAD)
+										"
+										icon="mdi-help-rhombus"
+										color="#666"
+									/>
+									<v-icon
+										v-else
 										icon="mdi-heart"
 										:class="{
 											damage: hp > player.health && hp <= player.prevHealth,

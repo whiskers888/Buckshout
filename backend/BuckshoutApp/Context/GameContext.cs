@@ -66,7 +66,6 @@ namespace BuckshoutApp.Context
         }
         public void StartRound()
         {
-
             if (Status == GameStatus.FINISHED) return;
             if (Round == 1)
                 QueueManager.Next();
@@ -82,7 +81,6 @@ namespace BuckshoutApp.Context
             PlayerManager.Players.ForEach(p => p.ClearModifiers());
             Rifle.LoadRifle();
             ItemManager.GiveItems();
-            /**/
         }
         public void FinishGame()
         {

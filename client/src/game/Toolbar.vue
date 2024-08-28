@@ -49,9 +49,13 @@ function onFocusChanged(value: boolean) {
 		>
 			<div style="display: flex; justify-content: space-between">
 				<div class="flex">
-					<div
+					<!-- <div
 						class="current-player-color"
 						:style="{ background: game.current?.color }"
+					/> -->
+					<v-icon
+						:color="game.current?.color"
+						icon="mdi-shoe-sneaker"
 					/>
 					<p>
 						{{ localPlayer.isCurrent ? 'Ваша очередь!' : `Очередь: ${game.current?.name}` }}, Осталось
