@@ -8,7 +8,7 @@ import { Action, connection } from '@/api';
 import { type Game, GameSettings, GameStatus } from '@/game/game';
 import type { Item } from '@/game/item/item';
 import { type Modifier, ModifierState, ModifierTargetType } from '@/game/modifier/modifier';
-import { Player } from '@/game/player/player';
+import { Player, PlayerStatus } from '@/game/player/player';
 import { shuffle } from '@/shared/utils/shuffle';
 
 export const useGame = defineStore('game', {
@@ -56,6 +56,8 @@ export const useGame = defineStore('game', {
 			this.status = data.status;
 			this.settings = new GameSettings(data.settings);
 			this.players = [];
+			this.current = data.current ? new Player(data.current, this) : null;
+			this.turn.time = data.turn.time;
 			data.players.forEach(it => {
 				this.players.push(new Player(it, this.$state));
 			});
@@ -69,6 +71,12 @@ export const useGame = defineStore('game', {
 
 		addPlayer(player: Player) {
 			this.players.push(new Player(player, this.$state));
+		},
+		disconnectPlayer(player: Player) {
+			this.playerById(player.id).setStatus(PlayerStatus.DISCONNECTED);
+		},
+		reconnectPlayer(player: Player) {
+			this.playerById(player.id).setStatus(PlayerStatus.CONNECTED);
 		},
 		removePlayer(player: Player) {
 			this.players = this.players.filter(it => it.id != player.id);

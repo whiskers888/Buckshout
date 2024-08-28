@@ -39,7 +39,7 @@ namespace BuckshoutApp.Manager
 
             // Добавляем их в массив
             RefAvaliableItems.AddRange([
-                adrenaline,
+                /*adrenaline,
                 beer,
                 bloodpack,
                 blindfold,
@@ -62,7 +62,10 @@ namespace BuckshoutApp.Manager
                 silencer,
                 stamp,
                 stopwatch,
-                useless
+                useless*/
+
+                handcuffs,
+                stopwatch
             ]);
         }
         public int SHOW_ACTION_TIME { get; set; } = 3000; // !!НЕ ДЕЛАТЬ >= ITEM_CHANNELING_TIME!! Время, в течение которого будут отображаться изменения (мигать хп бар, итемы и т.п) просто визуал
@@ -79,7 +82,7 @@ namespace BuckshoutApp.Manager
         public int MAX_INVENTORY_SLOTS { get; set; } = 8; // кол-во слотов
         public int ITEMS_PER_PLAYER_COEF { get; set; } = 10; // в стэк будет замешен итем каждого типа * кол-во игроков * на этот коэф
 
-        public int ITEMS_PER_ROUND { get; set; } = 2; // каждый раунд выдается столько итемов
+        public int ITEMS_PER_ROUND { get; set; } = 8; // каждый раунд выдается столько итемов
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
         public int MAX_ITEMS_PER_ROUND { get; set; } = 4; // но не больше этого значения
 
@@ -88,7 +91,7 @@ namespace BuckshoutApp.Manager
         public int FATIGUE_ITEMS_TO_LOSE_INCREMENT { get; set; } = 1; // с каждым раундом все больше
         public int FATIGUE_DAMAGE_PER_ITEM { get; set; } = 1; // и получает урон, если их не осталось
 
-        public int RECCONECTION_TIME { get; set; } = 12 * 100 * 100;
+        public int RECCONECTION_TIME { get; set; } = 1000 * 60 * 5; // 5 минут
 
 
         internal List<Type> RefAvaliableItems { get; set; }

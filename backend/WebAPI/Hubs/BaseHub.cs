@@ -51,9 +51,9 @@ namespace Buckshout.Hubs
             }
             else if (e == Event.MODIFIER_APPLIED)
             {
-                var client = GetGameContext(roomName).QueueManager.Current.Id;
-                await SendPlayer(client, e, new DataModel(data));
-                await SendOther(client, e, new DataModel(data, true));
+                var current = GetGameContext(roomName).QueueManager.Current;
+                await SendPlayer(current.Id, e, new DataModel(data));
+                await SendOther(current.Id, e, new DataModel(data, true));
             }
             else
                 await Send(roomName, e, new DataModel(data));

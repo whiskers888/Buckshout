@@ -1,11 +1,15 @@
+import { RifleStatus } from '../rifle/rifle';
+
 import { Event, connection } from '@/api';
 import { Item, ItemEvent } from '@/game/item/item';
+import { useRedirect } from '@/shared/hooks/useRedirect';
 import { useGame } from '@/stores/game';
 import { useItems } from '@/stores/items';
 import { useNotifier } from '@/stores/notifier';
 import { PlayerActivity, useLocalPlayer } from '@/stores/player';
 import { useRifle } from '@/stores/rifle';
 import { useRooms } from '@/stores/room';
+import { useSession } from '@/stores/session';
 import { useSound } from '@/stores/sound';
 
 // interface EventData {
@@ -32,9 +36,9 @@ function on(e: Event, callback: (data: any) => void) {
 // }
 
 window.onbeforeunload = function () {
-	const rooms = useRooms();
-
-	rooms.invokeLeave();
+	// const rooms = useRooms();
+	// rooms.invokeDisconnect();
+	connection.stop();
 };
 
 export function init() {
@@ -45,17 +49,25 @@ export function init() {
 	const notifier = useNotifier();
 	const sound = useSound();
 	const items = useItems();
+	const session = useSession();
 
 	on(Event.CONNECTED, e => {
 		console.log('CONNECTED');
 		rooms.items = e.rooms;
-		localPlayer.setConnectionId(connection.connectionId!);
+		localPlayer.setConnectionId(e.connectionId);
 	});
-	on(Event.RECONNECTED, () => {
-		// Пж реализуй реконнект бэк для этого готов почти, надо тестить, ну и рум нейм пафикшен
+	on(Event.RECONNECTED, e => {
+		localPlayer.setConnectionId(e.connectionId);
+		session.signIn(e.name);
+		useRedirect('room', { name: e.room });
+		game.start();
+		notifier.error('Дробовик будет доступен лишь через 10 сек!');
+		setTimeout(() => {
+			rifle.status = RifleStatus.READY;
+		}, 10000);
 	});
 	on(Event.DISCONNECTED, () => {
-		rooms.invokeLeave();
+		// rooms.invokeDisconnect();
 	});
 
 	on(Event.MESSAGE, e => {
@@ -83,7 +95,7 @@ export function init() {
 
 	on(Event.ROOM_CREATED, e => {
 		rooms.add(e.room);
-		if (e.initiator === connection.connectionId) {
+		if (e.initiator === localPlayer.id) {
 			rooms.join(e.room.name);
 		}
 	});
@@ -103,10 +115,16 @@ export function init() {
 		rooms.clearCurrent();
 	});
 
-	on(Event.PLAYER_CONNECTED, e => {
+	on(Event.PLAYER_JOINED_GAME, e => {
 		game.addPlayer(e.target);
 	});
 	on(Event.PLAYER_DISCONNECTED, e => {
+		game.disconnectPlayer(e.target);
+	});
+	on(Event.PLAYER_RECONNECTED, e => {
+		game.reconnectPlayer(e.target);
+	});
+	on(Event.PLAYER_LEFT_GAME, e => {
 		game.removePlayer(e.target);
 	});
 

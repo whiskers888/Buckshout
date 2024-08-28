@@ -32,14 +32,14 @@ namespace Buckshout.Managers
             return room;
         }
 
-        public void AddToRoom(string roomName, ISingleClientProxy client, string connectionId, string name)
+        public void AddToRoom(string roomName, ISingleClientProxy client, string connectionId, string name, string signalRconnectionId)
         {
             if (!rooms.ContainsKey(roomName))
             {
                 return;
             }
             Room room = GetRoom(roomName);
-            room.GameContext.PlayerManager.AddPlayer(connectionId, name);
+            room.GameContext.PlayerManager.AddPlayer(connectionId, name, signalRconnectionId);
             room.Clients.Add(connectionId, client);
         }
 
@@ -62,10 +62,10 @@ namespace Buckshout.Managers
             return false;
         }
 
-        public Room GetRoom(string roomName)
+        public Room? GetRoom(string roomName)
         {
-            if (!rooms.ContainsKey(roomName)) return null;
-            return rooms[roomName];
+            if (!rooms.TryGetValue(roomName, out Room? value)) return null;
+            return value;
         }
         public Room GetClientRoom(string connectionId)
         {

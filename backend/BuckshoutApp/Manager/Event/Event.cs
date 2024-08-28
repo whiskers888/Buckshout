@@ -5,7 +5,6 @@
         CONNECTED,
         DISCONNECTED,
         RECONNECTED,
-        LEAVE,
 
         ROOM_CREATED,
         ROOM_ADMIN_CHANGED,
@@ -23,8 +22,10 @@
         SECRET_MESSAGE,
         PLAY_SOUND,
 
-        PLAYER_CONNECTED,
+        PLAYER_JOINED_GAME,
+        PLAYER_RECONNECTED,
         PLAYER_DISCONNECTED,
+        PLAYER_LEFT_GAME,
         PLAYER_LOST,
         PLAYER_WON,
 

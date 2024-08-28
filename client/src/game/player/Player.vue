@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Player } from './player';
+import { type Player, PlayerStatus } from './player';
 
 import Item from '@/game/item/Item.vue';
 import { ModifierState } from '@/game/modifier/modifier';
@@ -25,7 +25,7 @@ const { player } = defineProps<{
 				me: !localPlayer.is(ModifierState.PLAYER_BLINDED) && player.isOwnedByUser,
 				current: !localPlayer.is(ModifierState.PLAYER_BLINDED) && player.isCurrent,
 				target: localPlayer.canTargetPlayer(player),
-				dead: player.is(ModifierState.PLAYER_DEAD),
+				dead: player.is(ModifierState.PLAYER_DEAD) || player.status == PlayerStatus.DISCONNECTED,
 			},
 		]"
 		:style="{
@@ -84,6 +84,20 @@ const { player } = defineProps<{
 									v-bind="props"
 									:color="player.color"
 									icon="mdi-shoe-sneaker"
+								/>
+							</template>
+						</v-tooltip>
+
+						<v-tooltip
+							location="right"
+							text="Этот игрок отключился."
+						>
+							<template v-slot:activator="{ props }">
+								<v-icon
+									v-if="player.status == PlayerStatus.DISCONNECTED"
+									v-bind="props"
+									color="#f00"
+									icon="mdi-lan-disconnect"
 								/>
 							</template>
 						</v-tooltip>

@@ -6,6 +6,12 @@ import { useLocalPlayer } from '@/stores/player';
 
 const PLAYER_COLORS = ['#c23a3a', '#2b63c2', '#2cc22b', '#a83ac2', '#cd9b3d', '#3dcdac'];
 
+export enum PlayerStatus {
+	CONNECTED,
+	DISCONNECTED,
+	LEFT,
+}
+
 export class Player {
 	constructor(data: Player, context: Game) {
 		this.context = context;
@@ -15,6 +21,8 @@ export class Player {
 		this.name = data.name;
 		this.inventory = [];
 		this.modifiers = [];
+
+		this.status = PlayerStatus.CONNECTED;
 
 		this.team = data.team;
 		this.avatar = data.avatar;
@@ -43,6 +51,12 @@ export class Player {
 	addItem(item: Item) {
 		if (this.inventory.length >= this.context.settings.MAX_INVENTORY_SLOTS) return;
 		this.inventory.push(new Item(item));
+		const game = useGame();
+		setTimeout(() => {
+			const player = game.playerById(this.id);
+			const _item = player.inventory.find(it => it.id == item.id);
+			_item!.adding = false;
+		}, game.settings.SHOW_ACTION_TIME);
 	}
 	hasItem(item: Item) {
 		return !!this.inventory.find(it => it.id === item.id);
@@ -87,6 +101,10 @@ export class Player {
 		}, game.settings.SHOW_ACTION_TIME);
 	}
 
+	setStatus(status: PlayerStatus) {
+		this.status = status;
+	}
+
 	context: Game;
 	id: string;
 	health: number;
@@ -96,6 +114,7 @@ export class Player {
 	inventory: Item[];
 	modifiers: Modifier[];
 	avatar: number;
+	status: PlayerStatus;
 
 	color: string;
 }

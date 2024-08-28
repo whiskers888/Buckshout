@@ -13,8 +13,8 @@ namespace BuckshoutApp.Manager
     public enum PlayerStatus
     {
         CONNECTED,
-        DISCONECTED,
-        LEAVE,
+        DISCONNECTED,
+        LEFT,
     }
     public class PlayerManager(GameContext context)
     {
@@ -24,17 +24,30 @@ namespace BuckshoutApp.Manager
 
         public List<Player> AlivePlayers => Players.Where(it => !it.Is(ModifierState.PLAYER_DEAD)).ToList();
 
-        public Player Get(string id) => Players.First(it => it.Id == id);
-        public void AddPlayer(string id, string name)
+        public Player Get(string id) => Players.FirstOrDefault(it => it.Id == id);
+        public void AddPlayer(string id, string name, string connectionId)
         {
-            Player player = new Player(Context, id, name);
-            Context.EventManager.Trigger(Events.Event.PLAYER_CONNECTED, new EventData() { Target = player, Initiator = player });
+            Player player = new Player(Context, id, name, connectionId);
+            Context.EventManager.Trigger(Event.PLAYER_JOINED_GAME, new EventData() { Target = player, Initiator = player });
             Players.Add(player);
+        }
+        public void ReconnectPlayer(string id)
+        {
+            Player player = Players.First(it => it.Id == id);
+            Context.EventManager.Trigger(Event.PLAYER_RECONNECTED, new EventData() { Target = player, Initiator = player });
+            player.Status = PlayerStatus.CONNECTED;
+        }
+        public void DisconnectPlayer(string id)
+        {
+            Player player = Players.First(it => it.Id == id);
+            Context.EventManager.Trigger(Event.PLAYER_DISCONNECTED, new EventData() { Target = player, Initiator = player });
+            player.Status = PlayerStatus.DISCONNECTED;
         }
         public void DeletePlayer(string id)
         {
             Player player = Players.First(it => it.Id == id);
-            Context.EventManager.Trigger(Events.Event.PLAYER_DISCONNECTED, new EventData() { Target = player, Initiator = player });
+            Context.EventManager.Trigger(Event.PLAYER_LEFT_GAME, new EventData() { Target = player, Initiator = player });
+            player.Status = PlayerStatus.LEFT;
             Players.Remove(player);
         }
     }
@@ -42,28 +55,21 @@ namespace BuckshoutApp.Manager
     public class Player
     {
         private GameContext Context { get; set; }
-        public Player(GameContext context, string id, string name)
+        public Player(GameContext context, string id, string name, string connectionId)
         {
             Context = context;
             Id = id;
             Name = name;
             Team = name;
+            ConnectionId = connectionId;
             Avatar = Context.Random.Next(2, 50);
             Inventory = [];
             Modifiers = [];
             Status = PlayerStatus.CONNECTED;
-            if (Context.Mode == Mode.Default)
-                Health = Context.Settings.INIT_PLAYER_HEALTH;
-            else if (Context.Mode == Mode.Pro)
-                Health = 2;
-            else
-                Context.EventManager.Trigger(Event.MESSAGE, new EventData()
-                {
-                    Target = this,
-                    Special = new Dictionary<string, object>() { { "MESSAGE", $"Error: Player(). No has mode. Don't set health. mode:{context.Mode},uuid:{id}" } }
-                });
+            Health = Context.Settings.INIT_PLAYER_HEALTH;
         }
         public string Id { get; set; }
+        public string ConnectionId { get; set; }
         public string Name { get; set; }
         public List<Item> Inventory { get; set; }
         public List<Modifier> Modifiers { get; set; }

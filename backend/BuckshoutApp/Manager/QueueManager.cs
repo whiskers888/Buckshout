@@ -20,9 +20,19 @@ namespace BuckshoutApp.Manager
                 if (e.Target == Current)
                     Next();
             });
+
+            var sec = 1000;
+            var timeChecker = 0;
+            timeChecker = TimerExtension.SetInterval(() =>
+            {
+                TimeLeft -= sec;
+                if (context.Status == GameStatus.FINISHED)
+                    TimerExtension.ClearInterval(timeChecker);
+            }, sec);
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }
+        public int TimeLeft { get; set; } = 0;
         public IDisposable? Timer { get; set; } = null;
 
         public void CheckWinner()
@@ -72,12 +82,12 @@ namespace BuckshoutApp.Manager
                 return;
             }
 
-            var turnDuration = Context.Settings.MAX_TURN_DURATION;
+            TimeLeft = Context.Settings.MAX_TURN_DURATION;
             foreach (var modifier in player.Modifiers)
             {
                 if (modifier.State.Contains(ModifierState.PLAYER_TURN_TIME_LIMITED))
                 {
-                    turnDuration /= modifier.Value;
+                    TimeLeft /= modifier.Value;
                 }
             }
             Context.EventManager.Trigger(Event.TURN_CHANGED, new EventData()
@@ -85,7 +95,7 @@ namespace BuckshoutApp.Manager
                 Target = player,
                 Special = new Dictionary<string, object>
                 {
-                    { "TIME", turnDuration }
+                    { "TIME", TimeLeft }
                 }
             });
 
@@ -126,7 +136,7 @@ namespace BuckshoutApp.Manager
                         Target = player
                     });
                     Next();
-                }, turnDuration);
+                }, TimeLeft);
             }
         }
         public void Next()

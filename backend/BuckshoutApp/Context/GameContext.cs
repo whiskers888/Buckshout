@@ -12,12 +12,6 @@ namespace BuckshoutApp.Context
         FINISHED,
     }
 
-    public enum Mode
-    {
-        Default = 0,
-        Pro = 1
-    }
-
     public class GameContext
     {
         public GameContext()
@@ -45,16 +39,14 @@ namespace BuckshoutApp.Context
 
         public Settings Settings { get; set; }
         public ItemManager ItemManager { get; set; }
-        public Mode Mode { get; set; }
 
         public GameStatus Status { get; set; } = GameStatus.PREPARING;
 
 
-        public void StartGame(Mode mode)
+        public void StartGame()
         {
             QueueManager = new QueueManager(this);
             QueueManager.Queue.Shuffle();
-            Mode = mode;
             Status = GameStatus.IN_PROGRESS;
 
             ItemManager.FillBox();
@@ -82,7 +74,6 @@ namespace BuckshoutApp.Context
             PlayerManager.Players.ForEach(p => p.ClearModifiers());
             Rifle.LoadRifle();
             ItemManager.GiveItems();
-            /**/
         }
         public void FinishGame()
         {
