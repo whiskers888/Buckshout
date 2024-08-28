@@ -1,0 +1,21 @@
+@import url('./base.css');
+@import url('./layout.css');
+@import url('./grid.css');
+@import url('./dialog.css');
+@import url('./selection.css');
+@import url('./game.css');
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgb(var(--v-theme-secondary));
+	border-radius: 4px;
+	border: 3px solid rgb(var(--v-theme-surface-light));
+}

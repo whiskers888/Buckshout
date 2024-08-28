@@ -1,0 +1,88 @@
+﻿using Buckshout.Models;
+using BuckshoutApp.Context;
+using Microsoft.AspNetCore.SignalR;
+
+namespace Buckshout.Managers
+{
+    public class Room(string roomName, GameContext gameContext, IClientProxy group)
+    {
+        public string Name { get; set; } = roomName;
+        public IClientProxy Group { get; set; } = group;
+        public Dictionary<string, IClientProxy> Clients { get; set; } = [];
+        public GameContext GameContext { get; set; } = gameContext;
+    }
+
+
+    public class RoomManager
+    {
+        private readonly Dictionary<string, Room> rooms = new();
+        private ApplicationContext applicationContext;
+        public RoomManager(ApplicationContext applicationContext)
+        {
+            this.applicationContext = applicationContext;
+        }
+        public Room CreateRoom(string roomName, IClientProxy group)
+        {
+
+            var room = new Room(roomName, new GameContext(), group);
+            if (!rooms.ContainsKey(roomName))
+            {
+                rooms[roomName] = room;
+            }
+            return room;
+        }
+
+        public void AddToRoom(string roomName, ISingleClientProxy client, string connectionId, string name, string signalRconnectionId)
+        {
+            if (!rooms.ContainsKey(roomName))
+            {
+                return;
+            }
+            Room room = GetRoom(roomName);
+            room.GameContext.PlayerManager.AddPlayer(connectionId, name, signalRconnectionId);
+            room.Clients.Add(connectionId, client);
+        }
+
+        public bool RemoveFromRoom(string roomName, string connectionId)
+        {
+            if (rooms.ContainsKey(roomName))
+            {
+                Room room = GetRoom(roomName);
+                room.GameContext.PlayerManager.DeletePlayer(connectionId);
+                room.Clients.Remove(connectionId);
+                if (room.GameContext.PlayerManager.Players.Count <= 0)
+                {
+                    applicationContext.CacheManager.RemoveCache(connectionId);
+                    room.GameContext.FinishGame();
+                    rooms.Remove(roomName);
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Room? GetRoom(string roomName)
+        {
+            if (!rooms.TryGetValue(roomName, out Room? value)) return null;
+            return value;
+        }
+        public Room GetClientRoom(string connectionId)
+        {
+            return rooms.FirstOrDefault(r => r.Value.Clients.Any(c => c.Key == connectionId)).Value;
+        }
+        public IClientProxy? GetClient(string connectionId)
+        {
+            return GetClientRoom(connectionId).Clients.FirstOrDefault(it => it.Key == connectionId).Value;
+        }
+
+        public Room[] GetAllRooms()
+        {
+            return rooms.Values.Select(it => it).ToArray();
+        }
+        public RoomModel[] GetAllRoomsModel()
+        {
+            return rooms.Select(it => new RoomModel(it.Value)).ToArray();
+        }
+    }
+}

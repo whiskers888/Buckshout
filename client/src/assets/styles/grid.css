@@ -1,0 +1,34 @@
+.v-table:focus-visible {
+	outline: none;
+}
+
+.v-table .v-table__wrapper {
+	border: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+	border-bottom: none;
+	border-radius: 0;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.v-table .v-table__wrapper > table {
+	border-bottom: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+.v-table .v-table__wrapper > table > thead > tr > th:not(:last-child) {
+	border-right: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+.v-table .v-table__wrapper > table > thead > tr > th {
+	background: rgb(var(--v-theme-primary)) !important;
+	color: rgb(var(--v-theme-on-primary)) !important;
+	text-align: center !important;
+}
+.v-table .v-table__wrapper > table > tbody > tr > td:not(:last-child),
+.v-table .v-table__wrapper > table > tbody > tr > th:not(:last-child) {
+	border-right: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
+.resizable {
+	resize: horizontal;
+}
+
+.v-table--density-compact {
+	--v-table-row-height: 34px !important;
+}

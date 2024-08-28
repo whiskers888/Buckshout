@@ -1,0 +1,83 @@
+﻿using BuckshoutApp.Manager;
+using BuckshoutApp.Manager.Events;
+using BuckshoutApp.Manager.Rifle;
+
+namespace BuckshoutApp.Context
+{
+    public enum GameStatus
+    {
+        PREPARING,
+        IN_PROGRESS,
+        PAUSED,
+        FINISHED,
+    }
+
+    public class GameContext
+    {
+        public GameContext()
+        {
+            Id = Guid.NewGuid().ToString();
+
+            PlayerManager = new PlayerManager(this);
+            EventManager = new EventManager(this);
+            Rifle = new Rifle(this);
+            ItemManager = new ItemManager(this);
+            ModifierManager = new ModifierManager(this);
+            Settings = new Settings();
+
+        }
+        public Random Random => new();
+
+        public string Id = Guid.NewGuid().ToString();
+        public int Round { get; set; } = 1;
+
+        public PlayerManager PlayerManager { get; set; }
+        public QueueManager QueueManager { get; set; }
+        public Rifle Rifle { get; set; }
+        public EventManager EventManager { get; set; }
+        public ModifierManager ModifierManager { get; set; }
+
+        public Settings Settings { get; set; }
+        public ItemManager ItemManager { get; set; }
+
+        public GameStatus Status { get; set; } = GameStatus.PREPARING;
+
+
+        public void StartGame()
+        {
+            QueueManager = new QueueManager(this);
+            QueueManager.Queue.Shuffle();
+            Status = GameStatus.IN_PROGRESS;
+
+            ItemManager.FillBox();
+
+            EventManager.Once(Event.PLAYER_WON, (e) =>
+            {
+                FinishGame();
+            });
+        }
+        public void StartRound()
+        {
+
+            if (Status == GameStatus.FINISHED) return;
+            if (Round == 1)
+                QueueManager.Next();
+            EventManager.Trigger(Event.ROUND_STARTED, new Items.EventData
+            {
+                Special = new Dictionary<string, object>
+                {
+                    { "ROUND", Round }
+                }
+            });
+            Round += 1;
+
+            PlayerManager.Players.ForEach(p => p.ClearModifiers());
+            Rifle.LoadRifle();
+            ItemManager.GiveItems();
+        }
+        public void FinishGame()
+        {
+            Status = GameStatus.FINISHED;
+        }
+    }
+}
