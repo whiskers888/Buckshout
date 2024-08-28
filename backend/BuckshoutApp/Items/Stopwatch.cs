@@ -28,6 +28,8 @@ namespace BuckshoutApp.Items
                     var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_STOPWATCH);
                     modifier.Value = TURN_TIME_DIVIDER;
                     modifier.Apply(player);
+                    // Писал этот баг тебе в тг, пока сделал так
+                    modifier.Remove(Manager.Events.Event.ROUND_FINISHED);
                 }
             }
         }
