@@ -15,19 +15,6 @@ namespace Buckshout.Controllers
 
             var data = GetCommon();
 
-            /* var userIdentifier = GetUserIdentifier();
-             var cache = await CacheManager.GetCache(userIdentifier);
-             if (cache == null)
-                 await CacheManager.SetCache(userIdentifier, new UserConnection(Context.ConnectionId));
-             else
-             {
-                 data.room = cache.roomName;
-                 await SendCaller(Event.RECONNECTED, data);
-                 if (cache.roomName != null)
-                     await JoinRoom(cache.playerName, cache.roomName);
-                 return base.OnConnectedAsync();
-             }*/
-
             data.rooms = ApplicationContext.RoomManager.GetAllRoomsModel();
             await SendCaller(Event.CONNECTED, data);
             return base.OnConnectedAsync();
@@ -182,30 +169,6 @@ namespace Buckshout.Controllers
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await SendCaller(Event.DISCONNECTED);
-            /*var room = ApplicationContext.RoomManager.GetClientRoom(Context.ConnectionId);
-            IDisposable timer = null;
-            if (room != null)
-            {
-                ApplicationContext.RoomManager.RemoveFromRoom(room.Name, Context.ConnectionId);
-                timer = TimerExtension.SetTimeout(async () =>
-                {
-                    var player = room.GameContext.PlayerManager.Players.FirstOrDefault(it => it.Id == Context.ConnectionId);
-                    if (player != null && player.Status != BuckshoutApp.Manager.PlayerStatus.CONNECTED)
-                    {
-                        await CacheManager.RemoveCache(GetUserIdentifier());
-                        room.GameContext.EventManager.Trigger(Event.LEAVE, new EventData()
-                        {
-                            Initiator = player,
-                            Target = player,
-                        });
-                    }
-                }, room.GameContext.Settings.RECCONECTION_TIME);
-                room.GameContext.EventManager.Once(Event.PLAYER_CONNECTED, (e) =>
-                {
-                    if (e.Initiator!.Id == Context.ConnectionId)
-                        timer.Dispose();
-                });
-            }*/
             await base.OnDisconnectedAsync(exception);
         }
     }

@@ -62,8 +62,6 @@ namespace Buckshout.Hubs
 
         // HACK: Методы ниже реализованы через интерфейс встроенного хаба в синглтон, на данный момент они работают
         // так как вызываются не из под контекста игрового модуля.
-        [Obsolete(" Не стоит вызывать этот метод в контексте игрового процесса." +
-                    "Если вызывать из RoomHub - проблем не будет")]
         internal async Task SendCaller(Event methodName, object? data = null)
         {
             await Clients.Caller.SendAsync(methodName.ToString(), new JsonResult(new
@@ -72,8 +70,7 @@ namespace Buckshout.Hubs
                 datetime = DateTime.Now.ToString()
             }));
         }
-        [Obsolete(" Не стоит вызывать этот метод в контексте игрового процесса, так как ивенты отправляемые через него не имеют контекст хаба." +
-            "Если вызывать из RoomHub - проблем не будет")]
+
         internal async Task SendAll(Event eventName, object? data = null)
         {
             await Clients.All.SendAsync(eventName.ToString(), new JsonResult(new
