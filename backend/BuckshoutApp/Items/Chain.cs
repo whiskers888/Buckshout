@@ -8,10 +8,10 @@ namespace BuckshoutApp.Items
     public class Chain(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Цепь";
-        public override string Description => "Связывает цель c другим случайным игроком (в том числе и Вы), но в приоритете еще не связанным.\n" +
-                                              "Когда один из связанных игроков каким-либо образом теряет здоровье, со вторым происходит то же самое.\n" +
-                                              "Эффект применяется к каждой из целей отдельно, и развеивается, как только нанесет урон.\n" +
-                                              "Урон от Цепи не может быть передан Цепью.";
+        public override string Description => "Связывает цель с другим случайным игроком (включая вас), приоритет отдается еще не связанным игрокам.\n" +
+                                              "Если один из связанных игроков получает урон, это происходит и со вторым.\n" +
+                                              "Эффект применяется к каждой цели отдельно, и снимается после нанесения урона.\n" +
+                                              "Срабатывает на любой урон, кроме урона от Цепи.";
         public override string Lore => "Да что ты как с цепи сорвался!?";
         public override string Model => "chain";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];

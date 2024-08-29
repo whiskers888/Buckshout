@@ -7,8 +7,8 @@ namespace BuckshoutApp.Items
     public class Silencer(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Глушитель";
-        public override string Description => "Следующий выстрел дробовика лишит цель возможности видеть свое здоровье до следующего раунда.\n" +
-                                              "Эффект не пропадет, если ход завершился без выстрела, но пропадет при выстреле, даже если он был холостой.\n" +
+        public override string Description => "Следующий выстрел из дробовика, попавший в цель, лишит ее возможности видеть свое здоровье до следующего раунда.\n" +
+                                              "Эффект не пропадет, если ход завершился без выстрела, но пропадет при выстреле, даже если он был холостым.\n" +
                                               "Нельзя использовать, если эффект этого предмета уже применен к дробовику.";
         public override string Lore => "Ццц...";
         public override string Model => "silencer";

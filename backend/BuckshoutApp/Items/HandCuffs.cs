@@ -7,8 +7,8 @@ namespace BuckshoutApp.Items
     {
         public override string Name { get; set; } = "Наручники";
         public override string Description => "Сковывет выбранного противника, из-за чего тот пропускает свой следующий ход.\n" +
-                                              "Он не сможет выстрелить или использовать предметы, но все эффекты, касающиеся наступления его хода сработают.\n" +
-                                              "Нельзя применить, если игрок уже скован, пока он не походит.";
+                                              "Цель не сможет выстрелить или использовать предметы, но все эффекты, касающиеся наступления хода этого игрока, сработают.\n" +
+                                              "Нельзя применить на игрока, который уже скован, пока он не походит.";
         public override string Lore => "И постарайтесь НЕ потерять ключ.";
         public override string Model => "handcuffs";
         public override ItemBehavior[] Behavior { get; } = { ItemBehavior.UNIT_TARGET };

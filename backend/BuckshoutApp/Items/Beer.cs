@@ -7,7 +7,7 @@ namespace BuckshoutApp.Items
     {
         public override string Name { get; set; } = "Пиво";
         public override string Description => "Сбрасывает текущий патрон из дробовика.\n" +
-                                              "Если после этого в дробовике не останется патронов, начнется следующий раунд.";
+                                              "Если после этого в дробовике не останется патронов, раунд завершится.";
         public override string Lore => "Зачем стрелять в людей, когда можно пить пиво?";
         public override string Model => "beer";
 

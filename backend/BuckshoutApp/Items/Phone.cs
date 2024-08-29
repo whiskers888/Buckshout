@@ -6,7 +6,8 @@ namespace BuckshoutApp.Items
     public class Phone(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Телефон";
-        public override string Description => "Сообщает Вам, заряжен ли случайный патрон (счет идет от текущего).";
+        public override string Description => "Сообщает, заряжен ли случайный патрон.\n" +
+                                              "Отсчет патронов идет от текущего.";
         public override string Lore => "Алло, ну как там с патронами?";
         public override string Model => "phone";
 

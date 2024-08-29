@@ -85,7 +85,7 @@ namespace BuckshoutApp.Manager
         public int ITEMS_PER_ROUND_INCREMENT { get; set; } = 1; // каждый раунд кол-во инемов за выдачу увеличивается
         public int MAX_ITEMS_PER_ROUND { get; set; } = 4; // но не больше этого значения
 
-        public int FATIGUE_ROUND { get; set; } = 8; // начиная с этого раунда у игрока появляется усталость. предметы больше не выдаются
+        public int FATIGUE_ROUND { get; set; } = 8; // начиная с этого раунда у игрока появляется усталость.
         public int FATIGUE_ITEMS_TO_LOSE { get; set; } = 1; // он начинает терять предметы
         public int FATIGUE_ITEMS_TO_LOSE_INCREMENT { get; set; } = 1; // с каждым раундом все больше
         public int FATIGUE_DAMAGE_PER_ITEM { get; set; } = 1; // и получает урон, если их не осталось
