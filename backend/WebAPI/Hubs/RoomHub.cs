@@ -1,4 +1,5 @@
 ﻿using Buckshout.Hubs;
+using Buckshout.Managers;
 using Buckshout.Models;
 using BuckshoutApp;
 using BuckshoutApp.Context;
@@ -17,11 +18,10 @@ namespace Buckshout.Controllers
             var data = GetCommon();
 
             // Сессии, еще допиливаются
-            var connectionId = GetHashIdentifier();
+            var id = GetHashIdentifier();
 
-            Console.WriteLine($"Пользователь {connectionId} подключился к серверу");
-            data.connectionId = connectionId;
-            // var cache = await CacheManager.GetCache(connectionId);
+            Console.WriteLine($"Пользователь {id} подключился к серверу");
+            data.connectionId = id;
 
             if (await RestoreSession(data))
                 return base.OnConnectedAsync();
@@ -32,10 +32,10 @@ namespace Buckshout.Controllers
         }
         public async Task CreateRoom(string roomName)
         {
-            var connectionId = GetHashIdentifier();
+            var id = GetHashIdentifier();
             var room = ApplicationContext.RoomManager.CreateRoom(roomName, Clients.Group(roomName));
 
-            Console.WriteLine($"Пользователь {connectionId} создал комнату {roomName}");
+            Console.WriteLine($"Пользователь {id} создал комнату {roomName}");
             GetGameContext(roomName).EventManager.OnEvent(async (e, data) =>
             {
                 await SendEvents(e, data, roomName);
@@ -44,26 +44,26 @@ namespace Buckshout.Controllers
             await SendAll(Event.ROOM_CREATED, new
             {
                 room = new RoomModel(room),
-                initiator = connectionId,
+                initiator = id,
             });
         }
         public async Task JoinRoom(string playerName, string roomName)
         {
-            var connectionId = GetHashIdentifier();
-            await CacheManager.UpdateCache(connectionId, new UserConnection(playerName, roomName));
+            var id = GetHashIdentifier();
+            await CacheManager.UpdateCache(id, new UserConnection(playerName, roomName));
             var game = GetGameContext(roomName);
             bool needAdd = true;
 
-            if (game.Status == GameStatus.IN_PROGRESS && game.PlayerManager.Get(connectionId) != null)
+            if (game.Status == GameStatus.IN_PROGRESS && game.PlayerManager.Get(id) != null)
             {
-                game.PlayerManager.ReconnectPlayer(connectionId);
+                game.PlayerManager.ReconnectPlayer(id);
                 needAdd = false;
             }
             else
             {
                 if (game.Status != GameStatus.PREPARING) return;
                 if (await CheckLengthName(playerName)) return;
-                Console.WriteLine($"Пользователь {connectionId} подключился к {roomName}");
+                Console.WriteLine($"Пользователь {id} подключился к {roomName}");
             }
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
             await SendCaller(Event.ROOM_JOINED, new
@@ -73,7 +73,7 @@ namespace Buckshout.Controllers
             });
 
             if (needAdd)
-                ApplicationContext.RoomManager.AddToRoom(roomName, Clients.Caller, connectionId, playerName, Context.ConnectionId);
+                ApplicationContext.RoomManager.AddToRoom(roomName, Clients.Caller, id, playerName, Context.ConnectionId);
 
             await SendAll(Event.ROOM_UPDATED, new
             {
@@ -83,10 +83,10 @@ namespace Buckshout.Controllers
 
         public async Task LeaveRoom(string roomName)
         {
-            var connectionId = GetHashIdentifier();
-            await Groups.RemoveFromGroupAsync(connectionId, roomName);
-            var needRemoveRoom = ApplicationContext.RoomManager.RemoveFromRoom(roomName, connectionId);
-            await CacheManager.RemoveCache(connectionId);
+            var id = GetHashIdentifier();
+            await Groups.RemoveFromGroupAsync(id, roomName);
+            var needRemoveRoom = ApplicationContext.RoomManager.RemoveFromRoom(roomName, id);
+            await CacheManager.RemoveCache(id);
 
             if (needRemoveRoom) await SendAll(Event.ROOM_REMOVED, new { name = roomName });
             else
@@ -103,9 +103,9 @@ namespace Buckshout.Controllers
 
         public async Task SetTeam(string roomName, string team)
         {
-            var connectionId = GetHashIdentifier();
+            var id = GetHashIdentifier();
             var gameContext = GetGameContext(roomName);
-            gameContext.PlayerManager.Get(connectionId).Team = team;
+            gameContext.PlayerManager.Get(id).Team = team;
 
             await SendAll(Event.ROOM_UPDATED, new
             {
@@ -166,6 +166,9 @@ namespace Buckshout.Controllers
 
         public async Task<bool> RestoreSession(dynamic data)
         {
+            // Смертный, не бойся легаси, а примкни к нему, так что запомни:
+            // data.connectionId - это Идентификатор пользователя по ип + юзер агент
+            // Context.ConnectionID - это от библиотеки SignalR
             var cache = await CacheManager.GetCache(data.connectionId);
             if (cache?.playerName == null)
             {
@@ -176,6 +179,8 @@ namespace Buckshout.Controllers
             {
                 if (cache.roomName != null && RoomManager.GetRoom(cache.roomName) != null)
                 {
+                    Client client = RoomManager.UpdateClient(data.connectionId, Clients.Caller, Context.ConnectionId);
+                    client.TimerOnDeletePlayer?.Dispose();
                     data.name = cache.playerName;
                     data.room = cache.roomName;
                     await SendCaller(Event.RECONNECTED, data);
@@ -187,44 +192,57 @@ namespace Buckshout.Controllers
             }
             return false;
         }
+
+        private void DeletePlayerFromGame(string id, Room room, Client client)
+        {
+            var game = GetGameContext(room.Name);
+            game.PlayerManager.DisconnectPlayer(id);
+
+            client.TimerOnDeletePlayer = TimerExtension.SetTimeout(async () =>
+            {
+                var player = room.GameContext.PlayerManager.Players.FirstOrDefault(it => it.Id == id);
+                if (player != null && player.Status != BuckshoutApp.Manager.PlayerStatus.CONNECTED)
+                {
+                    await CacheManager.RemoveCache(id);
+                    game.PlayerManager.DeletePlayer(id);
+                }
+            }, room.GameContext.Settings.RECCONECTION_TIME);
+            /*room.GameContext.EventManager.Once(Event.PLAYER_RECONNECTED, (e) =>
+            {
+                if (e.Initiator!.Id == id)
+                    client.TimerOnDeletePlayer.Dispose();
+            });*/
+        }
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var connectionId = GetHashIdentifier();
+            var id = GetHashIdentifier();
+            Client client = RoomManager.GetClient(id);
+            var room = ApplicationContext.RoomManager.GetClientRoom(id);
+
             await SendCaller(Event.DISCONNECTED);
 
-            var room = ApplicationContext.RoomManager.GetClientRoom(connectionId);
-
-            Console.WriteLine($"Пользователь {connectionId} отключился от {room?.Name ?? "Без комнаты"}");
-            IDisposable timer = null;
             if (room != null)
-            {
-                var game = GetGameContext(room.Name);
-                game.PlayerManager.DisconnectPlayer(connectionId);
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.Name);
 
-                timer = TimerExtension.SetTimeout(async () =>
-                {
-                    var player = room.GameContext.PlayerManager.Players.FirstOrDefault(it => it.Id == connectionId);
-                    if (player != null && player.Status != BuckshoutApp.Manager.PlayerStatus.CONNECTED)
-                    {
-                        await CacheManager.RemoveCache(connectionId);
-                        game.PlayerManager.DeletePlayer(connectionId);
-                    }
-                }, room.GameContext.Settings.RECCONECTION_TIME);
-                room.GameContext.EventManager.Once(Event.PLAYER_RECONNECTED, (e) =>
-                {
-                    if (e.Initiator!.Id == connectionId)
-                        timer.Dispose();
-                });
-            }
-            else
+            Console.WriteLine($"Пользователь {id} отключился от {room?.Name ?? "Без комнаты"}");
+
+            if (client is not null)
             {
-                // хуйня полная, если чел допустим зашел и вышел, то его кэш через минуту автоматом отчистится
-                /*timer = TimerExtension.SetTimeout(async () =>
+                if (room is not null)
                 {
-                    Console.WriteLine($"Пользователь {connectionId} УДАЛЕН ИЗ КЭША");
-                    await CacheManager.RemoveCache(connectionId);
-                }, 60000);*/
+                    DeletePlayerFromGame(id, room, client);
+                }
+                // Надо подумать в какой момент его удалять
+                /*else
+                {
+                    client.TimerOnDeleteCache = TimerExtension.SetTimeout(async () =>
+                    {
+                        Console.WriteLine($"Пользователь {id} УДАЛЕН ИЗ КЭША");
+                        await CacheManager.RemoveCache(id);
+                    }, 1000 * 60 * 1);
+                }*/
             }
+
 
             await base.OnDisconnectedAsync(exception);
         }
