@@ -27,11 +27,11 @@ namespace BuckshoutApp.Items.Trap
             {
                 modifier.RemoveWhen(Event.DAMAGE_TAKEN, null, (damageE) =>
                 {
-                    e.Special["SOUND"] = "items/bloodpack/blood";
-                    Context.EventManager.Trigger(Event.PLAY_SOUND, e);
-                    ShowTrap(e.Initiator!);
                     if (damageE.Target != e.Initiator)
                     {
+                        e.Special["SOUND"] = "items/bloodpack/blood";
+                        Context.EventManager.Trigger(Event.PLAY_SOUND, e);
+                        ShowTrap(e.Initiator!);
                         e.Initiator!.ChangeHealth(ChangeHealthType.Heal, (int)damageE.Special["VALUE"], e.Initiator);
                         return true;
                     }

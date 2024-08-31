@@ -29,6 +29,7 @@ namespace BuckshoutApp.Manager
                 if (context.Status == GameStatus.FINISHED)
                     TimerExtension.ClearInterval(timeChecker);
             }, sec);
+
         }
         public List<Player> Queue { get; set; }
         public Player Current { get; set; }

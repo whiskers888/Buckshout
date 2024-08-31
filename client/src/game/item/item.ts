@@ -40,7 +40,7 @@ const behaviorTooltip = {
 	[ItemBehavior.NO_TARGET]: 'ненаправленная',
 	[ItemBehavior.UNIT_TARGET]: 'направленная',
 	[ItemBehavior.IMMEDIATE]: 'мгновенного применения',
-	[ItemBehavior.CUSTOM]: '',
+	[ItemBehavior.CUSTOM]: 'особого применения',
 };
 
 const itemTypeTooltip = {
@@ -72,7 +72,7 @@ export class Item {
 
 	get behaviorTooltip() {
 		const result = this.behavior.map(it => behaviorTooltip[it]);
-		return result.join(',');
+		return result.join(', ');
 	}
 
 	get targetTooltip() {

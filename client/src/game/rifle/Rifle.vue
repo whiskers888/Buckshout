@@ -102,6 +102,10 @@ const localPlayer = useLocalPlayer();
 
 			<div v-if="localPlayer.activity === PlayerActivity.CHECKING_RIFLE">
 				<img
+					class="magnifier"
+					src="/models/items/magnifier.png"
+				/>
+				<img
 					v-if="rifle.patrons.current == RiflePatron.CHARGED"
 					class="rifle-bullet"
 					src="/models/rifle/particles/buck.png"
@@ -156,6 +160,14 @@ const localPlayer = useLocalPlayer();
 
 .rifle-buckshot-kickback {
 	rotate: 2deg;
+}
+
+.magnifier {
+	width: 25%;
+	position: absolute;
+	left: 37.5%;
+	top: 6%;
+	transform: scale(-1, 1);
 }
 
 .rifle-bullet {

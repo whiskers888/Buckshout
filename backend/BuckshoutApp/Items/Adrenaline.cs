@@ -11,9 +11,8 @@ namespace BuckshoutApp.Items
             Modifiers.Add(Context.ModifierManager.CreateModifier(ModifierKey.ITEM_CANNOT_BE_STOLEN));
         }
         public override string Name { get; set; } = "Адреналин";
-        public override string Description => "Вы забираете выбранный предмет себе.\n" +
-                                              "Запрещено применять на: Адреналин, Глина.\n" +
-                                              $"Предмет появится в Вашем инвентаре спустя {Context.Settings.SHOW_ACTION_TIME / 1000} сек. после удачного применения.\n" +
+        public override string Description => "Вы крадете выбранный предмет.\n" +
+                                              $"Предмет появится в Вашем инвентаре спустя {Context.Settings.SHOW_ACTION_TIME / 1000} сек. после удачной кражи.\n" +
                                               "Украденный предмет исчезнет в конце хода, если его не использовать.";
         public override string Lore => "Не пойман - не вор.";
         public override string Model => "adrenaline";

@@ -13,9 +13,7 @@ namespace Buckshout.Controllers
     {
         public override async Task<Task> OnConnectedAsync()
         {
-
             var data = GetCommon();
-
             // Сессии, еще допиливаются
             var connectionId = GetHashIdentifier();
 

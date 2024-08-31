@@ -84,7 +84,7 @@ namespace BuckshoutApp.Manager
                     player.AddItem(NextItem());
                 });
             }
-            if (Context.Round < Context.Settings.FATIGUE_ROUND && Context.Settings.ITEMS_PER_ROUND < Context.Settings.MAX_ITEMS_PER_ROUND)
+            if (Context.Settings.ITEMS_PER_ROUND < Context.Settings.MAX_ITEMS_PER_ROUND)
             {
                 Context.Settings.ITEMS_PER_ROUND += Context.Settings.ITEMS_PER_ROUND_INCREMENT;
             }

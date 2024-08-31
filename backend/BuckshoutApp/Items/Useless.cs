@@ -8,7 +8,7 @@ namespace BuckshoutApp.Items
         public override string Name { get; set; } = "Бесполезный предмет";
         public override string Description => "Он действительно бесполезный, и не делает ровным счетом НИЧЕГО!\n" +
                                               "Вам просто не повезло его получить...\n" +
-                                              "[Но ходят слухи, что Вы узнаете истинную суть предмета, лишь забив ими весь свой инвентарь...]";
+                                              "[Но ходят слухи, что Вы узнаете истинную суть предмета, лишь собрав полный инвентарь таких...]";
         public override string Lore => "Бесполезный предмет - верх запаян, а дна нет!";
         public override string Model => "useless";
         public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()

@@ -8,7 +8,7 @@ namespace BuckshoutApp.Items
     {
         public override string Name { get; set; } = "Крестик";
         public override string Description => $"Дает {CHANCE_EVASION}% шанс увернуться от заряженного патрона {QUANTITY_EVASION} раз до своего следующего хода.\n" +
-                                              "Увернувшись при выстреле в самого себя, Вы сохраните право хода.";
+                                              "Увернувшись, при выстреле в самого себя, Вы сохраните право хода.";
 
         public override string Lore => "Перед дулом дробовика атеистов не бывает...";
         public override string Model => "church_cross";
@@ -16,10 +16,9 @@ namespace BuckshoutApp.Items
         public override Dictionary<ItemEvent, string> SoundSet { get; set; } = new Dictionary<ItemEvent, string>()
         {
             {ItemEvent.USED, "cross/church_bell" },
-            // {ItemEvent.EFFECTED, "cross/hallelujah"},
         };
 
-        public int CHANCE_EVASION = 50;
+        public int CHANCE_EVASION = 60;
         public int QUANTITY_EVASION = 1;
 
         public override void Effect(EventData e)
@@ -27,9 +26,19 @@ namespace BuckshoutApp.Items
             var modifier = Context.ModifierManager.CreateModifier(ModifierKey.PLAYER_CHURCH_CROSS);
             modifier.Value = CHANCE_EVASION;
             modifier.Apply(e.Initiator!);
-            modifier.RemoveWhen(Event.RIFLE_SHOT, null, (e) =>
+
+            var id = "";
+            id = Context.EventManager.SubscribeUniq(Event.RIFLE_SHOT, shotE =>
             {
-                return (bool)e.Special["IS_MISSING"];
+                if (shotE.Target == e.Initiator)
+                {
+                    if ((bool)shotE.Special["IS_MISSING"])
+                    {
+                        e.Special["SOUND"] = "items/cross/hallelujah";
+                        Context.EventManager.Trigger(Event.PLAY_SOUND, e);
+                        Context.EventManager.Unsubscribe(Event.RIFLE_SHOT, id);
+                    }
+                }
             });
         }
     }

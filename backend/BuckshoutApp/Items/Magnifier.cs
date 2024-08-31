@@ -6,8 +6,8 @@ namespace BuckshoutApp.Items
     internal class Magnifier(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Лупа";
-        public override string Description => "Показывает Вам, какой патрон заряжен в данный момент в дробовик.\n" +
-                                              $"Эффект предмета отображается на самом дробовике в течение {DURATION / 1000} сек.";
+        public override string Description => "Показывает, какой патрон заряжен в дробовик.\n" +
+                                              $"Эффект отображается на дробовике в течение {DURATION / 1000} сек.";
 
         public override string Lore => "А потом он взял дробовик, засунул себе его прямо в рот и спустил курок, но это уже совсем другая история...";
         public override string Model => "magnifier";

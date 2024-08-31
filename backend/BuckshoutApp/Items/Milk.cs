@@ -6,7 +6,7 @@ namespace BuckshoutApp.Items
     {
         public override string Name { get; set; } = "Ведро молока";
         public override string Description => "Снимает все отрицательные эффекты, если целью является союзник, или все положительние эффекты, если целью является противник.";
-        public override string Lore => "";
+        public override string Lore => "Собрав три таких, вполне можно испечь торт.";
         public override string Model => "milk";
         public override ItemBehavior[] Behavior { get; } = [ItemBehavior.UNIT_TARGET];
         public override ItemTargetType TargetType => ItemTargetType.PLAYER;
@@ -25,7 +25,7 @@ namespace BuckshoutApp.Items
                 {
                     if (!m.IsBuff)
                     {
-                        e.Target.RemoveModifier(m);
+                        e.Target.RemoveModifier(m, false, false, true);
                     }
                 });
             }
@@ -35,7 +35,7 @@ namespace BuckshoutApp.Items
                 {
                     if (m.IsBuff)
                     {
-                        e.Target.RemoveModifier(m);
+                        e.Target.RemoveModifier(m, false, false, true);
                     }
                 });
             };

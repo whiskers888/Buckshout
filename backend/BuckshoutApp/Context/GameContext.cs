@@ -58,7 +58,6 @@ namespace BuckshoutApp.Context
         }
         public void StartRound()
         {
-
             if (Status == GameStatus.FINISHED) return;
             if (Round == 1)
                 QueueManager.Next();

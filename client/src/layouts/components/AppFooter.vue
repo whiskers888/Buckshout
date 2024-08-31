@@ -3,7 +3,7 @@
 		app
 		border
 	>
-		<span>&copy; Buckshot, 2024</span>
+		<span>&copy; Bugshot, 2024</span>
 		<v-spacer />
 		<span>v 0.0.0.1-alpha</span>
 	</v-footer>

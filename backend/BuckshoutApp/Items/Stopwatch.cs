@@ -6,8 +6,8 @@ namespace BuckshoutApp.Items
     public class Stopwatch(GameContext context) : Item(context)
     {
         public override string Name { get; set; } = "Секундомер";
-        public override string Description => $"Время хода всех противников уменьшается в {TURN_TIME_DIVIDER} раза.\n" +
-                                               "Действует до Вашего следующего хода.\n" +
+        public override string Description => $"Время следующего хода каждого из противников уменьшается в {TURN_TIME_DIVIDER} раза.\n" +
+                                               "Эффект не сбрасывается при окончании раунда.\n" +
                                                "Полностью сочетается с другими секундомерами.";
         public override string Lore => "Для тех, кто не любит долго ждать смерти.";
         public override string Model => "stopwatch";
