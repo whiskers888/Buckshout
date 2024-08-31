@@ -39,7 +39,7 @@ namespace BuckshoutApp.Manager
 
             // Добавляем их в массив
             RefAvaliableItems.AddRange([
-                /*adrenaline,
+                adrenaline,
                 beer,
                 bloodpack,
                 blindfold,
@@ -62,10 +62,7 @@ namespace BuckshoutApp.Manager
                 silencer,
                 stamp,
                 stopwatch,
-                useless*/
-
-                handcuffs,
-                stopwatch
+                useless,
             ]);
         }
         public int SHOW_ACTION_TIME { get; set; } = 3000; // !!НЕ ДЕЛАТЬ >= ITEM_CHANNELING_TIME!! Время, в течение которого будут отображаться изменения (мигать хп бар, итемы и т.п) просто визуал

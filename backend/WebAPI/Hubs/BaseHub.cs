@@ -69,10 +69,10 @@ namespace Buckshout.Hubs
         internal async Task SendOther(string connectionID, Event eventName, object? data = null)
         {
 
-            var group = ApplicationContext.RoomManager.GetClientRoom(connectionID);
-            foreach (var client in group.Clients.Where(it => it.Key != connectionID))
+            var room = ApplicationContext.RoomManager.GetClientRoom(connectionID);
+            foreach (var client in room.Clients.Where(it => it.Key != connectionID))
             {
-                await client.Value.SendAsync(eventName.ToString(), new JsonResult(new
+                await client.Value.ClientProxy.SendAsync(eventName.ToString(), new JsonResult(new
                 {
                     data,
                     datetime = DateTime.Now.ToString()
@@ -80,10 +80,10 @@ namespace Buckshout.Hubs
             }
 
         }
-        internal async Task SendPlayer(string connectionID, Event eventName, object? data = null)
+        internal async Task SendPlayer(string id, Event eventName, object? data = null)
         {
 
-            await RoomManager.GetClient(connectionID)!.SendAsync(eventName.ToString(), new JsonResult(new
+            await RoomManager.GetClientProxy(id)!.SendAsync(eventName.ToString(), new JsonResult(new
             {
                 data,
                 datetime = DateTime.Now.ToString()
